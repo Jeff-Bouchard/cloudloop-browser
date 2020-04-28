@@ -1,3 +1,6 @@
 flask
 flask-socketio
 siaskynet
+redis
+python-redis-lock
+pytest

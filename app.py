@@ -1,37 +1,46 @@
 from flask import Flask, render_template, request, abort
 from flask.json import jsonify
-from flask_socketio import SocketIO
-from siaskynet import Skynet
-from uuid import uuid4
-#import redis
+from flask_socketio import SocketIO, send, emit
+import datetime
+
+from sessionstore import SessionStore, Loop, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
+
 import logging
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
+app.config['ENABLE_SKYNET_UPLOAD'] = False
 socketio = SocketIO(app)
 
 
 _log = logging.getLogger()
 
-sessions = {}
+sessions = SessionStore()
 
 @app.route('/create', methods=['POST'])
 def create():
-    if not request.json or not 'username' in request.json or not 'session_name' in request.json:
-        abort(400)
-    else:
-        session_name = request.json['session_name']
+    try:
         username = request.json['username']
-        if session_name in sessions:
-            abort(403)
-        else:
-            sessions[session_name] = {
-                "session_name":session_name,
-                "generation":0,
-                "users":[username],
-                "loops":{}
-            }
-            return jsonify(sessions[session_name])
+        session_name = request.json['session_name']
+        private = request.json['private']
+        sessions.create_session(session_name, username, private)
+    except KeyError as e:
+        abort(400)
+    except SessionAlreadyExistsException as e:
+        abort(403)
+
+@app.route('/join', methods=['POST'])
+def join():
+    try:
+        username = request.json['username']
+        session_name = request.json['session_name']
+        inviter = request.json['inviter']
+        sessions.join_session(session_name, username, inviter)
+    except KeyError as e:
+        abort(400)
+    except SessionActionNotPermittedException as e:
+        abort(403)
+
 
 @app.route('/add_loop', methods=['POST'])
 def add_loop():
@@ -39,95 +48,83 @@ def add_loop():
         username = request.json['username']
         session_name = request.json['session_name']
         wav_link = request.json['wav_link']
-        tag = request.json['tag']
-    except Exception as e:
-        _log.error(e)
+        # Do some sort of hashing on the contents... sia does this for us so maybe just retrieve
+        loop = Loop(creator=username, session_name=session_name, link=wav_link, hash=None)
+        sessions.add_loop(session_name, username, loop)
+    except KeyError as e:
         abort(400)
-    try:
-        session = sessions[session_name]
-    except Exception as e:
-        _log.error(e)
+    except SessionActionNotPermittedException as e:
+        abort(403)
+    except SessionNotFoundException as e:
         abort(404)
-    if len(session['loops']) > 0:
-        new_loop_id = max(session['loops']) + 1
-        if wav_link in [session['loops'][loop]['link'] for loop in session['loops']]:
-            abort(403)
-    else:
-        new_loop_id = 0
-    session['loops'][new_loop_id] = {"link":wav_link,"creator":username,"tag":tag}
-    session['generation']+=1
-    #broadcast socket update
-    return jsonify(sessions[session_name])
 
-@app.route('/update_loop', methods=['POST'])
-def update_loop():
+
+@app.route('/add_slot', methods=['POST'])
+def add_slot():
+    try:
+        session_name = request.json['session_name']
+        username = request.json['username']
+        sessions.add_slot(session_name, username)
+    except KeyError as e:
+        abort(400)
+    except SessionActionNotPermittedException as e:
+        abort(403)
+    except SessionNotFoundException:
+        abort(404)
+
+
+@app.route('/update_slot', methods=['POST'])
+def update_slot():
     try:
         username = request.json['username']
         session_name = request.json['session_name']
-        loop_id = request.json['loop_id']
-        wav_link = request.json['wav_link']
-    except Exception as e:
+        loop_id = request.json['loop_id'] #wav_link for now
+        slot_number = request.json['slot_number']
+        loop = sessions.get_loop_from_library(session_name, loop_id)
+        if loop is None:
+            sessions.add_loop(session_name, username,)
+        sessions.update_slot(session_name, username, slot_number, loop=loop)
+    except KeyError as e:
         _log.error(e)
         abort(400)
-    try:
-        session = sessions[session_name]
-        loop = session[session_name]['loops'][loop_id]
-    except Exception as e:
+    except SessionActionNotPermittedException as e:
         _log.error(e)
-        abort(404)
-    creator = session[session_name]['loops'][loop_id]['creator']
-    if creator != username:
-        _log.warning(f'Unauthorized: {username} attempted update of {creator}\'s loop {loop_id}.')
         abort(403)
-    else:
-        session[session_name]['loops'][loop_id]['link'] = wav_link
-        _log.info(f'{session_name} {loop_id} updated: {wav_link}')
-        return jsonify(sessions[session_name])
+    except SessionNotFoundException as e:
+        abort(404)
 
-@app.route('/delete_loop', methods=['POST'])
-def delete_loop():
+
+
+@app.route('/delete_slot', methods=['POST'])
+def delete_slot():
     try:
         username = request.json['username']
         session_name = request.json['session_name']
-        loop_id = request.json['loop_id']
-    except Exception as e:
+        slot_number = request.json['slot_number']
+        sessions.delete_slot(session_name, username, slot_number)
+    except KeyError as e:
         _log.error(e)
         abort(400)
-    try:
-        session = sessions[session_name]
-        loop = session[session_name]['loops'][loop_id]
-    except Exception as e:
+    except SessionActionNotPermittedException as e:
+        _log.error(e)
+        abort(403)
+    except SessionNotFoundException as e:
         _log.error(e)
         abort(404)
-    creator = session[session_name]['loops'][loop_id]['creator']
-    if creator != username:
-        _log.warning(f'Unauthorized: {username} attempted delete of {creator}\'s loop {loop_id}.')
-        abort(403)
-    else:
-        del session[session_name]['loops'][loop_id]
-        _log.info(f'Deleted loop {loop_id} from {session_name}')
-        return jsonify(sessions[session_name])
-"""
-THIS RUNS ON GCP - https://us-central1-cloudloop-175221.cloudfunctions.net/upload-to-skynet
-@app.route('/skynet', methods=['POST'])
-def upload_to_skynet():
-    data_to_upload = request.get_data()
-    filename = f'cloudloop-file-{uuid4()}.wav'
-    with open(filename, 'wb') as f:
-        f.write(data_to_upload)
-    skylink = Skynet.upload_file(filename)
-    print("Upload successful, skylink: " + skylink)
-    return jsonify(skylink)
-"""
 
 @app.route('/links', methods=['GET'])
 def links():
     try:
-        session_name = request.args.get('session')
-        wav_links = [loop['link'] for loop in sessions[session_name]['loops']]
+        wav_links = []
+        session_name = request.args.get('session_name')
+        print(session_name)
     except Exception as e:
         _log.error(e)
-    render_template("links.html", wav_links=wav_links)
+    return render_template("links.html", wav_links=wav_links)
+
+
+if app.config['ENABLE_SKYNET_UPLOAD']:
+    import skynet
 
 if __name__ == '__main__':
     socketio.run(app)
