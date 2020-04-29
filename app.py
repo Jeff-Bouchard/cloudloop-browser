@@ -21,11 +21,12 @@ sessions = SessionStore()
 @app.route('/session', methods=['POST'])
 def create_session():
     try:
+        print(request.json)
         username = request.json['username']
         session_name = request.json['session_name']
-        private = request.json['private']
+        private = request.json['private_session']
         sessions.create_session(session_name, username, private)
-        return jsonify(sessions['session_name'])
+        return jsonify(sessions[session_name])
     except KeyError as e:
         _log.error(f'{e}')
         abort(400)

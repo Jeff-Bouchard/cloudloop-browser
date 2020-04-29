@@ -22,6 +22,9 @@ class SessionStore(object):
     def __init__(self):
         self._data = {}
 
+    def __getitem__(self, item):
+        return self._data[item]
+
     def get_session_names(self):
         return self._data.keys()
 
@@ -73,7 +76,7 @@ class SessionStore(object):
         else:
             self._data[session_name] = {
                 "name": session_name,
-                "created_at": datetime.datetime.isoformat(),
+                "created_at": datetime.datetime.now().isoformat(),
                 "private": private,
                 "creator": creator,
                 "generation": 0,
