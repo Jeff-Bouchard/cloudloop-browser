@@ -18,8 +18,8 @@ _log = logging.getLogger()
 
 sessions = SessionStore()
 
-@app.route('/create', methods=['POST'])
-def create():
+@app.route('/session', methods=['POST'])
+def create_session():
     try:
         username = request.json['username']
         session_name = request.json['session_name']
