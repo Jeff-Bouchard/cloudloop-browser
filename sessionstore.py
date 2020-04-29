@@ -42,14 +42,14 @@ class SessionStore(object):
     def get_loops_in_library(self, session_name):
         if session_name in self._data:
             session = self._data[session_name]
-            library = session['loops']['library']
+            library = session['library']
             return library
         else:
             raise SessionNotFoundException(f'Session {session_name} not found.')
 
     def next_slot(self, session_name):
         """Get next available slot key, iterating up from 1."""
-        slots = self._data[session_name]['loops']['slots']
+        slots = self._data[session_name]['slots']
         slot_keys = slots.keys()
         slot_no = 1 # slot 0 is metronome
         while slot_no in slot_keys:
@@ -79,8 +79,8 @@ class SessionStore(object):
                 "generation": 0,
                 "users": [],
                 "users_online": [],
-                "loops": {'slots':{},
-                          'library':[]}
+                "slots":{},
+                "library":[]
             }
             return True
 
@@ -111,12 +111,12 @@ class SessionStore(object):
         if session_name in self._data:
             session = self._data[session_name]
             if username in session['users']:
-                if loop in session['loops']['library']:
+                if loop in session['library']:
                     _log.info(f'Loop {loop.hash} already exists in {session_name} library.')
                     return True
                 else:
                     _log.info(f'Loop {loop.hash} added to session {session_name} by {username}.')
-                    session['loops']['library'].append(loop.hash)
+                    session['library'].append(loop.hash)
                     return True
             else:
                 msg = f'Operation not permitted. User {username} not in session {session_name}.'
@@ -129,7 +129,7 @@ class SessionStore(object):
         if session_name in self._data:
             session = self._data[session_name]
             if username in session['users']:
-                slots = session['loops']['slots']
+                slots = session['slots']
                 next_slot = self.next_slot(session_name)
                 slots[next_slot] = Loop(link='', creator=username, hash='', created_at='')
                 return True
@@ -142,9 +142,9 @@ class SessionStore(object):
         if session_name in self._data:
             session = self._data[session_name]
             if username in session['users']:
-                if slot_number in session['loops']['slots'].keys():
-                    if session['loops']['slots'][slot_number].creator == username:
-                        del session['loops']['slots'][slot_number]
+                if slot_number in session['slots'].keys():
+                    if session['slots'][slot_number].creator == username:
+                        del session['slots'][slot_number]
                         _log.info(f'User {username} deleted slot {slot_number} from {session_name}')
                         return True
                     else:
@@ -163,12 +163,12 @@ class SessionStore(object):
         if session_name in self._data:
             session = self._data[session_name]
             if username in session['users']:
-                if loop not in session['loops']['library']:
+                if loop not in session['library']:
+                    session['library'].append(loop)
                     _log.info(f'Added {loop.hash} to library for session {session_name}')
-                    session['loops']['library'].append(loop)
-                if slot_number in session['loops']['slots'].keys():
-                    if session['loops']['slots'][slot_number].creator == username:
-                        session['loops']['slots'][slot_number] = loop
+                if slot_number in session['slots'].keys():
+                    if session['slots'][slot_number].creator == username:
+                        session['slots'][slot_number] = loop
                         _log.info(f'User {username} updated slot {slot_number} in {session_name} with loop {loop.hash}')
                         return True
                     else:
