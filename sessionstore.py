@@ -22,6 +22,15 @@ class SessionStore(object):
     def __init__(self):
         self._data = {}
 
+    def get_session_names(self):
+        return self._data.keys()
+
+    def get_session(self, session_name):
+        if session_name in self._data:
+            return self._data[session_name]
+        else:
+            raise SessionNotFoundException(f'Session {session_name} not found.')
+
     def get_loop_from_library(self, session_name, loop_id):
         try:
             library = self.get_loops_in_library(session_name)

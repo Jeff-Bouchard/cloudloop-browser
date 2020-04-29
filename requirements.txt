@@ -4,3 +4,4 @@ siaskynet
 redis
 python-redis-lock
 pytest
+flask-apispec

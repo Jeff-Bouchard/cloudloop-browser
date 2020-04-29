@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, abort
 from flask.json import jsonify
 from flask_socketio import SocketIO, send, emit
 import datetime
+import flask_apispec
 
 from sessionstore import SessionStore, Loop, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
 
@@ -24,9 +25,12 @@ def create():
         session_name = request.json['session_name']
         private = request.json['private']
         sessions.create_session(session_name, username, private)
+        return jsonify(sessions['session_name'])
     except KeyError as e:
+        _log.error(f'{e}')
         abort(400)
     except SessionAlreadyExistsException as e:
+        _log.error(e)
         abort(403)
 
 @app.route('/join', methods=['POST'])
@@ -36,11 +40,25 @@ def join():
         session_name = request.json['session_name']
         inviter = request.json['inviter']
         sessions.join_session(session_name, username, inviter)
+        return jsonify(sessions['session_name'])
     except KeyError as e:
         abort(400)
     except SessionActionNotPermittedException as e:
         abort(403)
 
+@app.route('/sessions', methods=['GET'])
+def get_sessions():
+    return jsonify(sessions.get_session_names())
+
+@app.route('/session', methods=['GET'])
+def get_session():
+    try:
+        session_name = request.json['session_name']
+        return jsonify(sessions.get_session(session_name))
+    except KeyError as e:
+        abort(404)
+    except SessionNotFoundException as e:
+        abort(404)
 
 @app.route('/add_loop', methods=['POST'])
 def add_loop():
@@ -51,6 +69,7 @@ def add_loop():
         # Do some sort of hashing on the contents... sia does this for us so maybe just retrieve
         loop = Loop(creator=username, session_name=session_name, link=wav_link, hash=None)
         sessions.add_loop(session_name, username, loop)
+        return jsonify(sessions['session_name'])
     except KeyError as e:
         abort(400)
     except SessionActionNotPermittedException as e:
@@ -65,6 +84,7 @@ def add_slot():
         session_name = request.json['session_name']
         username = request.json['username']
         sessions.add_slot(session_name, username)
+        return jsonify(sessions['session_name'])
     except KeyError as e:
         abort(400)
     except SessionActionNotPermittedException as e:
@@ -84,6 +104,7 @@ def update_slot():
         if loop is None:
             sessions.add_loop(session_name, username,)
         sessions.update_slot(session_name, username, slot_number, loop=loop)
+        return jsonify(sessions['session_name'])
     except KeyError as e:
         _log.error(e)
         abort(400)
@@ -102,6 +123,7 @@ def delete_slot():
         session_name = request.json['session_name']
         slot_number = request.json['slot_number']
         sessions.delete_slot(session_name, username, slot_number)
+        return jsonify(sessions['session_name'])
     except KeyError as e:
         _log.error(e)
         abort(400)
@@ -115,13 +137,19 @@ def delete_slot():
 @app.route('/links', methods=['GET'])
 def links():
     try:
-        wav_links = []
         session_name = request.args.get('session_name')
-        print(session_name)
+        links = sessions[session_name]['loops']['library']
+        return render_template("links.html", wav_links=links)
     except Exception as e:
         _log.error(e)
-    return render_template("links.html", wav_links=wav_links)
 
+@socketio.on('connect', namespace='/test')
+def test_connect():
+    emit('my response', {'data': 'Connected'})
+
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')
 
 if app.config['ENABLE_SKYNET_UPLOAD']:
     import skynet
