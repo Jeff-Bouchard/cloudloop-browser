@@ -19,8 +19,18 @@ class UserNotInvitedSession(Exception):
 _log = logging.getLogger(__name__)
 
 class SessionStore(object):
+    """
+    SessionStore is the in-memory source of truth for all of the sessions on a cloudloop host.
+    This store will be backed by Redis, and we will broadcast a snapshot of state to our users
+    based on the contents in this store.
+    Since python/flask is single-threaded, if we make all changes here atomic, we can guarantee
+    session integrity across all sessions.
+    The backing persistent datastore will be redis or timescaleDB (postgres)
+    We will just save a snapshot of each session, keyed by session name.
+    """
     def __init__(self):
         self._data = {}
+        self._next_slot = 1 # eventually implement a pointer here for atomic seeks
 
     def __getitem__(self, item):
         return self.get_session(item)
@@ -51,12 +61,12 @@ class SessionStore(object):
             raise SessionNotFoundException(f'Session {session_name} not found.')
 
     def next_slot(self, session_name):
-        """Get next available slot key, iterating up from 1."""
-        slots = self._data[session_name]['slots']
+        """Get next available slot key, iterating up from 1. Very very dumb and slow."""
+        slots = self[session_name]['slots']
         slot_keys = slots.keys()
         slot_no = 1 # slot 0 is metronome
         while slot_no in slot_keys:
-            slot_no+=1
+            slot_no+=1 # VERY STUPID, THIS WILL BOTTLENECK HEAVILY
         return slot_no
 
     def lock_redis(self):
@@ -112,11 +122,11 @@ class SessionStore(object):
             session = self._data[session_name]
             if username in session['users']:
                 if loop in session['library']:
-                    _log.info(f'Loop {loop.hash} already exists in {session_name} library.')
+                    _log.info(f'Loop {loop.link} already exists in {session_name} library.')
                     return True
                 else:
-                    _log.info(f'Loop {loop.hash} added to session {session_name} by {username}.')
-                    session['library'].append(loop.hash)
+                    _log.info(f'Loop {loop.link } added to session {session_name} by {username}.')
+                    session['library'].append(loop)
                     return True
             else:
                 msg = f'Operation not permitted. User {username} not in session {session_name}.'
@@ -163,7 +173,7 @@ class SessionStore(object):
         if session_name in self._data:
             session = self._data[session_name]
             if username in session['users']:
-                if loop not in session['library']:
+                if loop not in session['library'] and loop.link != '':
                     session['library'].append(loop)
                     _log.info(f'Added {loop.hash} to library for session {session_name}')
                 if slot_number in session['slots'].keys():
