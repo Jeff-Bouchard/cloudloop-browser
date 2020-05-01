@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, abort
 from flask.json import jsonify
 from flask_socketio import SocketIO, send, emit
+from http import HTTPStatus
 import datetime
 import flask_apispec
 
@@ -18,6 +19,9 @@ _log = logging.getLogger()
 
 sessions = SessionStore()
 
+def build_response(status, message, data):
+    return jsonify({'status':status, 'message':message, 'data':{'results':data}})
+
 @app.route('/session', methods=['POST'])
 def create_session():
     try:
@@ -26,7 +30,9 @@ def create_session():
         session_name = request.json['session_name']
         private = request.json['private_session']
         sessions.create_session(session_name, username, private)
-        return jsonify(sessions[session_name])
+        return build_response(status=HTTPStatus.OK,
+                              message=f'Session {session_name} created',
+                              data=sessions[session_name])
     except KeyError as e:
         _log.error(f'{e}')
         abort(400)
@@ -49,10 +55,10 @@ def join():
 
 @app.route('/sessionNames', methods=['GET'])
 def get_session_names():
-    print(request)
     session_names = sessions.get_session_names()
-    print(f'Retrieved session names: {session_names}')
-    return jsonify(session_names)
+    return build_response(status=HTTPStatus.OK,
+                          message=f'Got {len(session_names)} session names.',
+                          data=session_names)
 
 @app.route('/session', methods=['GET'])
 def get_session():
