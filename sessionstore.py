@@ -2,7 +2,7 @@ import datetime
 import logging
 from collections import namedtuple
 
-Loop = namedtuple('Loop',['link', 'creator', 'hash', 'created_at'])
+Loop = namedtuple('Loop',['link', 'creator', 'hash', 'created_at'], defaults=["","","",datetime.datetime.now().isoformat()])
 
 class SessionAlreadyExistsException(Exception):
     pass
@@ -23,10 +23,10 @@ class SessionStore(object):
         self._data = {}
 
     def __getitem__(self, item):
-        return self._data[item]
+        return self.get_session(item)
 
     def get_session_names(self):
-        return self._data.keys()
+        return list(self._data.keys())
 
     def get_session(self, session_name):
         if session_name in self._data:
@@ -62,12 +62,9 @@ class SessionStore(object):
     def lock_redis(self):
         # mutex, maybe implement this as contextmanager
         pass
+
     def sync(self):
         # Lock redis, pull session data, update self._data, unlock redis.
-        pass
-    def get_session_names(self):
-        self.sync()
-        # sync, return self._data.keys()
         pass
 
     def create_session(self, session_name, creator, private=False):
@@ -80,12 +77,12 @@ class SessionStore(object):
                 "private": private,
                 "creator": creator,
                 "generation": 0,
-                "users": [],
+                "users": [creator],
                 "users_online": [],
                 "slots":{},
                 "library":[]
             }
-            return True
+            return self._data[session_name]
 
     def join_session(self, session_name, username, inviter=None):
         if session_name in self._data:
@@ -134,7 +131,7 @@ class SessionStore(object):
             if username in session['users']:
                 slots = session['slots']
                 next_slot = self.next_slot(session_name)
-                slots[next_slot] = Loop(link='', creator=username, hash='', created_at='')
+                slots[next_slot] = Loop(link='', creator=username, hash='')
                 return True
             else:
                 raise SessionActionNotPermittedException(f'User {username} is not permitted to add slot in session {session_name}.')

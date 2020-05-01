@@ -47,15 +47,18 @@ def join():
     except SessionActionNotPermittedException as e:
         abort(403)
 
-@app.route('/sessions', methods=['GET'])
-def get_sessions():
-    return jsonify(sessions.get_session_names())
+@app.route('/sessionNames', methods=['GET'])
+def get_session_names():
+    print(request)
+    session_names = sessions.get_session_names()
+    print(f'Retrieved session names: {session_names}')
+    return jsonify(session_names)
 
 @app.route('/session', methods=['GET'])
 def get_session():
     try:
         session_name = request.json['session_name']
-        return jsonify(sessions.get_session(session_name))
+        return jsonify(sessions[session_name])
     except KeyError as e:
         abort(404)
     except SessionNotFoundException as e:
