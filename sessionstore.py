@@ -142,7 +142,7 @@ class SessionStore(object):
                 slots = session['slots']
                 next_slot = self.next_slot(session_name)
                 slots[next_slot] = Loop(link='', creator=username, hash='')
-                return True
+                return next_slot
             else:
                 raise SessionActionNotPermittedException(f'User {username} is not permitted to add slot in session {session_name}.')
         else:

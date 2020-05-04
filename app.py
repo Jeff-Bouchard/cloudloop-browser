@@ -19,13 +19,38 @@ _log = logging.getLogger()
 
 sessions = SessionStore()
 
-def build_response(status, message, data):
+"""
+def inner_function(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        request = get_request_object # pseudocode
+        if 'Content-Type' in request.headers:
+            if request
+            _log.info('')
+            if not authorized:
+                raise Exception(f'Not Authorized!')
+                return 403  # pseudocode
+                else:
+                r = f(*args, **kwargs)
+        else:
+            raise Exception('No authorization token!')
+        print(f'{required_grants}')
+        print("After decorated function")
+        return r
+
+    return wrapper
+"""
+
+
+def build_response(status, message, data={}):
     return jsonify({'status':status, 'message':message, 'data':{'results':data}})
+
+def not_permitted_response(message='Operation not permitted.'):
+    return build_response(HTTPStatus.FORBIDDEN, message=message)
 
 @app.route('/session', methods=['POST'])
 def create_session():
     try:
-        print(request.json)
         username = request.json['username']
         session_name = request.json['session_name']
         private = request.json['private_session']
@@ -34,11 +59,11 @@ def create_session():
                               message=f'Session {session_name} created',
                               data=sessions[session_name])
     except KeyError as e:
-        _log.error(f'{e}')
-        abort(400)
+        return build_response(status=HTTPStatus.OK,
+                              message=f'Missing parameter {e}')
     except SessionAlreadyExistsException as e:
-        _log.error(e)
-        abort(403)
+        return build_response(status=HTTPStatus.FORBIDDEN,
+                              message=f'Session already exists.')
 
 @app.route('/join', methods=['POST'])
 def join():
@@ -46,12 +71,19 @@ def join():
         username = request.json['username']
         session_name = request.json['session_name']
         inviter = request.json['inviter']
-        sessions.join_session(session_name, username, inviter)
-        return jsonify(sessions['session_name'])
+        if sessions.join_session(session_name, username, inviter):
+            return build_response(status=HTTPStatus.OK,
+                                  message=f'{username} has joined session {session_name}',
+                                  data=sessions[session_name])
+        else:
+            return build_response(status=HTTPStatus.NOT_ACCEPTABLE,
+                                  message=f'{username} failed to join session {session_name}')
     except KeyError as e:
-        abort(400)
+        return build_response(status=HTTPStatus.BAD_REQUEST,
+                              message=f'Missing parameter {e}') # TODO Test this
     except SessionActionNotPermittedException as e:
-        abort(403)
+        return build_response(status=HTTPStatus.FORBIDDEN,
+                              message='Operation not permitted.')
 
 @app.route('/sessionNames', methods=['GET'])
 def get_session_names():
@@ -63,12 +95,18 @@ def get_session_names():
 @app.route('/session', methods=['GET'])
 def get_session():
     try:
-        session_name = request.json['session_name']
-        return jsonify(sessions[session_name])
+        params = request.args
+        session_name = params['session_name']
+        session = sessions[session_name]
+        return build_response(status=HTTPStatus.OK,
+                              message=f'Got session {session_name}.',
+                              data=session)
     except KeyError as e:
-        abort(404)
+        return build_response(status=HTTPStatus.BAD_REQUEST,
+                              message='Please specify a session_name.')
     except SessionNotFoundException as e:
-        abort(404)
+        return build_response(status=HTTPStatus.NOT_FOUND,
+                              message='Session not found.')
 
 @app.route('/add_loop', methods=['POST'])
 def add_loop():
@@ -79,13 +117,18 @@ def add_loop():
         # Do some sort of hashing on the contents... sia does this for us so maybe just retrieve
         loop = Loop(creator=username, session_name=session_name, link=wav_link, hash=None)
         sessions.add_loop(session_name, username, loop)
-        return jsonify(sessions['session_name'])
+        return build_response(status=HTTPStatus.OK,
+                              message=f'Loop {session_name}/{loop.link} created',
+                              data=jsonify(sessions['session_name']))
     except KeyError as e:
-        abort(400)
+        return build_response(status=HTTPStatus.BAD_REQUEST,
+                              message=f'Missing parameters in request.')
     except SessionActionNotPermittedException as e:
-        abort(403)
+        return build_response(status=HTTPStatus.FORBIDDEN,
+                              message=f'Operation forbidden: {e}')
     except SessionNotFoundException as e:
-        abort(404)
+        return build_response(status=HTTPStatus.NOT_FOUND,
+                              message=f'Session {session_name} not found.')
 
 
 @app.route('/add_slot', methods=['POST'])
@@ -93,14 +136,19 @@ def add_slot():
     try:
         session_name = request.json['session_name']
         username = request.json['username']
-        sessions.add_slot(session_name, username)
-        return jsonify(sessions['session_name'])
+        slot = sessions.add_slot(session_name, username)
+        return build_response(HTTPStatus.OK,
+                       message=f'Slot {slot} created.',
+                       data=jsonify(sessions['session_name']))
     except KeyError as e:
-        abort(400)
+        return build_response(HTTPStatus.NOT_FOUND,
+                       message=f'Missing parameter {e}')
     except SessionActionNotPermittedException as e:
-        abort(403)
+        return build_response(HTTPStatus.FORBIDDEN,
+                       message=f'Operation forbidden {e}')
     except SessionNotFoundException:
-        abort(404)
+        return build_response(status=HTTPStatus.NOT_FOUND,
+                              message=f'Session {session_name} not found.')
 
 
 @app.route('/update_slot', methods=['POST'])
@@ -114,15 +162,20 @@ def update_slot():
         if loop is None:
             sessions.add_loop(session_name, username,)
         sessions.update_slot(session_name, username, slot_number, loop=loop)
-        return jsonify(sessions['session_name'])
+        return build_response(status=HTTPStatus.OK,
+                              message=f'Slot updated',
+                              data=jsonify(sessions['session_name']))
     except KeyError as e:
         _log.error(e)
-        abort(400)
+        return build_response(status=HTTPStatus.BAD_REQUEST,
+                              message=f'Missing parameter {e}')
     except SessionActionNotPermittedException as e:
         _log.error(e)
-        abort(403)
+        return build_response(status=HTTPStatus.FORBIDDEN,
+                              message=f'Operation not permitted {e}')
     except SessionNotFoundException as e:
-        abort(404)
+        return build_response(status=HTTPStatus.NOT_FOUND,
+                              message=f'Session {session_name} not found.')
 
 
 
@@ -133,16 +186,21 @@ def delete_slot():
         session_name = request.json['session_name']
         slot_number = request.json['slot_number']
         sessions.delete_slot(session_name, username, slot_number)
-        return jsonify(sessions['session_name'])
+        return build_response(status=HTTPStatus.OK,
+                              message=f'Slot {session_name}/{slot_number} deleted.',
+                              data=jsonify(sessions['session_name']))
     except KeyError as e:
         _log.error(e)
-        abort(400)
+        return build_response(status=HTTPStatus.BAD_REQUEST,
+                              message=f'Parameter missing: {e}')
     except SessionActionNotPermittedException as e:
         _log.error(e)
-        abort(403)
+        return build_response(status=HTTPStatus.FORBIDDEN,
+                              message='Operation not permitted.')
     except SessionNotFoundException as e:
         _log.error(e)
-        abort(404)
+        return build_response(status=HTTPStatus.NOT_FOUND,
+                              message=f'Session {session_name} not found.')
 
 @app.route('/links', methods=['GET'])
 def links():
