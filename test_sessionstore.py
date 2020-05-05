@@ -189,7 +189,6 @@ def test_add_and_delete_many_slot():
     store = SessionStore()
     store.create_session(session_name='test_session', creator='test_user')
     list(map(lambda y: store.add_slot(session_name='test_session', username='test_user'), range(100)))
-    print(f'slots: {store["test_session"]["slots"]}')
     results = list(map(lambda x: store.delete_slot(session_name='test_session', username='test_user', slot_number=x),
                        range(1, 101)))
     assert results == [True for x in range(100)]
@@ -316,7 +315,6 @@ def test_update_slot_success_empty_loop():
     store.add_loop(session_name='test_session', username='test_user', loop=loop)
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
     store.update_slot(session_name='test_session', username='test_user', loop=empty_loop, slot_number=1)
-    print(store.get_library('test_session'))
     assert len(store.get_library('test_session')) == 1
     assert store.get_slots('test_session')[1] == empty_loop
 

@@ -25,7 +25,7 @@ print(rj.jsonget('obj', Path('.host')))
 
 _log = logging.getLogger()
 
-sessions = SessionStore()
+sessions = SessionStore(flush=False)
 
 """
 def inner_function(f):

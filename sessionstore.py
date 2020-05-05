@@ -2,6 +2,7 @@ import datetime
 import logging
 from collections import namedtuple
 from rejson import Client, Path
+from random import randint
 
 # TODO we need a real serializer for this.
 Loop = namedtuple('Loop',['link', 'creator', 'hash', 'created_at'], defaults=["","","",datetime.datetime.now().isoformat()])
@@ -30,7 +31,7 @@ class SessionStore(object):
     The backing persistent datastore will be redis or timescaleDB (postgres)
     We will just save a snapshot of each session, keyed by session name.
     """
-    def __init__(self):
+    def __init__(self, flush=True):
         self._data = {}
         self._next_slot = 1 # eventually implement a pointer here for atomic seeks
         self._rejson = Client(host='192.168.86.24',
@@ -38,7 +39,8 @@ class SessionStore(object):
                               decode_responses=True,
                               password='cloudloop',
                               db=1)
-        self._rejson.flushall()
+        if flush:
+            self._rejson.flushall()
 
     def __getitem__(self, session_name):
         return self.get_session_data(session_name)
@@ -57,7 +59,6 @@ class SessionStore(object):
 
     def get_slots(self, session_name):
         slots_tuples = self.get_session_data(session_name, '.slots')
-        print(slots_tuples)
         slots = {int(key): Loop(*loop) for key, loop in slots_tuples.items()}
         return slots
 
