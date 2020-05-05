@@ -4,6 +4,9 @@ from flask_socketio import SocketIO, send, emit
 from http import HTTPStatus
 import datetime
 import flask_apispec
+from rejson import Client, Path
+
+
 
 from sessionstore import SessionStore, Loop, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
 
@@ -13,6 +16,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['ENABLE_SKYNET_UPLOAD'] = False
 socketio = SocketIO(app)
+
+obj = {'host':1}
+rj.jsonset('obj', Path.rootPath(), obj)
+
+print(rj.jsonget('obj', Path('.host')))
 
 
 _log = logging.getLogger()

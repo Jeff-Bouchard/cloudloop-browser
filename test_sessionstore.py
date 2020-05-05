@@ -5,7 +5,6 @@ from datetime import timedelta, datetime
 from sessionstore import SessionStore, Loop, SessionNotFoundException, SessionActionNotPermittedException, \
     SessionAlreadyExistsException, UserNotInvitedSession
 
-
 def test_sessionstore_init():
     store = SessionStore()
     assert store._data == dict()
@@ -61,10 +60,10 @@ def test_session_types():
     assert type(session['library']) is list
 
 
-def test_get_session():
+def test_get_session_data():
     store = SessionStore()
     store.create_session(session_name='test_session', creator='test_user')
-    session = store.get_session('test_session')
+    session = store.get_session_data('test_session')
     assert session['name'] == 'test_session'
 
 
@@ -142,8 +141,8 @@ def test_add_slot_success():
     store = SessionStore()
     store.create_session(session_name='test_session', creator='test_user')
     store.add_slot(session_name='test_session', username='test_user')
-    assert len(store['test_session']['slots']) == 1
-    assert type(store['test_session']['slots'][1]) is Loop
+    assert len(store.get_slots('test_session')) == 1
+    assert type(store.get_slots('test_session')[1]) is Loop
 
 
 def test_delete_slot_fail_slot_number():
@@ -221,7 +220,7 @@ def test_add_loop_success_created():
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     assert len(store['test_session']['library']) == 1
     assert len(store['test_session']['slots']) == 0
-    assert store['test_session']['library'][0] == loop
+    assert store.get_library('test_session')[0] == loop
 
 
 def test_add_loop_success_idempotent():
@@ -233,7 +232,7 @@ def test_add_loop_success_idempotent():
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     assert len(store['test_session']['library']) == 1
     assert len(store['test_session']['slots']) == 0
-    assert store['test_session']['library'][0] == loop
+    assert store.get_library('test_session')[0] == loop
 
 
 def test_update_slot_failure_bad_session():
@@ -293,7 +292,7 @@ def test_update_slot_success_new_loop():
     loop = Loop(link='http://test.link', creator='test_user', hash='test_hash', created_at='test_timestamp')
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
     assert len(store['test_session']['library']) == 1
-    assert store['test_session']['slots'][1] == loop
+    assert store.get_slots('test_session')[1] == loop
 
 def test_update_slot_success_loop_exists():
     store = SessionStore()
@@ -304,7 +303,7 @@ def test_update_slot_success_loop_exists():
     store.add_loop(session_name='test_session', username='test_user', loop=loop)
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
     assert len(store['test_session']['library']) == 1
-    assert store['test_session']['slots'][1] == loop
+    assert store.get_slots('test_session')[1] == loop
 
 
 def test_update_slot_success_empty_loop():
@@ -317,8 +316,9 @@ def test_update_slot_success_empty_loop():
     store.add_loop(session_name='test_session', username='test_user', loop=loop)
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
     store.update_slot(session_name='test_session', username='test_user', loop=empty_loop, slot_number=1)
-    assert len(store['test_session']['library']) == 1
-    assert store['test_session']['slots'][1] == empty_loop
+    print(store.get_library('test_session'))
+    assert len(store.get_library('test_session')) == 1
+    assert store.get_slots('test_session')[1] == empty_loop
 
 
 def test_create_loop():
