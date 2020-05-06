@@ -2,10 +2,7 @@ from flask import Flask, render_template, request, abort
 from flask.json import jsonify
 from flask_socketio import SocketIO, send, emit
 from http import HTTPStatus
-import datetime
-import flask_apispec
-from rejson import Client, Path
-
+import json
 
 
 from sessionstore import SessionStore, Loop, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
@@ -15,12 +12,7 @@ import logging
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['ENABLE_SKYNET_UPLOAD'] = False
-socketio = SocketIO(app)
-
-obj = {'host':1}
-rj.jsonset('obj', Path.rootPath(), obj)
-
-print(rj.jsonget('obj', Path('.host')))
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 _log = logging.getLogger()
@@ -219,11 +211,25 @@ def links():
     except Exception as e:
         _log.error(e)
 
-@socketio.on('connect', namespace='/test')
-def test_connect():
-    emit('my response', {'data': 'Connected'})
+@socketio.on('message')
+def handle_message(msg):
+    print('Message: ' + msg)
+    send(msg, broadcast=True)
 
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('json')
+def handle_json(json):
+    print('Message: ' + json)
+
+@socketio.on('ack')
+def handle_ack(ack):
+    print('Got it: ' + ack)
+
+@socketio.on('connect')
+def send_ack():
+    print("client connect")
+    emit("state_update", json.dumps(sessions['session']), broadcast=True)
+
+@socketio.on('disconnect')
 def test_disconnect():
     print('Client disconnected')
 
@@ -231,7 +237,7 @@ if app.config['ENABLE_SKYNET_UPLOAD']:
     import skynet
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, host='0.0.0.0', port=5000)
 
 """
 FROM CLIENT:

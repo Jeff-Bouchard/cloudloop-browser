@@ -2,7 +2,6 @@ import datetime
 import logging
 from collections import namedtuple
 from rejson import Client, Path
-from random import randint
 
 # TODO we need a real serializer for this.
 Loop = namedtuple('Loop',['link', 'creator', 'hash', 'created_at'], defaults=["","","",datetime.datetime.now().isoformat()])

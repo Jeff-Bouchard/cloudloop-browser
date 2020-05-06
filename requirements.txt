@@ -5,3 +5,5 @@ rejson
 python-redis-lock
 pytest
 flask-apispec
+gunicorn
+eventlet
