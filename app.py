@@ -10,12 +10,15 @@ from eventlet.hubs.timer import Timer
 
 
 
-from sessionstore import SessionStore, Loop, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
+from loop import Loop, LoopEncoder, LoopDecoder
+from sessionstore import SessionStore, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
 
 import logging
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
+app.json_decoder = LoopDecoder
+app.json_encoder = LoopEncoder
 app.config['ENABLE_SKYNET_UPLOAD'] = False
 socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://:cloudloop@192.168.86.24:6379', password='cloudloop')
 
@@ -120,7 +123,7 @@ def add_loop():
         session_name = request.json['session_name']
         wav_link = request.json['wav_link']
         # Do some sort of hashing on the contents... sia does this for us so maybe just retrieve
-        loop = Loop(creator=username, link=wav_link, hash='some_hash')
+        loop = Loop(creator=username, link=wav_link, hash=wav_link)
         sessions.add_loop(session_name, username, loop)
         print(sessions['session_name'])
         return build_response(status=HTTPStatus.OK,
@@ -234,7 +237,9 @@ def handle_ack(ack):
 def send_ack():
     print("client connect")
     sessions.user_connect('session', 'cloudloop')
-    emit("state_update", json.dumps(sessions['session']), broadcast=True)
+    jsondata = json.dumps(sessions['session'], cls=LoopEncoder)
+    print(jsondata)
+    emit("state_update", jsondata, broadcast=True)
 
 @socketio.on('disconnect')
 def test_disconnect():
@@ -245,7 +250,7 @@ if app.config['ENABLE_SKYNET_UPLOAD']:
     import skynet
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000, log_output=True)
 
 """
 FROM CLIENT:

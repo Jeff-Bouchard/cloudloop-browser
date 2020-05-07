@@ -50,9 +50,16 @@ class SessionStore(object):
     def get_session_data(self, session_name, path=Path.rootPath()):
         if self._rejson.exists(session_name):
             session_data = self._rejson.jsonget(session_name, path)
-            if 'slots' in session_data:
-                session_data['slots'] = {int(key): loop for key, loop in session_data['slots'].items()}
-            return session_data
+            if isinstance(session_data, dict):
+                if 'slots' in session_data:
+                    print(f'slots! : {session_data["slots"]}')
+                    session_data['slots'] = {int(key): loop for key, loop in session_data['slots'].items()}
+                    print(f'slots! : {session_data["slots"]}')
+                    return session_data
+                else:
+                    return session_data
+            else:
+                return session_data
         else:
             raise SessionNotFoundException(f'Session {session_name} not found.')
 
@@ -131,6 +138,7 @@ class SessionStore(object):
         elif not self.get_session_data(session_name, 'private'):
             self._rejson.jsonarrappend(session_name, '.users', username)
             _log.info(f'User {username} added self to public session {session_name}.')
+            return True
         else:
             msg = f'Inviter {inviter} not in private session {session_name}, cannot add user {username} to session.'
             _log.warning(msg)
@@ -150,6 +158,8 @@ class SessionStore(object):
             else:
                 _log.info(f'Loop {loop.link } added to session {session_name} by {username}.')
                 self._rejson.jsonarrappend(session_name, '.library', loop)
+                next_slot = self.add_slot(session_name=session_name, username=username)
+                self.update_slot(session_name=session_name,username=username, loop=loop, slot_number=next_slot)
                 return True
         else:
             msg = f'Operation not permitted. User {username} not in session {session_name}.'
@@ -201,7 +211,7 @@ class SessionStore(object):
         if slot_number in slots:
             if slots[slot_number].creator == username:
                 self._rejson.jsonset(session_name, f'.slots.{slot_number}', loop)
-                _log.info(f'User {username} updated slot {slot_number} in {session_name} with loop {loop.hash}')
+                print(f'User {username} updated slot {slot_number} in {session_name} with loop {loop.hash}')
                 return True
             else:
                 msg = f'Loop in slot {slot_number} does not belong to user {username} in session {session_name}.'

@@ -2,6 +2,7 @@ import datetime
 from json import JSONEncoder
 from json import JSONDecoder
 
+
 class Loop(object):
     _type = "Loop"
     link = None
