@@ -1,8 +1,13 @@
+import eventlet
+eventlet.monkey_patch()
 from flask import Flask, render_template, request, abort
 from flask.json import jsonify
 from flask_socketio import SocketIO, send, emit
 from http import HTTPStatus
 import json
+from time import sleep
+
+
 
 
 from sessionstore import SessionStore, Loop, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
@@ -12,7 +17,7 @@ import logging
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['ENABLE_SKYNET_UPLOAD'] = False
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://:cloudloop@192.168.86.24:6379', password='cloudloop')
 
 
 _log = logging.getLogger()
@@ -228,6 +233,7 @@ def handle_ack(ack):
 def send_ack():
     print("client connect")
     emit("state_update", json.dumps(sessions['session']), broadcast=True)
+    sleep(5)
 
 @socketio.on('disconnect')
 def test_disconnect():
