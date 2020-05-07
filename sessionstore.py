@@ -44,22 +44,15 @@ class SessionStore(object):
     def __getitem__(self, session_name):
         return self.get_session_data(session_name)
 
-    def sync_session(self, session_name):
-        return self._rejson.jsonget(session_name, Path.rootPath())
-
     def get_session_names(self):
         return list(self._rejson.scan_iter())
 
     def get_session_data(self, session_name, path=Path.rootPath()):
         if self._rejson.exists(session_name):
-            session = self._rejson.jsonget(session_name, path)
-            # TODO fix this Ugly Serde antipattern
-            #if 'slots' in session:
-            #   session['slots'] = {int(key): Loop(*loop) for key, loop in session['slots'].items()}
-            #if 'library' in session:
-            #    session['library'] = [Loop(*x) for x in session['library']]
-            #print(session)
-            return session
+            session_data = self._rejson.jsonget(session_name, path)
+            if 'slots' in session_data:
+                session_data['slots'] = {int(key): loop for key, loop in session_data['slots'].items()}
+            return session_data
         else:
             raise SessionNotFoundException(f'Session {session_name} not found.')
 
@@ -103,6 +96,9 @@ class SessionStore(object):
         pass
 
     def create_session(self, session_name, creator, private=False):
+        """
+        MUTATES DATASTORE
+        """
         if session_name in self._data:
             raise SessionAlreadyExistsException(f'Session {session_name} already exists. Aborting create_session.')
         else:
@@ -121,6 +117,9 @@ class SessionStore(object):
             return session_data
 
     def join_session(self, session_name, username, inviter=None):
+        """
+        MUTATES DATASTORE
+        """
         users = self.get_session_data(session_name, '.users')
         if username in users:
             _log.info(f'User {username} already exists in session.')
@@ -138,6 +137,9 @@ class SessionStore(object):
             raise SessionActionNotPermittedException(msg)
 
     def add_loop(self, session_name, username, loop):
+        """
+        MUTATES DATASTORE
+        """
         if loop.link == '':
             return True
         if self.check_user_auth(session_name, username):
@@ -155,6 +157,9 @@ class SessionStore(object):
             raise SessionActionNotPermittedException(msg)
 
     def add_slot(self, session_name, username):
+        """
+        MUTATES DATASTORE
+        """
         if self.check_user_auth(session_name, username):
             next_slot = self.next_slot(session_name)
             new_loop = Loop(link='', creator=username, hash='')
@@ -164,6 +169,9 @@ class SessionStore(object):
             raise SessionActionNotPermittedException(f'User {username} is not permitted to add slot in session {session_name}.')
 
     def delete_slot(self, session_name, username, slot_number):
+        """
+        MUTATES DATASTORE
+        """
         if self.check_user_auth(session_name, username):
             slots = self.get_slots_with_int_keys(session_name)
             if slot_number in slots:
@@ -185,6 +193,9 @@ class SessionStore(object):
             raise SessionActionNotPermittedException(msg)
 
     def update_slot(self, session_name, username, slot_number, loop):
+        """
+        MUTATES DATASTORE
+        """
         self.add_loop(session_name, username, loop)
         slots = self.get_slots_with_int_keys(session_name)
         if slot_number in slots:
@@ -200,10 +211,12 @@ class SessionStore(object):
             raise SessionActionNotPermittedException(msg)
 
     def user_connect(self, session_name, username):
+        """MUTATES DATASTORE"""
         if self.check_user_auth(session_name=session_name, username=username):
             self._rejson.jsonset(session_name, '.users_online', {username: datetime.datetime.now().isoformat()})
 
     def user_disconnect(self, session_name, username):
+        """MUTATES DATASTORE"""
         if self.check_user_auth(session_name=session_name, username=username):
             if self._rejson.jsonget(session_name, f'.users_online.{username}') is not None:
                 print(f'{username} has gone offline in {session_name}')

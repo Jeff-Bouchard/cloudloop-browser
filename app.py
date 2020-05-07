@@ -6,6 +6,8 @@ from flask_socketio import SocketIO, send, emit
 from http import HTTPStatus
 import json
 from time import sleep
+from eventlet.hubs.timer import Timer
+
 
 
 from sessionstore import SessionStore, Loop, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
@@ -21,6 +23,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://:cloud
 _log = logging.getLogger()
 
 sessions = SessionStore(flush=True)
+
 
 """
 def inner_function(f):
@@ -43,7 +46,6 @@ def inner_function(f):
 
     return wrapper
 """
-
 
 def build_response(status, message, data={}):
     return jsonify({'status':status, 'message':message, 'data':{'results':data}})
