@@ -125,7 +125,9 @@ def add_loop():
         # Do some sort of hashing on the contents... sia does this for us so maybe just retrieve
         loop = Loop(creator=username, link=wav_link, hash=wav_link)
         sessions.add_loop(session_name, username, loop)
-        emit("state_update", json.dumps(sessions['session_name'], cls=LoopEncoder), broadcast=True)
+        session_data = sessions[session_name]
+        session_json = json.dumps(session_data, cls=LoopEncoder)
+        socketio.emit("state_update", session_json, broadcast=True)
         print(sessions['session_name'])
         return build_response(status=HTTPStatus.OK,
                               message=f'Loop {session_name}/{loop.link} created',
