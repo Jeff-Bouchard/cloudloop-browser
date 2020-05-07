@@ -8,8 +8,6 @@ import json
 from time import sleep
 
 
-
-
 from sessionstore import SessionStore, Loop, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
 
 import logging
@@ -22,7 +20,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://:cloud
 
 _log = logging.getLogger()
 
-sessions = SessionStore(flush=False)
+sessions = SessionStore(flush=True)
 
 """
 def inner_function(f):
@@ -120,11 +118,12 @@ def add_loop():
         session_name = request.json['session_name']
         wav_link = request.json['wav_link']
         # Do some sort of hashing on the contents... sia does this for us so maybe just retrieve
-        loop = Loop(creator=username, session_name=session_name, link=wav_link, hash=None)
+        loop = Loop(creator=username, link=wav_link, hash='some_hash')
         sessions.add_loop(session_name, username, loop)
+        print(sessions['session_name'])
         return build_response(status=HTTPStatus.OK,
                               message=f'Loop {session_name}/{loop.link} created',
-                              data=jsonify(sessions['session_name']))
+                              data=jsonify(sessions[session_name]))
     except KeyError as e:
         return build_response(status=HTTPStatus.BAD_REQUEST,
                               message=f'Missing parameters in request.')
@@ -232,11 +231,12 @@ def handle_ack(ack):
 @socketio.on('connect')
 def send_ack():
     print("client connect")
+    sessions.user_connect('session', 'cloudloop')
     emit("state_update", json.dumps(sessions['session']), broadcast=True)
-    sleep(5)
 
 @socketio.on('disconnect')
 def test_disconnect():
+    sessions.user_disconnect('session', 'cloudloop')
     print('Client disconnected')
 
 if app.config['ENABLE_SKYNET_UPLOAD']:

@@ -55,7 +55,7 @@ def test_session_types():
     assert type(session['creator']) is str
     assert type(session['generation']) is int
     assert type(session['users']) is list
-    assert type(session['users_online']) is list
+    assert type(session['users_online']) is dict
     assert type(session['slots']) is dict
     assert type(session['library']) is list
 
@@ -141,8 +141,8 @@ def test_add_slot_success():
     store = SessionStore()
     store.create_session(session_name='test_session', creator='test_user')
     store.add_slot(session_name='test_session', username='test_user')
-    assert len(store.get_slots('test_session')) == 1
-    assert type(store.get_slots('test_session')[1]) is Loop
+    assert len(store.get_slots_with_int_keys('test_session')) == 1
+    assert isinstance(store.get_slots_with_int_keys('test_session')[1], Loop)
 
 
 def test_delete_slot_fail_slot_number():
@@ -291,7 +291,7 @@ def test_update_slot_success_new_loop():
     loop = Loop(link='http://test.link', creator='test_user', hash='test_hash', created_at='test_timestamp')
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
     assert len(store['test_session']['library']) == 1
-    assert store.get_slots('test_session')[1] == loop
+    assert store.get_slots_with_int_keys('test_session')[1] == loop
 
 def test_update_slot_success_loop_exists():
     store = SessionStore()
@@ -302,7 +302,7 @@ def test_update_slot_success_loop_exists():
     store.add_loop(session_name='test_session', username='test_user', loop=loop)
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
     assert len(store['test_session']['library']) == 1
-    assert store.get_slots('test_session')[1] == loop
+    assert store.get_slots_with_int_keys('test_session')[1] == loop
 
 
 def test_update_slot_success_empty_loop():
@@ -316,7 +316,7 @@ def test_update_slot_success_empty_loop():
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
     store.update_slot(session_name='test_session', username='test_user', loop=empty_loop, slot_number=1)
     assert len(store.get_library('test_session')) == 1
-    assert store.get_slots('test_session')[1] == empty_loop
+    assert store.get_slots_with_int_keys('test_session')[1] == empty_loop
 
 
 def test_create_loop():

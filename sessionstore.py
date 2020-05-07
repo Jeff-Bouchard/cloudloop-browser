@@ -1,10 +1,8 @@
 import datetime
 import logging
-from collections import namedtuple
 from rejson import Client, Path
+from loop import Loop, LoopDecoder, LoopEncoder
 
-# TODO we need a real serializer for this.
-Loop = namedtuple('Loop',['link', 'creator', 'hash', 'created_at'], defaults=["","","",datetime.datetime.now().isoformat()])
 
 class SessionAlreadyExistsException(Exception):
     pass
@@ -37,6 +35,8 @@ class SessionStore(object):
                               port=6379,
                               decode_responses=True,
                               password='cloudloop',
+                              encoder=LoopEncoder(),
+                              decoder=LoopDecoder(),
                               db=1)
         if flush:
             self._rejson.flushall()
@@ -52,18 +52,25 @@ class SessionStore(object):
 
     def get_session_data(self, session_name, path=Path.rootPath()):
         if self._rejson.exists(session_name):
-            return self._rejson.jsonget(session_name, path)
+            session = self._rejson.jsonget(session_name, path)
+            # TODO fix this Ugly Serde antipattern
+            #if 'slots' in session:
+            #   session['slots'] = {int(key): Loop(*loop) for key, loop in session['slots'].items()}
+            #if 'library' in session:
+            #    session['library'] = [Loop(*x) for x in session['library']]
+            #print(session)
+            return session
         else:
             raise SessionNotFoundException(f'Session {session_name} not found.')
 
-    def get_slots(self, session_name):
-        slots_tuples = self.get_session_data(session_name, '.slots')
-        slots = {int(key): Loop(*loop) for key, loop in slots_tuples.items()}
+    def get_slots_with_int_keys(self, session_name):
+        slots = self.get_session_data(session_name, '.slots')
+        slots = {int(key): loop for key, loop in slots.items()}
         return slots
 
     def get_library(self, session_name):
-        loops_list = self.get_session_data(session_name, '.library')
-        library = [Loop(*x) for x in loops_list]
+        library = self.get_session_data(session_name, '.library')
+        #library = [Loop(*x) for x in loops_list]
         return library
 
     def check_user_auth(self, session_name, username):
@@ -106,7 +113,7 @@ class SessionStore(object):
                 "creator": creator,
                 "generation": 0,
                 "users": [creator],
-                "users_online": [],
+                "users_online": {},
                 "slots":{},
                 "library":[] #Eventually use a set here.
             }
@@ -158,7 +165,7 @@ class SessionStore(object):
 
     def delete_slot(self, session_name, username, slot_number):
         if self.check_user_auth(session_name, username):
-            slots = self.get_slots(session_name)
+            slots = self.get_slots_with_int_keys(session_name)
             if slot_number in slots:
                 if slots[slot_number].creator == username:
                     self._rejson.jsondel(session_name, f'.slots.{slot_number}')
@@ -179,7 +186,7 @@ class SessionStore(object):
 
     def update_slot(self, session_name, username, slot_number, loop):
         self.add_loop(session_name, username, loop)
-        slots = self.get_slots(session_name)
+        slots = self.get_slots_with_int_keys(session_name)
         if slot_number in slots:
             if slots[slot_number].creator == username:
                 self._rejson.jsonset(session_name, f'.slots.{slot_number}', loop)
@@ -191,6 +198,16 @@ class SessionStore(object):
         else:
             msg = f'Slot {slot_number} does not exist in session {session_name}.'
             raise SessionActionNotPermittedException(msg)
+
+    def user_connect(self, session_name, username):
+        if self.check_user_auth(session_name=session_name, username=username):
+            self._rejson.jsonset(session_name, '.users_online', {username: datetime.datetime.now().isoformat()})
+
+    def user_disconnect(self, session_name, username):
+        if self.check_user_auth(session_name=session_name, username=username):
+            if self._rejson.jsonget(session_name, f'.users_online.{username}') is not None:
+                print(f'{username} has gone offline in {session_name}')
+                self._rejson.jsondel(session_name, f'.users_online.{username}')
 
 
 
