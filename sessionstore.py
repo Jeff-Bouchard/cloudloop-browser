@@ -38,6 +38,13 @@ class SessionStore(object):
                               encoder=LoopEncoder(),
                               decoder=LoopDecoder(),
                               db=1)
+        """
+        self._rejson = Client(host='127.0.0.1',
+                              port=6379,
+                              decode_responses=True,
+                              encoder=LoopEncoder(),
+                              decoder=LoopDecoder(),
+                              db=1)"""
         if flush:
             self._rejson.flushall()
 
@@ -52,9 +59,7 @@ class SessionStore(object):
             session_data = self._rejson.jsonget(session_name, path)
             if isinstance(session_data, dict):
                 if 'slots' in session_data:
-                    print(f'slots! : {session_data["slots"]}')
                     session_data['slots'] = {int(key): loop for key, loop in session_data['slots'].items()}
-                    print(f'slots! : {session_data["slots"]}')
                     return session_data
                 else:
                     return session_data

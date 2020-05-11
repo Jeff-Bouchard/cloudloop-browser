@@ -218,7 +218,7 @@ def test_add_loop_success_created():
     loop = Loop(link='http://test.link', creator='test_user_2', hash='test_hash', created_at='test_timestamp')
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     assert len(store['test_session']['library']) == 1
-    assert len(store['test_session']['slots']) == 0
+    assert len(store['test_session']['slots']) == 1
     assert store.get_library('test_session')[0] == loop
 
 
@@ -230,7 +230,7 @@ def test_add_loop_success_idempotent():
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     assert len(store['test_session']['library']) == 1
-    assert len(store['test_session']['slots']) == 0
+    assert len(store['test_session']['slots']) == 1
     assert store.get_library('test_session')[0] == loop
 
 
@@ -261,7 +261,7 @@ def test_update_slot_failure_slot_not_exist():
     loop = Loop(link='http://test.link', creator='test_user_2', hash='test_hash', created_at='test_timestamp')
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     with pytest.raises(SessionActionNotPermittedException):
-        store.update_slot(session_name='test_session', username='test_user_2', slot_number=1, loop=loop)
+        store.update_slot(session_name='test_session', username='test_user_2', slot_number=2, loop=loop)
 
 def test_update_slot_failure_slot_not_exist_with_slots():
     store = SessionStore()
