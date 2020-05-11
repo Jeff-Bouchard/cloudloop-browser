@@ -31,10 +31,9 @@ class SessionStore(object):
     def __init__(self, flush=True):
         self._data = {}
         self._next_slot = 1 # eventually implement a pointer here for atomic seeks
-        self._rejson = Client(host='192.168.86.24',
+        self._rejson = Client(host='cloudloop-rejson',
                               port=6379,
                               decode_responses=True,
-                              password='cloudloop',
                               encoder=LoopEncoder(),
                               decoder=LoopDecoder(),
                               db=1)
