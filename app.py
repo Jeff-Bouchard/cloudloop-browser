@@ -20,7 +20,7 @@ app.config['SECRET_KEY'] = 'secret!'
 app.json_decoder = LoopDecoder
 app.json_encoder = LoopEncoder
 app.config['ENABLE_SKYNET_UPLOAD'] = False
-socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://cloudloop-rejson:6379')
+socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://:cloudloop@localhost:6379')
 
 
 _log = logging.getLogger()
