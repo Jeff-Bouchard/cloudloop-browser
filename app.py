@@ -1,12 +1,12 @@
 import eventlet
 eventlet.monkey_patch()
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request
 from flask.json import jsonify
 from flask_socketio import SocketIO, send, emit
 from http import HTTPStatus
+from flask_jwt import JWT, jwt_required, current_identity
+from werkzeug.security import safe_str_cmp
 import json
-from time import sleep
-from eventlet.hubs.timer import Timer
 
 
 
@@ -20,41 +20,28 @@ app.config['SECRET_KEY'] = 'secret!'
 app.json_decoder = LoopDecoder
 app.json_encoder = LoopEncoder
 app.config['ENABLE_SKYNET_UPLOAD'] = False
-socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://:cloudloop@localhost:6379')
+socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://cloudloop-rejson:6379')
 
 
 _log = logging.getLogger()
 
 sessions = SessionStore(flush=True)
 
-
-"""
-def inner_function(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        request = get_request_object # pseudocode
-        if 'Content-Type' in request.headers:
-            if request
-            _log.info('')
-            if not authorized:
-                raise Exception(f'Not Authorized!')
-                return 403  # pseudocode
-                else:
-                r = f(*args, **kwargs)
-        else:
-            raise Exception('No authorization token!')
-        print(f'{required_grants}')
-        print("After decorated function")
-        return r
-
-    return wrapper
-"""
-
 def build_response(status, message, data={}):
     return jsonify({'status':status, 'message':message, 'data':{'results':data}})
 
 def not_permitted_response(message='Operation not permitted.'):
     return build_response(HTTPStatus.FORBIDDEN, message=message)
+
+"""
+@app.route('/register_user', methods=['POST'])
+def register_user():
+    try:
+        username = request.json['username']
+        email = request.json['email']
+        password = request.json['password']
+        userstore.create_user(username, email, password)
+"""
 
 @app.route('/session', methods=['POST'])
 def create_session():

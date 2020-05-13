@@ -25,26 +25,20 @@ class SessionStore(object):
     based on the contents in this store.
     Since python/flask is single-threaded, if we make all changes here atomic, we can guarantee
     session integrity across all sessions.
-    The backing persistent datastore will be redis or timescaleDB (postgres)
+    The backing persistent datastore is redis rejson
     We will just save a snapshot of each session, keyed by session name.
     """
     def __init__(self, flush=True):
         self._data = {}
         self._next_slot = 1 # eventually implement a pointer here for atomic seeks
-        self._rejson = Client(host='localhost',
+        self._rejson = Client(host='cloudloop-rejson',
                               port=6379,
                               decode_responses=True,
-                              password='cloudloop',
+                              #password='cloudloop',
                               encoder=LoopEncoder(),
                               decoder=LoopDecoder(),
                               db=1)
-        """
-        self._rejson = Client(host='127.0.0.1',
-                              port=6379,
-                              decode_responses=True,
-                              encoder=LoopEncoder(),
-                              decoder=LoopDecoder(),
-                              db=1)"""
+
         if flush:
             self._rejson.flushall()
 

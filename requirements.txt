@@ -7,3 +7,5 @@ pytest
 flask-apispec
 gunicorn
 eventlet
+bcrypt
+flask-JWT
