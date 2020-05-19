@@ -20,7 +20,8 @@ app.config['SECRET_KEY'] = 'secret!'
 app.json_decoder = LoopDecoder
 app.json_encoder = LoopEncoder
 app.config['ENABLE_SKYNET_UPLOAD'] = False
-socketio = SocketIO(app, cors_allowed_origins="*", message_queue='redis://cloudloop-rejson:6379')
+app.config['REDIS_HOST'] = 'cloudloop-rejson'
+socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.config["REDIS_HOST"]}:6379')
 
 
 _log = logging.getLogger()
@@ -138,7 +139,7 @@ def add_slot():
         slot = sessions.add_slot(session_name, username)
         return build_response(HTTPStatus.OK,
                        message=f'Slot {slot} created.',
-                       data=jsonify(sessions['session_name']))
+                       data=jsonify(sessions[session_name]))
     except KeyError as e:
         return build_response(HTTPStatus.NOT_FOUND,
                        message=f'Missing parameter {e}')
@@ -163,7 +164,7 @@ def update_slot():
         sessions.update_slot(session_name, username, slot_number, loop=loop)
         return build_response(status=HTTPStatus.OK,
                               message=f'Slot updated',
-                              data=jsonify(sessions['session_name']))
+                              data=jsonify(sessions[session_name]))
     except KeyError as e:
         _log.error(e)
         return build_response(status=HTTPStatus.BAD_REQUEST,
@@ -187,7 +188,7 @@ def delete_slot():
         sessions.delete_slot(session_name, username, slot_number)
         return build_response(status=HTTPStatus.OK,
                               message=f'Slot {session_name}/{slot_number} deleted.',
-                              data=jsonify(sessions['session_name']))
+                              data=jsonify(sessions[session_name]))
     except KeyError as e:
         _log.error(e)
         return build_response(status=HTTPStatus.BAD_REQUEST,

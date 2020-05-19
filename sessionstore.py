@@ -28,10 +28,10 @@ class SessionStore(object):
     The backing persistent datastore is redis rejson
     We will just save a snapshot of each session, keyed by session name.
     """
-    def __init__(self, flush=True):
+    def __init__(self, flush=True, redis_host='cloudloop-rejson'):
         self._data = {}
-        self._next_slot = 1 # eventually implement a pointer here for atomic seeks
-        self._rejson = Client(host='cloudloop-rejson',
+        self._next_slot = 0 # eventually implement a pointer here for atomic seeks
+        self._rejson = Client(host=redis_host,
                               port=6379,
                               decode_responses=True,
                               #password='cloudloop',
@@ -88,7 +88,7 @@ class SessionStore(object):
         """Get next available slot key, iterating up from 1. Very very dumb and slow."""
         slots = self.get_session_data(session_name, '.slots')
         slot_keys = map(int, slots.keys())
-        slot_no = 1 # slot 0 is metronome
+        slot_no = 0
         while slot_no in slot_keys:
             slot_no+=1 # VERY STUPID, THIS WILL BOTTLENECK HEAVILY
         return slot_no
