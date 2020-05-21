@@ -2,7 +2,7 @@ import eventlet
 eventlet.monkey_patch()
 from flask import Flask, render_template, request
 from flask.json import jsonify
-from flask_socketio import SocketIO, send, emit
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from http import HTTPStatus
 from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
@@ -111,8 +111,9 @@ def add_loop():
         username = request.json['username']
         session_name = request.json['session_name']
         wav_link = request.json['wav_link']
+        hash = request.json['hash']
         # Do some sort of hashing on the contents... sia does this for us so maybe just retrieve
-        loop = Loop(creator=username, link=wav_link, hash=wav_link)
+        loop = Loop(creator=username, link=wav_link, hash=hash)
         sessions.add_loop(session_name, username, loop)
         session_data = sessions[session_name]
         session_json = json.dumps(session_data, cls=LoopEncoder)
@@ -120,7 +121,7 @@ def add_loop():
         _log.info(session_data)
         return build_response(status=HTTPStatus.OK,
                               message=f'Loop {session_name}/{loop.link} created',
-                              data=jsonify(session_data))
+                              data=session_data)
     except KeyError as e:
         return build_response(status=HTTPStatus.BAD_REQUEST,
                               message=f'Missing parameters in request.')
@@ -230,14 +231,36 @@ def handle_ack(ack):
 @socketio.on('connect')
 def send_ack():
     print("client connect")
-    sessions.user_connect('session', 'cloudloop')
-    jsondata = json.dumps(sessions['session'], cls=LoopEncoder)
-    print(jsondata)
-    emit("state_update", jsondata, broadcast=True)
+    emit("message", "Connected Successfully.")
+
+@socketio.on('joinSession')
+def on_join(data):
+    try:
+        print(f"JOIN SESSION {data}")
+        username = data['username']
+        session_name = data['session_name']
+        join_room(session_name)
+        sessions.user_connect(username=username, session_name=session_name)
+        jsondata = json.dumps(sessions[session_name], cls=LoopEncoder)
+        emit("state_update", jsondata, room=session_name, broadcast=True)
+        emit('message', username + ' has joined the session ' + session_name, room=session_name)
+    except KeyError as e:
+        _log.info("username and room not found.")
+
+@socketio.on('leaveSession')
+def on_leave(data):
+    try:
+        username = data['username']
+        session_name = data['session_name']
+        leave_room(session_name)
+        sessions.user_disconnect(username=username, session_name=session_name)
+        send(username + ' has left the session ' + session_name, room=session_name)
+    except KeyError as e:
+        _log.info("username and room not found.")
+
 
 @socketio.on('disconnect')
 def test_disconnect():
-    sessions.user_disconnect('session', 'cloudloop')
     print('Client disconnected')
 
 
