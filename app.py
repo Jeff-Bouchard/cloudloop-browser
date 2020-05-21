@@ -6,6 +6,8 @@ from flask_socketio import SocketIO, send, emit
 from http import HTTPStatus
 from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
+
+
 import json
 
 
@@ -19,7 +21,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.json_decoder = LoopDecoder
 app.json_encoder = LoopEncoder
-app.config['ENABLE_SKYNET_UPLOAD'] = False
 app.config['REDIS_HOST'] = 'cloudloop-rejson'
 socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.config["REDIS_HOST"]}:6379')
 
@@ -116,10 +117,10 @@ def add_loop():
         session_data = sessions[session_name]
         session_json = json.dumps(session_data, cls=LoopEncoder)
         socketio.emit("state_update", session_json, broadcast=True)
-        print(sessions['session_name'])
+        _log.info(session_data)
         return build_response(status=HTTPStatus.OK,
                               message=f'Loop {session_name}/{loop.link} created',
-                              data=jsonify(sessions[session_name]))
+                              data=jsonify(session_data))
     except KeyError as e:
         return build_response(status=HTTPStatus.BAD_REQUEST,
                               message=f'Missing parameters in request.')
@@ -211,6 +212,8 @@ def links():
     except Exception as e:
         _log.error(e)
 
+
+
 @socketio.on('message')
 def handle_message(msg):
     print('Message: ' + msg)
@@ -237,8 +240,6 @@ def test_disconnect():
     sessions.user_disconnect('session', 'cloudloop')
     print('Client disconnected')
 
-if app.config['ENABLE_SKYNET_UPLOAD']:
-    import skynet
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, log_output=True)

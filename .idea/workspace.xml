@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7ad24ead-9ef4-4dd7-a660-551ecca95138" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sessionstore.py" beforeDir="false" afterPath="$PROJECT_DIR$/sessionstore.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/skynet.py" beforeDir="false" afterPath="$PROJECT_DIR$/skynet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +38,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1b4TFUZfHNc7lvhgB0tQal84Z1o" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -115,7 +118,8 @@
       <workItem from="1589388052949" duration="3190000" />
       <workItem from="1589470069189" duration="3260000" />
       <workItem from="1589736570964" duration="3191000" />
-      <workItem from="1589901740000" duration="75000" />
+      <workItem from="1589901740000" duration="7080000" />
+      <workItem from="1590036754176" duration="1429000" />
     </task>
     <servers />
   </component>
@@ -203,9 +207,10 @@
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state x="469" y="190" key="SettingsEditor/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1589387993772" />
-    <state x="496" y="371" key="com.intellij.ide.util.TipDialog" timestamp="1589901739847">
-      <screen x="0" y="23" width="1680" height="1027" />
+    <state x="567" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1590036757588">
+      <screen x="0" y="23" width="1920" height="1057" />
     </state>
+    <state x="567" y="381" key="com.intellij.ide.util.TipDialog/-3008.-689.3008.1669/0.23.1920.1057/-4688.-146.1680.1027@0.23.1920.1057" timestamp="1590036757588" />
     <state x="-2370" y="-56" key="com.intellij.ide.util.TipDialog/-3360.-689.3360.1867/0.23.1920.1057/-5040.-146.1680.1027@0.23.1920.1057" timestamp="1589736631729" />
     <state x="496" y="371" key="com.intellij.ide.util.TipDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1589901739847" />
     <state x="567" y="381" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1589388053647" />
