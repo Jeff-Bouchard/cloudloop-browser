@@ -8,10 +8,7 @@ from userstore import UserStore
 from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
 
-
 import json
-
-
 
 from loop import Loop
 from sessionstore import SessionStore, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
@@ -19,10 +16,11 @@ from serde import CloudLoopDecoder, CloudLoopEncoder
 
 import logging
 
-
+JWT_SECRET_KEY=b'|\xc7\xf6E9&\xf9vf`N(\xe3x.\xd4R\xc1|<_\xddJ\xa7'
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
+app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
 app.json_decoder = CloudLoopDecoder
 app.json_encoder = CloudLoopEncoder
 app.config['REDIS_HOST'] = 'cloudloop-rejson'
@@ -189,7 +187,7 @@ def add_loop():
         loop = Loop(creator=username, link=wav_link, hash=hash)
         sessions.add_loop(session_name, username, loop)
         session_data = sessions[session_name]
-        session_json = json.dumps(session_data, cls=LoopEncoder)
+        session_json = json.dumps(session_data, cls=CloudLoopEncoder)
         socketio.emit("state_update", session_json, broadcast=True)
         _log.info(session_data)
         return build_response(status=HTTPStatus.OK,

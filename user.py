@@ -1,10 +1,10 @@
 import bcrypt
-from json import JSONEncoder, JSONDecoder
 import logging
 import datetime
 import jwt
 
-PYJWT_SECRET_KEY=b'|\xc7\xf6E9&\xf9vf`N(\xe3x.\xd4R\xc1|<_\xddJ\xa7'
+JWT_SECRET_KEY=b'|\xc7\xf6E9&\xf9vf`N(\xe3x.\xd4R\xc1|<_\xddJ\xa7'
+
 
 _log = logging.getLogger(__name__)
 
@@ -41,13 +41,14 @@ class User(object):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=365, seconds=0),
                 'iat': datetime.datetime.utcnow(),
+                'nbf': datetime.datetime.utcnow(),
                 'sub': user_id
             }
             return jwt.encode(
                 payload,
-                PYJWT_SECRET_KEY,
+                JWT_SECRET_KEY,
                 algorithm='HS256'
             )
         except Exception as e:
@@ -61,7 +62,7 @@ class User(object):
         :return: integer|string
         """
         try:
-            payload = jwt.decode(auth_token, PYJWT_SECRET_KEY)
+            payload = jwt.decode(auth_token, JWT_SECRET_KEY)
             return payload['sub']
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
