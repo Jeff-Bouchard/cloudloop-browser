@@ -300,7 +300,7 @@ def on_join(data):
         session_name = data['session_name']
         join_room(session_name)
         sessions.user_connect(username=username, session_name=session_name)
-        jsondata = json.dumps(sessions[session_name], cls=LoopEncoder)
+        jsondata = json.dumps(sessions[session_name], cls=CloudLoopEncoder)
         emit("state_update", jsondata, room=session_name, broadcast=True)
         emit('message', username + ' has joined the session ' + session_name, room=session_name)
     except KeyError as e:
