@@ -19,6 +19,8 @@ from serde import CloudLoopDecoder, CloudLoopEncoder
 
 import logging
 
+
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.json_decoder = CloudLoopDecoder
@@ -32,6 +34,15 @@ _log = logging.getLogger()
 sessions = SessionStore(flush=True)
 users = UserStore(flush=True)
 
+def authenticate(username, password):
+    if users.check_password(username, password):
+        return users.get_user(username)
+
+def identity(payload):
+    username = payload['sub']
+    return users.get_user(username)
+
+jwt = JWT(app, authenticate, identity)
 
 def build_response(status, message, data={}):
     return jsonify({'status': status, 'message': message, 'data': {'results': data}})
@@ -79,8 +90,8 @@ def register_user():
         return build_response(status=HTTPStatus.NOT_ACCEPTABLE,
                               message='Other error: ' + str(e))
 
-
 @app.route('/user', methods=['GET'])
+@jwt_required()
 def get_user():
     try:
         params = request.args
@@ -99,6 +110,7 @@ def get_user():
 
 
 @app.route('/session', methods=['POST'])
+@jwt_required()
 def create_session():
     try:
         username = request.json['username']
@@ -117,6 +129,7 @@ def create_session():
 
 
 @app.route('/join', methods=['POST'])
+@jwt_required()
 def join():
     try:
         username = request.json['username']
@@ -138,6 +151,7 @@ def join():
 
 
 @app.route('/sessionNames', methods=['GET'])
+@jwt_required()
 def get_session_names():
     session_names = sessions.get_session_names()
     return build_response(status=HTTPStatus.OK,
@@ -146,6 +160,7 @@ def get_session_names():
 
 
 @app.route('/session', methods=['GET'])
+@jwt_required()
 def get_session():
     try:
         params = request.args
@@ -163,6 +178,7 @@ def get_session():
 
 
 @app.route('/add_loop', methods=['POST'])
+@jwt_required()
 def add_loop():
     try:
         username = request.json['username']
@@ -191,6 +207,7 @@ def add_loop():
 
 
 @app.route('/add_slot', methods=['POST'])
+@jwt_required()
 def add_slot():
     try:
         session_name = request.json['session_name']
@@ -211,6 +228,7 @@ def add_slot():
 
 
 @app.route('/update_slot', methods=['POST'])
+@jwt_required()
 def update_slot():
     try:
         username = request.json['username']
@@ -238,6 +256,7 @@ def update_slot():
 
 
 @app.route('/delete_slot', methods=['POST'])
+@jwt_required()
 def delete_slot():
     try:
         username = request.json['username']
