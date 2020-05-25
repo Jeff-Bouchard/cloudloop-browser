@@ -1,7 +1,8 @@
 import datetime
 import logging
 from rejson import Client, Path
-from loop import Loop, LoopDecoder, LoopEncoder
+from loop import Loop
+from serde import CloudLoopEncoder, CloudLoopDecoder
 
 
 class SessionAlreadyExistsException(Exception):
@@ -35,8 +36,8 @@ class SessionStore(object):
                               port=6379,
                               decode_responses=True,
                               #password='cloudloop',
-                              encoder=LoopEncoder(),
-                              decoder=LoopDecoder(),
+                              encoder=CloudLoopEncoder(),
+                              decoder=CloudLoopDecoder(),
                               db=1)
 
         if flush:

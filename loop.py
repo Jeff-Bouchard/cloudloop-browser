@@ -30,23 +30,3 @@ class Loop(object):
                 return False
         else:
             return False
-
-class LoopEncoder(JSONEncoder):
-    def default(self, object):
-        if isinstance(object, Loop):
-            return object.__dict__
-        else:
-            return JSONEncoder.default(self, object)
-
-class LoopDecoder(JSONDecoder):
-    def __init__(self):
-        super().__init__(object_hook=decode_loop)
-
-def decode_loop(dct):
-    if "_type" in dct:
-        if dct["_type"] == "Loop":
-            return Loop(dct['link'], dct['creator'], dct['hash'], dct['created_at'])
-        else:
-            return dct
-    else:
-        return dct

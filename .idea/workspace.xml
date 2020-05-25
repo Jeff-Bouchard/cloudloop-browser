@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="FILTER_RESOLVED_ITEMS" value="false" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="7ad24ead-9ef4-4dd7-a660-551ecca95138" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/serde.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loop.py" beforeDir="false" afterPath="$PROJECT_DIR$/loop.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sessionstore.py" beforeDir="false" afterPath="$PROJECT_DIR$/sessionstore.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userstore.py" beforeDir="false" afterPath="$PROJECT_DIR$/userstore.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +53,8 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="run.code.analysis.last.selected.profile" value="aDefault" />
+    <property name="settings.editor.selected.configurable" value="MTConfigurable" />
   </component>
   <component name="RunManager" selected="Python tests.pytest">
     <configuration name="flasksocket" type="PythonConfigurationType" factoryName="Python">
@@ -116,7 +125,9 @@
       <workItem from="1589470069189" duration="3260000" />
       <workItem from="1589736570964" duration="3191000" />
       <workItem from="1589901740000" duration="7080000" />
-      <workItem from="1590036754176" duration="6231000" />
+      <workItem from="1590036754176" duration="10725000" />
+      <workItem from="1590276976018" duration="6619000" />
+      <workItem from="1590420574759" duration="10996000" />
     </task>
     <servers />
   </component>
@@ -136,6 +147,10 @@
     </state>
     <state x="403" y="346" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1680.1027@0.23.1680.1027" timestamp="1588095870559" />
     <state x="2381" y="355" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@1920.23.1920.1057" timestamp="1588876820227" />
+    <state x="707" y="409" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1590421799761">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state x="707" y="409" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/-3008.-689.3008.1669/0.23.1920.1057/-4688.-146.1680.1027@0.23.1920.1057" timestamp="1590421799761" />
     <state x="100" y="123" width="1480" height="827" key="DiffContextDialog" timestamp="1588715285438">
       <screen x="0" y="23" width="1680" height="1027" />
     </state>
@@ -200,22 +215,24 @@
     </state>
     <state width="1878" height="357" key="GridCell.Tab.1.right/0.23.1680.1027@0.23.1680.1027" timestamp="1588462081996" />
     <state width="1878" height="357" key="GridCell.Tab.1.right/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@1920.23.1920.1057" timestamp="1589336789954" />
-    <state x="469" y="190" key="SettingsEditor" timestamp="1589387993772">
-      <screen x="0" y="23" width="1920" height="1057" />
+    <state x="410" y="185" key="SettingsEditor" timestamp="1590434252068">
+      <screen x="0" y="23" width="1680" height="1027" />
     </state>
+    <state x="410" y="185" key="SettingsEditor/0.23.1680.1027@0.23.1680.1027" timestamp="1590434252068" />
     <state x="469" y="190" key="SettingsEditor/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1589387993772" />
-    <state x="567" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1590036757588">
+    <state x="567" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1590420587652">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
-    <state x="567" y="381" key="com.intellij.ide.util.TipDialog/-3008.-689.3008.1669/0.23.1920.1057/-4688.-146.1680.1027@0.23.1920.1057" timestamp="1590036757588" />
+    <state x="567" y="381" key="com.intellij.ide.util.TipDialog/-3008.-689.3008.1669/0.23.1920.1057/-4688.-146.1680.1027@0.23.1920.1057" timestamp="1590420587652" />
     <state x="-2370" y="-56" key="com.intellij.ide.util.TipDialog/-3360.-689.3360.1867/0.23.1920.1057/-5040.-146.1680.1027@0.23.1920.1057" timestamp="1589736631729" />
-    <state x="496" y="371" key="com.intellij.ide.util.TipDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1589901739847" />
+    <state x="496" y="371" key="com.intellij.ide.util.TipDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1590276976004" />
     <state x="567" y="381" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1589388053647" />
     <state x="2487" y="381" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@1920.23.1920.1057" timestamp="1588193722058" />
     <state x="888" y="589" key="com.intellij.ide.util.TipDialog/0.23.3008.1669/-1680.23.1680.1027@0.23.3008.1669" timestamp="1588535520008" />
-    <state x="625" y="258" width="766" height="677" key="search.everywhere.popup" timestamp="1588536955474">
+    <state x="625" y="258" width="766" height="677" key="search.everywhere.popup" timestamp="1590421204331">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
+    <state x="625" y="258" width="766" height="677" key="search.everywhere.popup/-3008.-689.3008.1669/0.23.1920.1057/-4688.-146.1680.1027@0.23.1920.1057" timestamp="1590421204331" />
     <state x="547" y="251" width="670" height="657" key="search.everywhere.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1588104637667" />
     <state x="625" y="258" width="766" height="677" key="search.everywhere.popup/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1588536955474" />
     <state x="625" y="258" width="670" height="676" key="search.everywhere.popup/0.23.1920.1057/1920.240.1680.1027@0.23.1920.1057" timestamp="1587915086494" />

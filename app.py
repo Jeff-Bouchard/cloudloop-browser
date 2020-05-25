@@ -4,6 +4,7 @@ from flask import Flask, render_template, request
 from flask.json import jsonify
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from http import HTTPStatus
+from userstore import UserStore
 from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
 
@@ -12,15 +13,16 @@ import json
 
 
 
-from loop import Loop, LoopEncoder, LoopDecoder
+from loop import Loop
 from sessionstore import SessionStore, SessionAlreadyExistsException, SessionNotFoundException, SessionActionNotPermittedException
+from serde import CloudLoopDecoder, CloudLoopEncoder
 
 import logging
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-app.json_decoder = LoopDecoder
-app.json_encoder = LoopEncoder
+app.json_decoder = CloudLoopDecoder
+app.json_encoder = CloudLoopEncoder
 app.config['REDIS_HOST'] = 'cloudloop-rejson'
 socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.config["REDIS_HOST"]}:6379')
 
@@ -28,22 +30,73 @@ socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.
 _log = logging.getLogger()
 
 sessions = SessionStore(flush=True)
+users = UserStore(flush=True)
+
 
 def build_response(status, message, data={}):
-    return jsonify({'status':status, 'message':message, 'data':{'results':data}})
+    return jsonify({'status': status, 'message': message, 'data': {'results': data}})
+
 
 def not_permitted_response(message='Operation not permitted.'):
     return build_response(HTTPStatus.FORBIDDEN, message=message)
 
-"""
+
+@app.route('/auth/login', methods=['POST'])
+def login_user():
+    try:
+        username = request.json['username']
+        password = request.json['password']
+        user = users.get_user(username)
+        if user and users.check_password(username, password):
+            auth_token = user.encode_auth_token(user.username)
+            return build_response(HTTPStatus.OK, f'User {username} logged in.', auth_token.decode())
+        else:
+            return build_response(HTTPStatus.NOT_ACCEPTABLE, f'Incorrect login details.')
+    except Exception as e:
+        return build_response(HTTPStatus.BAD_REQUEST, f'Request failed. {e}')
+
+
 @app.route('/register_user', methods=['POST'])
 def register_user():
     try:
         username = request.json['username']
         email = request.json['email']
         password = request.json['password']
-        userstore.create_user(username, email, password)
-"""
+        if not users.get_user(username):
+            users.create_user(username=username, email=email, password=password)
+            new_user = users.get_user(username)
+            token = new_user.encode_auth_token(username)
+            return build_response(HTTPStatus.OK, f'User {username} created.', token.decode())
+        else:
+            return build_response(HTTPStatus.CONFLICT, f'{username} already exists.')
+    except KeyError as e:
+        print("error Creating user: " + str(e))
+        return build_response(HTTPStatus.BAD_REQUEST, 'Keys username, email, password not present in request exist.')
+    except TypeError as e:
+        print(f'typeerror: {str(e)}')
+        return build_response(HTTPStatus.NOT_ACCEPTABLE, 'Content type not acceptable.')
+    except Exception as e:
+        return build_response(status=HTTPStatus.NOT_ACCEPTABLE,
+                              message='Other error: ' + str(e))
+
+
+@app.route('/user', methods=['GET'])
+def get_user():
+    try:
+        params = request.args
+        username = params['username']
+        user = users[username]
+        if user is not None:
+            return build_response(status=HTTPStatus.OK,
+                                message=f'Got user {username}.',
+                                data=user)
+        else:
+            return build_response(status=HTTPStatus.NOT_FOUND,
+                                  message=f'User {username} not found.')
+    except Exception as e:
+        print("error " + str(e))
+        return build_response(HTTPStatus.BAD_REQUEST, message=str(e))
+
 
 @app.route('/session', methods=['POST'])
 def create_session():
@@ -61,6 +114,7 @@ def create_session():
     except SessionAlreadyExistsException as e:
         return build_response(status=HTTPStatus.FORBIDDEN,
                               message=f'Session already exists.')
+
 
 @app.route('/join', methods=['POST'])
 def join():
@@ -82,12 +136,14 @@ def join():
         return build_response(status=HTTPStatus.FORBIDDEN,
                               message='Operation not permitted.')
 
+
 @app.route('/sessionNames', methods=['GET'])
 def get_session_names():
     session_names = sessions.get_session_names()
     return build_response(status=HTTPStatus.OK,
                           message=f'Got {len(session_names)} session names.',
                           data=session_names)
+
 
 @app.route('/session', methods=['GET'])
 def get_session():
@@ -104,6 +160,7 @@ def get_session():
     except SessionNotFoundException as e:
         return build_response(status=HTTPStatus.NOT_FOUND,
                               message='Session not found.')
+
 
 @app.route('/add_loop', methods=['POST'])
 def add_loop():
@@ -180,7 +237,6 @@ def update_slot():
                               message=f'Session {session_name} not found.')
 
 
-
 @app.route('/delete_slot', methods=['POST'])
 def delete_slot():
     try:
@@ -204,6 +260,7 @@ def delete_slot():
         return build_response(status=HTTPStatus.NOT_FOUND,
                               message=f'Session {session_name} not found.')
 
+
 @app.route('/links', methods=['GET'])
 def links():
     try:
@@ -214,24 +271,26 @@ def links():
         _log.error(e)
 
 
-
 @socketio.on('message')
 def handle_message(msg):
     print('Message: ' + msg)
     send(msg, broadcast=True)
 
+
 @socketio.on('json')
 def handle_json(json):
     print('Message: ' + json)
+
 
 @socketio.on('ack')
 def handle_ack(ack):
     print('Got it: ' + ack)
 
+
 @socketio.on('connect')
 def send_ack():
     print("client connect")
-    emit("message", "Connected Successfully.")
+
 
 @socketio.on('joinSession')
 def on_join(data):
@@ -246,6 +305,7 @@ def on_join(data):
         emit('message', username + ' has joined the session ' + session_name, room=session_name)
     except KeyError as e:
         _log.info("username and room not found.")
+
 
 @socketio.on('leaveSession')
 def on_leave(data):
