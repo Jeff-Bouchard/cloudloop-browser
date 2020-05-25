@@ -75,6 +75,7 @@ def register_user():
             users.create_user(username=username, email=email, password=password)
             new_user = users.get_user(username)
             token = new_user.encode_auth_token(username)
+            print("success registering")
             return build_response(HTTPStatus.OK, f'User {username} created.', token.decode())
         else:
             return build_response(HTTPStatus.CONFLICT, f'{username} already exists.')
