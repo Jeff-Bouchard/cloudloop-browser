@@ -189,7 +189,7 @@ def add_loop():
         sessions.add_loop(session_name, username, loop)
         session_data = sessions[session_name]
         session_json = json.dumps(session_data, cls=CloudLoopEncoder)
-        socketio.emit("state_update", session_json, broadcast=True)
+        socketio.emit("state_update", session_json, room=session_name, broadcast=True)
         _log.info(session_data)
         return build_response(status=HTTPStatus.OK,
                               message=f'Loop {session_name}/{loop.link} created',
@@ -241,7 +241,7 @@ def update_slot():
         sessions.update_slot(session_name, username, slot_number, loop=loop)
         session_data = sessions[session_name]
         session_json = json.dumps(session_data, cls=CloudLoopEncoder)
-        socketio.emit("state_update", session_json, broadcast=True)
+        socketio.emit("state_update", session_json,room=session_name, broadcast=True)
         return build_response(status=HTTPStatus.OK,
                               message=f'Slot updated',
                               data=session_data)
@@ -268,7 +268,7 @@ def delete_slot():
         sessions.delete_slot(session_name, username, slot_number)
         session_data = sessions[session_name]
         session_json = json.dumps(session_data, cls=CloudLoopEncoder)
-        socketio.emit("state_update", session_json, broadcast=True)
+        socketio.emit("state_update", session_json, room=session_name, broadcast=True)
         return build_response(status=HTTPStatus.OK,
                               message=f'Slot {session_name}/{slot_number} deleted.',
                               data=session_data)
@@ -339,7 +339,7 @@ def on_leave(data):
         session_name = data['session_name']
         leave_room(session_name)
         sessions.user_disconnect(username=username, session_name=session_name)
-        send(username + ' has left the session ' + session_name, room=session_name)
+        emit('message', username + ' has left the session ' + session_name, room=session_name)
     except KeyError as e:
         _log.info("username and room not found.")
 
