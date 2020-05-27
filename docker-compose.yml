@@ -6,9 +6,11 @@ services:
     image: cloudloop-flask:latest
     deploy:
       replicas: 1
-    command: python app.py -h 0.0.0.0 -p 5000
+    command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "5000"]
     ports:
       - "5000:5000"
+    depends_on:
+      - cloudloop-rejson
 
   cloudloop-rejson:
     image: registry.digitalocean.com/cloudloop/cloudloop-rejson:latest

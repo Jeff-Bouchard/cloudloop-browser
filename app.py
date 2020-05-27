@@ -1,6 +1,6 @@
 import eventlet
 eventlet.monkey_patch()
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response
 from flask.json import jsonify
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from http import HTTPStatus
@@ -29,8 +29,8 @@ socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.
 
 _log = logging.getLogger()
 
-sessions = SessionStore(flush=True)
-users = UserStore(flush=True)
+sessions = SessionStore(flush=False)
+users = UserStore(flush=False)
 
 def authenticate(username, password):
     if users.check_password(username, password):
@@ -43,7 +43,7 @@ def identity(payload):
 jwt = JWT(app, authenticate, identity)
 
 def build_response(status, message, data={}):
-    return jsonify({'status': status, 'message': message, 'data': {'results': data}})
+    return make_response(jsonify({'status': status, 'message': message, 'data': {'results': data}}), status)
 
 
 def not_permitted_response(message='Operation not permitted.'):
@@ -232,15 +232,19 @@ def update_slot():
     try:
         username = request.json['username']
         session_name = request.json['session_name']
-        loop_id = request.json['loop_id'] #wav_link for now
+        wav_link = request.json['wav_link'] #wav_link for now
         slot_number = request.json['slot_number']
-        loop = sessions.get_loop_from_library(session_name, loop_id)
+        loop = sessions.get_loop_from_library(session_name, wav_link)
         if loop is None:
-            sessions.add_loop(session_name, username,)
+            loop = Loop(creator=username)
+            sessions.add_loop(session_name=session_name, username=username, loop=loop)
         sessions.update_slot(session_name, username, slot_number, loop=loop)
+        session_data = sessions[session_name]
+        session_json = json.dumps(session_data, cls=CloudLoopEncoder)
+        socketio.emit("state_update", session_json, broadcast=True)
         return build_response(status=HTTPStatus.OK,
                               message=f'Slot updated',
-                              data=jsonify(sessions[session_name]))
+                              data=session_data)
     except KeyError as e:
         _log.error(e)
         return build_response(status=HTTPStatus.BAD_REQUEST,
@@ -262,9 +266,12 @@ def delete_slot():
         session_name = request.json['session_name']
         slot_number = request.json['slot_number']
         sessions.delete_slot(session_name, username, slot_number)
+        session_data = sessions[session_name]
+        session_json = json.dumps(session_data, cls=CloudLoopEncoder)
+        socketio.emit("state_update", session_json, broadcast=True)
         return build_response(status=HTTPStatus.OK,
                               message=f'Slot {session_name}/{slot_number} deleted.',
-                              data=jsonify(sessions[session_name]))
+                              data=session_data)
     except KeyError as e:
         _log.error(e)
         return build_response(status=HTTPStatus.BAD_REQUEST,
