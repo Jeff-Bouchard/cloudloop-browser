@@ -1,5 +1,7 @@
 FROM nginx:latest
 
+RUN apt-get update && apt-get install -y libcap2-bin
+
 RUN rm -rf /etc/nginx/nginx.conf
 
 RUN mkdir -p /etc/nginx/conf.d/sites-available

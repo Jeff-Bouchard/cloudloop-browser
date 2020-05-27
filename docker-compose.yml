@@ -22,8 +22,8 @@ services:
     build: nginx/
     image: cloudloop-nginx:latest
     ports:
-      - "80"
-      - "443"
+      - "80:80"
+      - "443:443"
     volumes:
     - type: bind
       source: $HOST/opt/cloudloop/private/nginx/certs
