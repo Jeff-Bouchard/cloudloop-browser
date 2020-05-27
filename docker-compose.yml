@@ -1,31 +1,33 @@
 version: '3.8'
 
 services:
-#  cloudloop-flask:
-#    build: .
-#    image: cloudloop-flask:latest
-#    deploy:
-#      replicas: 1
-#    command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "5000"]
-#    ports:
-#      - "5000:5000"
-#    depends_on:
-#      - cloudloop-rejson
-#
-#  cloudloop-rejson:
-#    image: registry.digitalocean.com/cloudloop/cloudloop-rejson:latest
-#    ports:
-#      - "6379"
-#    command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so
+  cloudloop-flask:
+    build: .
+    image: cloudloop-flask:latest
+    deploy:
+      replicas: 1
+    command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "5000"]
+    ports:
+      - "5000:5000"
+    depends_on:
+      - cloudloop-rejson
 
-  cl-nginx:
-    image: nginx
+  cloudloop-rejson:
+    image: registry.digitalocean.com/cloudloop/cloudloop-rejson:latest
+    ports:
+      - "6379"
+    command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so
+
+  cloudloop-nginx:
+    build: nginx/
+    image: cloudloop-nginx:latest
     ports:
       - "80"
       - "443"
     volumes:
-      - /opt/cloudloop/private/nginx/config:/etc/nginx
       - /opt/cloudloop/private/nginx/certs:/etc/ssl/private
+    depends_on:
+      - cloudloop-flask
 
 volumes:
   redis-data:
