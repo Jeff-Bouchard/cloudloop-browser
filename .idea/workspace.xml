@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7ad24ead-9ef4-4dd7-a660-551ecca95138" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/nginx/cloudloop-nginx.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nginx/common.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nginx/common_location.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nginx/ssl.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run-dev.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run-dev.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +127,7 @@
       <workItem from="1590036754176" duration="10725000" />
       <workItem from="1590276976018" duration="6619000" />
       <workItem from="1590420574759" duration="15189000" />
-      <workItem from="1590506492792" duration="10870000" />
+      <workItem from="1590506492792" duration="12246000" />
     </task>
     <servers />
   </component>
@@ -240,10 +234,10 @@
     <state x="567" y="381" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1589388053647" />
     <state x="2487" y="381" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@1920.23.1920.1057" timestamp="1588193722058" />
     <state x="888" y="589" key="com.intellij.ide.util.TipDialog/0.23.3008.1669/-1680.23.1680.1027@0.23.3008.1669" timestamp="1588535520008" />
-    <state x="547" y="251" width="670" height="657" key="search.everywhere.popup" timestamp="1590440816478">
-      <screen x="0" y="23" width="1680" height="1027" />
+    <state x="625" y="258" width="766" height="677" key="search.everywhere.popup" timestamp="1590595379982">
+      <screen x="0" y="23" width="1920" height="1057" />
     </state>
-    <state x="625" y="258" width="766" height="677" key="search.everywhere.popup/-3008.-689.3008.1669/0.23.1920.1057/-4688.-146.1680.1027@0.23.1920.1057" timestamp="1590421204331" />
+    <state x="625" y="258" width="766" height="677" key="search.everywhere.popup/-3008.-689.3008.1669/0.23.1920.1057/-4688.-146.1680.1027@0.23.1920.1057" timestamp="1590595379982" />
     <state x="547" y="251" width="670" height="657" key="search.everywhere.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1590440816478" />
     <state x="625" y="258" width="766" height="677" key="search.everywhere.popup/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1588536955474" />
     <state x="625" y="258" width="670" height="676" key="search.everywhere.popup/0.23.1920.1057/1920.240.1680.1027@0.23.1920.1057" timestamp="1587915086494" />
