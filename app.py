@@ -290,7 +290,7 @@ def delete_slot():
 def links():
     try:
         session_name = request.args.get('session_name')
-        links = sessions[session_name]['loops']['library']
+        links = sessions[session_name]['library']
         return render_template("links.html", wav_links=links)
     except Exception as e:
         _log.error(e)
