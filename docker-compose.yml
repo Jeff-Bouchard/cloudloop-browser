@@ -25,7 +25,9 @@ services:
       - "80"
       - "443"
     volumes:
-      - /opt/cloudloop/private/nginx/certs:/etc/ssl/private
+    - type: bind
+      source: $HOST/opt/cloudloop/private/nginx/certs
+      target: /etc/ssl/private
     depends_on:
       - cloudloop-flask
 
