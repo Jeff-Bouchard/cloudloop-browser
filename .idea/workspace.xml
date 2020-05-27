@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7ad24ead-9ef4-4dd7-a660-551ecca95138" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/redis-check.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wait-redis.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nginx/cloudloop-nginx.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nginx/common.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nginx/common_location.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nginx/ssl.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run-dev.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run-dev.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +55,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="MTConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/nginx" />
+    </key>
   </component>
   <component name="RunManager" selected="Python tests.pytest">
     <configuration name="flasksocket" type="PythonConfigurationType" factoryName="Python">
@@ -126,7 +133,7 @@
       <workItem from="1590036754176" duration="10725000" />
       <workItem from="1590276976018" duration="6619000" />
       <workItem from="1590420574759" duration="15189000" />
-      <workItem from="1590506492792" duration="9807000" />
+      <workItem from="1590506492792" duration="10870000" />
     </task>
     <servers />
   </component>
