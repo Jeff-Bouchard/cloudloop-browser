@@ -1,0 +1,13 @@
+FROM nginx:latest
+
+RUN rm -rf /etc/nginx/nginx.conf
+
+mkdir -p /etc/nginx/conf.d/sites-available
+mkdir -p /etc/nginx/conf.d/sites-enabled
+
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/common.conf /etc/nginx/conf.d/common.conf
+COPY nginx/common_location.conf /etc/nginx/conf.d/common_location.conf
+COPY nginx/ssl.conf /etc/nginx/conf.d/ssl.conf
+COPY nginx/cloudloop-nginx.conf /etc/nginx/conf.d/sites-available/cloudloop.conf
+RUN ln -s /etc/nginx/conf.d/sites-available/cloudloop.conf /etc/nginx/conf.d/sites-enabled/cloudloop.conf
