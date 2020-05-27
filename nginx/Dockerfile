@@ -5,6 +5,8 @@ RUN rm -rf /etc/nginx/nginx.conf
 RUN mkdir -p /etc/nginx/conf.d/sites-available
 RUN mkdir -p /etc/nginx/conf.d/sites-enabled
 
+RUN setcap 'cap_net_bind_service=+eip' /usr/sbin/nginx
+
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY common.conf /etc/nginx/common.conf
 COPY common_location.conf /etc/nginx/common_location.conf
