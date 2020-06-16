@@ -57,19 +57,20 @@ class SessionStore(object):
         return list(self._rejson.scan_iter())
 
     def get_public_session_headers(self):
-        sessions = self.get_session_names()
-        session_privacy = self.get_sessions_data(sessions, '.private')
-        public_sessions_names = list(
-            map(lambda y: y[0], filter(lambda x: x[1] == False, zip(sessions, session_privacy))))
-        public_sessions_creators = self.get_sessions_data(public_sessions_names, '.creator')
-        public_sessions_users_online = self.get_sessions_data(public_sessions_names, '.users_online')
         public_session_headers = []
-        for x in range(len(public_sessions_names)):
-            entry = {}
-            entry['name'] = public_sessions_names[x]
-            entry['creator'] = public_sessions_creators[x]
-            entry['users_online'] = len(public_sessions_users_online[x])
-            public_session_headers.append(entry)
+        sessions = self.get_session_names()
+        if len(sessions) > 0:
+            session_privacy = self.get_sessions_data(sessions, '.private')
+            public_sessions_names = list(
+                map(lambda y: y[0], filter(lambda x: x[1] == False, zip(sessions, session_privacy))))
+            public_sessions_creators = self.get_sessions_data(public_sessions_names, '.creator')
+            public_sessions_users_online = self.get_sessions_data(public_sessions_names, '.users_online')
+            for x in range(len(public_sessions_names)):
+                entry = {}
+                entry['name'] = public_sessions_names[x]
+                entry['creator'] = public_sessions_creators[x]
+                entry['users_online'] = len(public_sessions_users_online[x])
+                public_session_headers.append(entry)
         return public_session_headers
 
     def get_session_users_online(self, session_names):
