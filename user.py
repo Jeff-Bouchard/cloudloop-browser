@@ -13,11 +13,15 @@ class User(object):
     username = None
     email = None
     password_hash = None
+    sessions = []
 
-    def __init__(self, username, email='', password=''):
+    def __init__(self, username, email='', password='', sessions=None):
+        if sessions is None:
+            sessions = []
         self._type = "User"
         self.username = username
         self.email = email
+        self.sessions = sessions
         if password != '':
             _log.info(f'New password for user object being hashed. {username}')
             encoded_password = password.encode('utf-8')
