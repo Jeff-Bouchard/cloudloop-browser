@@ -42,7 +42,7 @@ def identity(payload):
 
 jwt = JWT(app, authenticate, identity)
 
-def build_response(status, message, data={}):
+def build_response(status, message, data=object):
     return make_response(jsonify({'status': status, 'message': message, 'data': {'results': data}}), status)
 
 
@@ -112,19 +112,40 @@ def get_user():
 @jwt_required()
 def create_session():
     try:
-        username = request.json['username']
+        username = request.json['username'] # deprecate username
         session_name = request.json['session_name']
         private = request.json['private_session']
-        sessions.create_session(session_name, username, private)
+        identity = current_identity.username
+        sessions.create_session(session_name, identity, private)
+        users.join_session(identity, session_name)
         return build_response(status=HTTPStatus.OK,
-                              message=f'Session {session_name} created',
+                              message=f'Session {session_name} created.',
                               data=sessions[session_name])
     except KeyError as e:
-        return build_response(status=HTTPStatus.OK,
+        return build_response(status=HTTPStatus.NOT_ACCEPTABLE,
                               message=f'Missing parameter {e}')
     except SessionAlreadyExistsException as e:
         return build_response(status=HTTPStatus.FORBIDDEN,
                               message=f'Session already exists.')
+
+@app.route('/deleteSession', methods=['POST'])
+@jwt_required()
+def delete_session():
+    try:
+        username = current_identity.username
+        session_name = request.json['session_name']
+        res = sessions.delete_session(session_name, username)
+        return build_response(status=HTTPStatus.OK,
+                              message=f'Session {session_name} deleted.',
+                              data=res)
+    except KeyError as e:
+        return build_response(status=HTTPStatus.NOT_ACCEPTABLE,
+                              message=f'Missing parameter {e}')
+    except Exception as e:
+        _log.error(f'{e}')
+        return build_response(status=HTTPStatus.BAD_REQUEST,
+                              message=f'Bad Request!')
+
 
 
 @app.route('/join', methods=['POST'])
@@ -135,7 +156,7 @@ def join():
         session_name = request.json['session_name']
         inviter = request.json['inviter']
         if sessions.join_session(session_name, username, inviter):
-            users.join_session(session_name, username)
+            users.join_session(username, session_name)
             return build_response(status=HTTPStatus.OK,
                                   message=f'{username} has joined session {session_name}',
                                   data=sessions[session_name])
@@ -150,26 +171,33 @@ def join():
                               message='Operation not permitted.')
 
 
-@app.route('/sessionNames', methods=['GET'])
+@app.route('/publicSessionHeaders', methods=['GET'])
 @jwt_required()
-def get_session_names():
-    session_names = sessions.get_public_session_names()
+def get_public_session_headers():
+    session_headers = sessions.get_public_session_headers()
     return build_response(status=HTTPStatus.OK,
-                          message=f'Got {len(session_names)} public session names.',
-                          data=session_names)
+                          message=f'Got {len(session_headers)} public session headers.',
+                          data=session_headers)
 
 
 @app.route('/sessions', methods=['GET'])
 @jwt_required()
 def get_sessions_for_user():
-    session_names = users.get_user_sessions(current_identity)
-    sessions_map = sessions.get_sessions_data(session_names)
-    valid_sessions = list(filter(lambda p: p is not None, sessions_map))
-    msg = f'Retrieved {len(valid_sessions)} sessions for user {current_identity}'
-    _log.info(msg)
-    return build_response(status=HTTPStatus.OK,
+    try:
+        username = current_identity.username
+        session_names = users.get_user_sessions(username)
+        if len(session_names) == 0:
+            valid_sessions = []
+        else:
+            sessions_map = sessions.get_sessions_data(session_names)
+            valid_sessions = list(filter(lambda p: p is not None, sessions_map))
+        msg = f'Retrieved {len(valid_sessions)} sessions for user {username}'
+        _log.info(msg)
+        return build_response(status=HTTPStatus.OK,
                           message=msg,
                           data={'sessions': valid_sessions})
+    except Exception as e:
+        _log.error(f"Error retrieving user: {e}")
 
 
 
@@ -256,7 +284,7 @@ def update_slot():
         sessions.update_slot(session_name, username, slot_number, loop=loop)
         session_data = sessions[session_name]
         session_json = json.dumps(session_data, cls=CloudLoopEncoder)
-        socketio.emit("state_update", session_json,room=session_name, broadcast=True)
+        socketio.emit("state_update", session_json, room=session_name, broadcast=True)
         return build_response(status=HTTPStatus.OK,
                               message=f'Slot updated',
                               data=session_data)

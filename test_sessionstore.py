@@ -360,11 +360,40 @@ def test_get_sessions_public():
     store.create_session(session_name='test_session', creator='test_user', private=True)
     store.create_session(session_name='test_session_2', creator='test_user')
     store.create_session(session_name='test_session_3', creator='test_user')
-    res = store.get_public_session_names()
+    res = store.get_public_session_headers()
     assert len(res) == 2
-    assert res[0] == 'test_session_2'
-    assert res[1] == 'test_session_3'
+    expected = {'test_session_2', 'test_session_3'}
+    actual = set([x['name'] for x in res])
+    assert expected == actual
 
+def test_delete_session_ok():
+    store = SessionStore()
+    store.create_session(session_name='test_session', creator='test_user', private=True)
+    store.create_session(session_name='test_session_2', creator='test_user')
+    store.create_session(session_name='test_session_3', creator='test_user')
+    res = store.delete_session(session_name='test_session', username='test_user')
+    assert res == True
+    sessions = store.get_session_names()
+    assert len(sessions) == 2
+    expected = {'test_session_2', 'test_session_3'}
+    actual = set(sessions)
+    assert actual == expected
+
+def test_delete_session_fail_notuser():
+    store = SessionStore()
+    store.create_session(session_name='test_session', creator='test_user', private=True)
+    store.create_session(session_name='test_session_2', creator='test_user')
+    store.create_session(session_name='test_session_3', creator='test_user')
+    with pytest.raises(SessionActionNotPermittedException):
+        res = store.delete_session(session_name='test_session', username='test_user_2')
+
+def test_delete_session_fail_not_session():
+    store = SessionStore()
+    store.create_session(session_name='test_session', creator='test_user', private=True)
+    store.create_session(session_name='test_session_2', creator='test_user')
+    store.create_session(session_name='test_session_3', creator='test_user')
+    with pytest.raises(SessionNotFoundException):
+        res = store.delete_session(session_name='test_session4', username='test_user')
 
 def test_create_loop():
     loop = Loop(link='http://test.link', creator='test_user', hash='test_hash')

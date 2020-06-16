@@ -75,6 +75,7 @@ class UserStore(object):
         Idempotent add session to user object.
         """
         if not self.check_for_session(username, session_name):
+            _log.info(f'Adding {username} to {session_name}')
             self._rejson.jsonarrappend(username, '.sessions', session_name)
             _log.info(f'User {username} added to session {session_name}.')
             return True

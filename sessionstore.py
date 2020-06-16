@@ -9,16 +9,21 @@ import json
 class SessionAlreadyExistsException(Exception):
     pass
 
+
 class SessionActionNotPermittedException(Exception):
     pass
+
 
 class SessionNotFoundException(Exception):
     pass
 
+
 class UserNotInvitedSession(Exception):
     pass
 
+
 _log = logging.getLogger(__name__)
+
 
 class SessionStore(object):
     """
@@ -30,13 +35,14 @@ class SessionStore(object):
     The backing persistent datastore is redis rejson
     We will just save a snapshot of each session, keyed by session name.
     """
+
     def __init__(self, flush=True, redis_host='cloudloop-rejson'):
         self._data = {}
-        self._next_slot = 0 # eventually implement a pointer here for atomic seeks
+        self._next_slot = 0  # eventually implement a pointer here for atomic seeks
         self._rejson = Client(host=redis_host,
                               port=6379,
                               decode_responses=True,
-                              #password='cloudloop',
+                              # password='cloudloop',
                               encoder=CloudLoopEncoder(),
                               decoder=CloudLoopDecoder(),
                               db=1)
@@ -50,11 +56,21 @@ class SessionStore(object):
     def get_session_names(self):
         return list(self._rejson.scan_iter())
 
-    def get_public_session_names(self):
+    def get_public_session_headers(self):
         sessions = self.get_session_names()
         session_privacy = self.get_sessions_data(sessions, '.private')
-        public_sessions_names = list(map(lambda y: y[0], filter(lambda x: x[1] == False, zip(sessions, session_privacy))))
-        return public_sessions_names
+        public_sessions_names = list(
+            map(lambda y: y[0], filter(lambda x: x[1] == False, zip(sessions, session_privacy))))
+        public_sessions_creators = self.get_sessions_data(public_sessions_names, '.creator')
+        public_sessions_users_online = self.get_sessions_data(public_sessions_names, '.users_online')
+        public_session_headers = []
+        for x in range(len(public_sessions_names)):
+            entry = {}
+            entry['name'] = public_sessions_names[x]
+            entry['creator'] = public_sessions_creators[x]
+            entry['users_online'] = len(public_sessions_users_online[x])
+            public_session_headers.append(entry)
+        return public_session_headers
 
     def get_session_users_online(self, session_names):
         return self._rejson.jsonmget('.users_online', *session_names)
@@ -97,14 +113,13 @@ class SessionStore(object):
         except SessionNotFoundException as e:
             raise e
 
-
     def next_slot(self, session_name):
         """Get next available slot key, iterating up from 1. Very very dumb and slow."""
         slots = self.get_session_data(session_name, '.slots')
         slot_keys = map(int, slots.keys())
         slot_no = 0
         while slot_no in slot_keys:
-            slot_no+=1 # VERY STUPID, THIS WILL BOTTLENECK HEAVILY
+            slot_no += 1  # VERY STUPID, THIS WILL BOTTLENECK HEAVILY
         return slot_no
 
     def lock_redis(self):
@@ -119,7 +134,7 @@ class SessionStore(object):
         """
         MUTATES DATASTORE
         """
-        if session_name in self._data:
+        if session_name in self.get_session_names():
             raise SessionAlreadyExistsException(f'Session {session_name} already exists. Aborting create_session.')
         else:
             session_data = {
@@ -130,8 +145,8 @@ class SessionStore(object):
                 "generation": 0,
                 "users": [creator],
                 "users_online": {},
-                "slots":{},
-                "library":[] #Eventually use a set here.
+                "slots": {},
+                "library": []  # Eventually use a set here.
             }
             self._rejson.jsonset(session_name, Path.rootPath(), session_data)
             return session_data
@@ -157,6 +172,20 @@ class SessionStore(object):
             _log.warning(msg)
             raise SessionActionNotPermittedException(msg)
 
+    def delete_session(self, session_name, username):
+        session = self[session_name]
+        if session:
+            if session['creator'] == username:
+                self._rejson.delete(session_name)
+                _log.info(f'User {username} deleted session {session_name}.')
+                return True
+            else:
+                msg = f'User {username} is not creator of session {session_name}. Cannot Delete.'
+                raise SessionActionNotPermittedException(msg)
+        else:
+            msg = f'Session {session_name} not found.'
+            raise SessionNotFoundException(msg)
+
     def add_loop(self, session_name, username, loop):
         """
         MUTATES DATASTORE
@@ -169,10 +198,10 @@ class SessionStore(object):
                 _log.info(f'Loop {loop.link} already exists in {session_name} library.')
                 return True
             else:
-                _log.info(f'Loop {loop.link } added to session {session_name} by {username}.')
+                _log.info(f'Loop {loop.link} added to session {session_name} by {username}.')
                 self._rejson.jsonarrappend(session_name, '.library', loop)
                 next_slot = self.add_slot(session_name=session_name, username=username)
-                self.update_slot(session_name=session_name,username=username, loop=loop, slot_number=next_slot)
+                self.update_slot(session_name=session_name, username=username, loop=loop, slot_number=next_slot)
                 return True
         else:
             msg = f'Operation not permitted. User {username} not in session {session_name}.'
@@ -189,7 +218,8 @@ class SessionStore(object):
             self._rejson.jsonset(session_name, f'.slots.{next_slot}', new_loop)
             return next_slot
         else:
-            raise SessionActionNotPermittedException(f'User {username} is not permitted to add slot in session {session_name}.')
+            raise SessionActionNotPermittedException(
+                f'User {username} is not permitted to add slot in session {session_name}.')
 
     def delete_slot(self, session_name, username, slot_number):
         """
@@ -244,10 +274,3 @@ class SessionStore(object):
             if self._rejson.jsonget(session_name, f'.users_online.{username}') is not None:
                 print(f'{username} has gone offline in {session_name}')
                 self._rejson.jsondel(session_name, f'.users_online.{username}')
-
-
-
-
-
-
-
