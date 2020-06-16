@@ -24,7 +24,8 @@ class CloudLoopDecoder(JSONDecoder):
 def custom_type_hook(dct):
     if "_type" in dct:
         if dct["_type"] == "User":
-            return User(username=dct['username'], email=dct['email'])
+            # Never return password hash.
+            return User(username=dct['username'], email=dct['email'], sessions=dct['sessions'])
         elif dct["_type"] == "Loop":
             return Loop(link=dct['link'], creator=dct['creator'], hash=dct['hash'], created_at=dct['created_at'])
         else:

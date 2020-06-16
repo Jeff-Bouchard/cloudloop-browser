@@ -135,6 +135,7 @@ def join():
         session_name = request.json['session_name']
         inviter = request.json['inviter']
         if sessions.join_session(session_name, username, inviter):
+            users.join_session(session_name, username)
             return build_response(status=HTTPStatus.OK,
                                   message=f'{username} has joined session {session_name}',
                                   data=sessions[session_name])
@@ -152,10 +153,24 @@ def join():
 @app.route('/sessionNames', methods=['GET'])
 @jwt_required()
 def get_session_names():
-    session_names = sessions.get_session_names()
+    session_names = sessions.get_public_session_names()
     return build_response(status=HTTPStatus.OK,
-                          message=f'Got {len(session_names)} session names.',
+                          message=f'Got {len(session_names)} public session names.',
                           data=session_names)
+
+
+@app.route('/sessions', methods=['GET'])
+@jwt_required()
+def get_sessions_for_user():
+    session_names = users.get_user_sessions(current_identity)
+    sessions_map = sessions.get_sessions_data(session_names)
+    valid_sessions = list(filter(lambda p: p is not None, sessions_map))
+    msg = f'Retrieved {len(valid_sessions)} sessions for user {current_identity}'
+    _log.info(msg)
+    return build_response(status=HTTPStatus.OK,
+                          message=msg,
+                          data={'sessions': valid_sessions})
+
 
 
 @app.route('/session', methods=['GET'])

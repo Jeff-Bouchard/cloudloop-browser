@@ -142,7 +142,7 @@ def test_add_slot_success():
     store.create_session(session_name='test_session', creator='test_user')
     store.add_slot(session_name='test_session', username='test_user')
     assert len(store.get_slots_with_int_keys('test_session')) == 1
-    assert isinstance(store.get_slots_with_int_keys('test_session')[1], Loop)
+    assert isinstance(store.get_slots_with_int_keys('test_session')[0], Loop)
 
 
 def test_delete_slot_fail_slot_number():
@@ -175,14 +175,14 @@ def test_delete_slot_user_not_owner():
     store.add_slot(session_name='test_session', username='test_user')
     store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
     with pytest.raises(SessionActionNotPermittedException):
-        store.delete_slot(session_name='test_session', username='test_user_2', slot_number=1)
+        store.delete_slot(session_name='test_session', username='test_user_2', slot_number=0)
 
 
 def test_delete_slot_success():
     store = SessionStore()
     store.create_session(session_name='test_session', creator='test_user')
     store.add_slot(session_name='test_session', username='test_user')
-    assert store.delete_slot(session_name='test_session', username='test_user', slot_number=1)
+    assert store.delete_slot(session_name='test_session', username='test_user', slot_number=0)
 
 
 def test_add_and_delete_many_slot():
@@ -190,7 +190,7 @@ def test_add_and_delete_many_slot():
     store.create_session(session_name='test_session', creator='test_user')
     list(map(lambda y: store.add_slot(session_name='test_session', username='test_user'), range(100)))
     results = list(map(lambda x: store.delete_slot(session_name='test_session', username='test_user', slot_number=x),
-                       range(1, 101)))
+                       range(0, 100)))
     assert results == [True for x in range(100)]
     assert len(store['test_session']['slots']) == 0
 
@@ -281,7 +281,7 @@ def test_update_slot_failure_user_not_slot_owner():
     loop = Loop(link='http://test.link', creator='test_user_2', hash='test_hash', created_at='test_timestamp')
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     with pytest.raises(SessionActionNotPermittedException):
-        store.update_slot(session_name='test_session', username='test_user_2', slot_number=1, loop=loop)
+        store.update_slot(session_name='test_session', username='test_user_2', slot_number=0, loop=loop)
 
 def test_update_slot_success_new_loop():
     store = SessionStore()
@@ -289,9 +289,9 @@ def test_update_slot_success_new_loop():
     store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
     store.add_slot(session_name='test_session', username='test_user')
     loop = Loop(link='http://test.link', creator='test_user', hash='test_hash', created_at='test_timestamp')
-    store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
+    store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=0)
     assert len(store['test_session']['library']) == 1
-    assert store.get_slots_with_int_keys('test_session')[1] == loop
+    assert store.get_slots_with_int_keys('test_session')[0] == loop
 
 def test_update_slot_success_loop_exists():
     store = SessionStore()
@@ -317,6 +317,53 @@ def test_update_slot_success_empty_loop():
     store.update_slot(session_name='test_session', username='test_user', loop=empty_loop, slot_number=1)
     assert len(store.get_library('test_session')) == 1
     assert store.get_slots_with_int_keys('test_session')[1] == empty_loop
+
+def test_get_sessions():
+    store = SessionStore()
+    store.create_session(session_name='test_session', creator='test_user')
+    store.create_session(session_name='test_session_2', creator='test_user')
+    store.create_session(session_name='test_session_3', creator='test_user')
+    store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
+    store.join_session(session_name='test_session_2', username='test_user_2', inviter='test_user')
+    res = store.get_sessions_data(['test_session', 'test_session_2'])
+    assert len(res) == 2
+    assert res[0]['name'] == 'test_session'
+    assert res[1]['name'] == 'test_session_2'
+
+def test_get_sessions_bad_name():
+    store = SessionStore()
+    store.create_session(session_name='test_session', creator='test_user')
+    store.create_session(session_name='test_session_2', creator='test_user')
+    store.create_session(session_name='test_session_3', creator='test_user')
+    store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
+    store.join_session(session_name='test_session_2', username='test_user_2', inviter='test_user')
+    res = store.get_sessions_data(['test_session', 'test_session_2', 'test_session_4'])
+    assert len(res) == 3
+    assert res[0]['name'] == 'test_session'
+    assert res[1]['name'] == 'test_session_2'
+    assert res[2] == None
+
+def test_get_sessions_no_good_name():
+    store = SessionStore()
+    store.create_session(session_name='test_session', creator='test_user')
+    store.create_session(session_name='test_session_2', creator='test_user')
+    store.create_session(session_name='test_session_3', creator='test_user')
+    store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
+    store.join_session(session_name='test_session_2', username='test_user_2', inviter='test_user')
+    res = store.get_sessions_data(['be', 'fdsa', 'test_session_4'])
+    assert len(res) == 3
+    assert res == [None, None, None]
+
+
+def test_get_sessions_public():
+    store = SessionStore()
+    store.create_session(session_name='test_session', creator='test_user', private=True)
+    store.create_session(session_name='test_session_2', creator='test_user')
+    store.create_session(session_name='test_session_3', creator='test_user')
+    res = store.get_public_session_names()
+    assert len(res) == 2
+    assert res[0] == 'test_session_2'
+    assert res[1] == 'test_session_3'
 
 
 def test_create_loop():

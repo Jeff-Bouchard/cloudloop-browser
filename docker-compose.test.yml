@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  cloudloop-sut:
+    build: .
+    image: cloudloop-flask:latest
+    deploy:
+      replicas: 1
+    command: ["python", "redis-check.py", "pytest"]
+    ports:
+      - "5000:5000"
+    depends_on:
+      - cloudloop-rejson
+
+  cloudloop-rejson:
+    image: registry.digitalocean.com/cloudloop/cloudloop-rejson:latest
+    ports:
+      - "6379"
+    command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so
+
+volumes:
+  redis-data:

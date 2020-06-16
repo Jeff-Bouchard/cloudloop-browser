@@ -3,6 +3,7 @@ import logging
 from rejson import Client, Path
 from loop import Loop
 from serde import CloudLoopEncoder, CloudLoopDecoder
+import json
 
 
 class SessionAlreadyExistsException(Exception):
@@ -49,6 +50,19 @@ class SessionStore(object):
     def get_session_names(self):
         return list(self._rejson.scan_iter())
 
+    def get_public_session_names(self):
+        sessions = self.get_session_names()
+        session_privacy = self.get_sessions_data(sessions, '.private')
+        public_sessions_names = list(map(lambda y: y[0], filter(lambda x: x[1] == False, zip(sessions, session_privacy))))
+        return public_sessions_names
+
+    def get_session_users_online(self, session_names):
+        return self._rejson.jsonmget('.users_online', *session_names)
+
+    def get_sessions_data(self, session_names, path=Path.rootPath()):
+        sessions = self._rejson.jsonmget(path, *session_names)
+        return sessions
+
     def get_session_data(self, session_name, path=Path.rootPath()):
         if self._rejson.exists(session_name):
             session_data = self._rejson.jsonget(session_name, path)
@@ -70,7 +84,6 @@ class SessionStore(object):
 
     def get_library(self, session_name):
         library = self.get_session_data(session_name, '.library')
-        #library = [Loop(*x) for x in loops_list]
         return library
 
     def check_user_auth(self, session_name, username):

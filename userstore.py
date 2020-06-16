@@ -2,6 +2,7 @@ from rejson import Client, Path
 from user import User
 from serde import CloudLoopDecoder, CloudLoopEncoder
 import bcrypt
+import logging
 
 USER_JWT_PRIVATE_KEY='''-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn
@@ -32,6 +33,8 @@ cIBqcYBz8+L4c5KFJwAAABRkYXRhbWFuY2VyQHByby5sb2NhbAECAwQF
 -----END OPENSSH PRIVATE KEY-----'''
 USER_JWT_PUBLIC_KEY='''ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7h9icwFaxznlzlAtzUOnFBKzVevtOcGQutJzGX8aMAd3wfpBzlJla0tZpOcEE0lhowqfkj4u8KoMBOHyl7WjDRboj2W8RO0Y+SzOHeVXuYlRyrr/LxSdX0ek2bzWuTpMqU+yJKmp08Ep2vrkUQnj1+IpLwRL0Zn/hSaWwZp9EqOFZmdD0C9rjJqHwGwrI0JHeOD3rHFyx4PGyVDbIfx+loXyd+Oitr8m86qC9RwFYC8NfGEf2B3zzo+iaxD47Ot4Csk+7FOJUJXCn1AcMXO5Vkxd2gF+vS3uVHxmUo0PljkmJ68XyVSjD8vkKaFldzWoYzgzMY2Gcvvai/T3wluz1 datamancer@pro.local'''
 
+_log = logging.getLogger(__name__)
+
 class UserStore(object):
     """
     UserStore is a secondary Redis DB which stores user data.
@@ -59,6 +62,28 @@ class UserStore(object):
         else:
             return False
         return True
+
+    def check_for_session(self, username, session_name):
+        exists = self._rejson.jsonarrindex(username, '.sessions', session_name)
+        if exists >= 0:
+            return True
+        else:
+            return False
+
+    def join_session(self, username, session_name):
+        """
+        Idempotent add session to user object.
+        """
+        if not self.check_for_session(username, session_name):
+            self._rejson.jsonarrappend(username, '.sessions', session_name)
+            _log.info(f'User {username} added to session {session_name}.')
+            return True
+        else:
+            _log.info(f'User {username} already in session {session_name}.')
+            return True
+
+    def get_user_sessions(self, username):
+        return self._rejson.jsonget(username, '.sessions')
 
     def get_user(self, username):
         if self._rejson.exists(username):
