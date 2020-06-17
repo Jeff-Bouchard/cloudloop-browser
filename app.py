@@ -29,8 +29,8 @@ socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.
 
 _log = logging.getLogger()
 
-sessions = SessionStore(flush=False)
-users = UserStore(flush=False)
+sessions = SessionStore(flush=True)
+users = UserStore(flush=True)
 
 def authenticate(username, password):
     if users.check_password(username, password):
@@ -42,7 +42,9 @@ def identity(payload):
 
 jwt = JWT(app, authenticate, identity)
 
-def build_response(status, message, data=object):
+def build_response(status, message, data=None):
+    if data is None:
+        data = {}
     return make_response(jsonify({'status': status, 'message': message, 'data': {'results': data}}), status)
 
 
