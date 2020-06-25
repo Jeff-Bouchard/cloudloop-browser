@@ -38,7 +38,7 @@ class SessionStore(object):
 
     def __init__(self, flush=True, redis_host='cloudloop-rejson'):
         self._data = {}
-        self._next_slot = 0  # eventually implement a pointer here for atomic seeks
+        self._next_slot = 0  # eventually a FIFO queue (list.append(in) + list.pop(0)
         self._rejson = Client(host=redis_host,
                               port=6379,
                               decode_responses=True,
