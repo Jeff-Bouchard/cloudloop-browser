@@ -24,13 +24,13 @@ app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
 app.json_decoder = CloudLoopDecoder
 app.json_encoder = CloudLoopEncoder
 app.config['REDIS_HOST'] = 'cloudloop-rejson'
-socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.config["REDIS_HOST"]}:6379')
+socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.config["REDIS_HOST"]}:6379', async_mode="eventlet")
 
 
 _log = logging.getLogger()
 
-sessions = SessionStore(flush=True)
-users = UserStore(flush=True)
+sessions = SessionStore(flush=False)
+users = UserStore(flush=False)
 
 def authenticate(username, password):
     if users.check_password(username, password):
