@@ -134,3 +134,27 @@ class UserStore(object):
         else:
             _log.warning(f'No username {username} exists in UserStore.')
         return friends
+
+    def add_friend_one_way(self, username, friend_username):
+        """
+        This (almost atomically) adds a user to friends list one way.
+        """
+        friend_exists = self._rejson.jsonarrindex(username, '.friends', friend_username)
+        if friend_exists < 0:
+            self._rejson.jsonarrappend(username, '.friends', friend_username)
+            _log.info(f'{username} added {friend_username} as friend.')
+        else:
+            _log.warning(f'{friend_username} already in friends list for {username} at index {friend_exists}.')
+
+    def add_friend_mutual(self, username, friend_username):
+        """
+        This adds users mutally to friends list. No approval mechanism for now.
+        """
+        if self._rejson.exists(username):
+            if self._rejson.exists(friend_username):
+                self.add_friend_one_way(username, friend_username)
+                self.add_friend_one_way(friend_username, username)
+            else:
+                _log.error(f'No username exists for {friend_username} while adding as friend for {username}.')
+        else:
+            _log.error(f'No username {username} exists in userstore.')
