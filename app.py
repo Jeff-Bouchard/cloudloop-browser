@@ -368,8 +368,8 @@ def get_friends():
         return build_response(HTTPStatus.OK, msg, result)
     except Exception as e:
         msg = f'An unknown error occurred while getting friends: {e}'
+        _log.error(msg)
         return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, {})
-
 
 
 
