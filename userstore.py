@@ -143,8 +143,10 @@ class UserStore(object):
         if friend_exists < 0:
             self._rejson.jsonarrappend(username, '.friends', friend_username)
             _log.info(f'{username} added {friend_username} as friend.')
+            return True
         else:
             _log.warning(f'{friend_username} already in friends list for {username} at index {friend_exists}.')
+            return False
 
     def add_friend_mutual(self, username, friend_username):
         """
@@ -152,9 +154,16 @@ class UserStore(object):
         """
         if self._rejson.exists(username):
             if self._rejson.exists(friend_username):
-                self.add_friend_one_way(username, friend_username)
-                self.add_friend_one_way(friend_username, username)
+                user_result = self.add_friend_one_way(username, friend_username)
+                friend_result = self.add_friend_one_way(friend_username, username)
+                if user_result and friend_result:
+                    _log.info(f'Users added mutually to friends lists: {username}, {friend_username}')
+                    return True
+                else:
+                    return False
             else:
                 _log.error(f'No username exists for {friend_username} while adding as friend for {username}.')
+                return False
         else:
             _log.error(f'No username {username} exists in userstore.')
+            return False

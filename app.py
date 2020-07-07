@@ -340,6 +340,38 @@ def links():
     except Exception as e:
         _log.error(e)
 
+@app.route('/add_friend', methods=['POST'])
+@jwt_required()
+def add_friend():
+    try:
+        username = current_identity.username
+        friend_username = request.json['friend_username']
+        result = users.add_friend_mutual(username, friend_username)
+        friends = users.get_friends(username)
+        if result:
+            msg = f'{username} added {friend_username} as friend successfully.'
+            return build_response(HTTPStatus.OK, msg, friends)
+        else:
+            msg = f'{username} could not add {friend_username} as friend - You are probably already friends!'
+            return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, friends)
+    except Exception as e:
+        msg = f'An unknown error occurred: {e}'
+        return build_response(HTTPStatus.BAD_REQUEST, msg, {})
+
+@app.route('/friends', methods=['GET'])
+@jwt_required()
+def get_friends():
+    try:
+        username = current_identity.username
+        result = users.get_friends(username)
+        msg = f'Got {len(result)} frends for user {username}'
+        return build_response(HTTPStatus.OK, msg, result)
+    except Exception as e:
+        msg = f'An unknown error occurred while getting friends: {e}'
+        return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, {})
+
+
+
 
 @socketio.on('message')
 def handle_message(msg):
