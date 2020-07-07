@@ -119,3 +119,18 @@ class UserStore(object):
                 return False
         else:
             return False
+
+    def get_all_usernames(self):
+        return list(self._rejson.scan_iter())
+
+    def get_friends(self, username):
+        friends = []
+        if self._rejson.exists(username):
+            user = self._rejson[username]
+            if user['friends']:
+                friends = user['friends']
+            else:
+                _log.warning(f'No "friends" item for user {username} - apply migration.')
+        else:
+            _log.warning(f'No username {username} exists in UserStore.')
+        return friends
