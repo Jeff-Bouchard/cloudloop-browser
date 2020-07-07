@@ -25,7 +25,11 @@ def custom_type_hook(dct):
     if "_type" in dct:
         if dct["_type"] == "User":
             # Never return password hash.
-            return User(username=dct['username'], email=dct['email'], sessions=dct['sessions'], friends=dct['friends'])
+            try:
+                friends = dct['friends']
+            except:
+                friends = []
+            return User(username=dct['username'], email=dct['email'], sessions=dct['sessions'], friends=friends)
         elif dct["_type"] == "Loop":
             return Loop(link=dct['link'], creator=dct['creator'], hash=dct['hash'], created_at=dct['created_at'])
         else:

@@ -39,7 +39,7 @@ class UserStore(object):
     """
     UserStore is a secondary Redis DB which stores user data.
     """
-    def __init__(self, flush=True, redis_host='cloudloop-rejson'):
+    def __init__(self, flush=False, redis_host='cloudloop-rejson'):
         self._data = {}
         self._rejson = Client(host=redis_host,
                               port=6379,
