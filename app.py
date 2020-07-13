@@ -156,7 +156,7 @@ def join():
     try:
         username = request.json['username']
         session_name = request.json['session_name']
-        inviter = request.json['inviter']
+        inviter = current_identity.username
         if sessions.join_session(session_name, username, inviter):
             users.join_session(username, session_name)
             return build_response(status=HTTPStatus.OK,
@@ -225,7 +225,7 @@ def get_session():
 @jwt_required()
 def add_loop():
     try:
-        username = request.json['username']
+        username = current_identity.username
         session_name = request.json['session_name']
         wav_link = request.json['wav_link']
         hash = request.json['hash']
@@ -255,7 +255,7 @@ def add_loop():
 def add_slot():
     try:
         session_name = request.json['session_name']
-        username = request.json['username']
+        username = current_identity.username
         slot = sessions.add_slot(session_name, username)
         return build_response(HTTPStatus.OK,
                        message=f'Slot {slot} created.',
@@ -275,7 +275,7 @@ def add_slot():
 @jwt_required()
 def update_slot():
     try:
-        username = request.json['username']
+        username = current_identity.username
         session_name = request.json['session_name']
         wav_link = request.json['wav_link'] #wav_link for now
         slot_number = request.json['slot_number']
@@ -307,7 +307,7 @@ def update_slot():
 @jwt_required()
 def delete_slot():
     try:
-        username = request.json['username']
+        username = current_identity.username
         session_name = request.json['session_name']
         slot_number = request.json['slot_number']
         sessions.delete_slot(session_name, username, slot_number)
