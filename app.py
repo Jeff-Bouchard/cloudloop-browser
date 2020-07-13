@@ -358,19 +358,19 @@ def add_friend():
         msg = f'An unknown error occurred: {e}'
         return build_response(HTTPStatus.BAD_REQUEST, msg, {})
 
+
 @app.route('/friends', methods=['GET'])
 @jwt_required()
 def get_friends():
     try:
         username = current_identity.username
         result = users.get_friends(username)
-        msg = f'Got {len(result)} frends for user {username}'
+        msg = f'Got {len(result)} friends for user {username}'
         return build_response(HTTPStatus.OK, msg, result)
     except Exception as e:
         msg = f'An unknown error occurred while getting friends: {e}'
         _log.error(msg)
-        return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, {})
-
+        return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, [])
 
 
 @socketio.on('message')

@@ -18,18 +18,18 @@ services:
       - "6379"
     command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so
 
-  cloudloop-nginx:
-    build: nginx/
-    image: cloudloop-nginx:latest
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-    - type: bind
-      source: $HOST/opt/cloudloop/private/nginx/certs
-      target: /etc/ssl/private
-    depends_on:
-      - cloudloop-flask
+#  cloudloop-nginx:
+#    build: nginx/
+#    image: cloudloop-nginx:latest
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#    - type: bind
+#      source: $HOST/opt/cloudloop/private/nginx/certs
+#      target: /etc/ssl/private
+#    depends_on:
+#      - cloudloop-flask
 
 volumes:
   redis-data:

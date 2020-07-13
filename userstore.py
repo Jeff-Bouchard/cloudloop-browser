@@ -4,34 +4,20 @@ from serde import CloudLoopDecoder, CloudLoopEncoder
 import bcrypt
 import logging
 
-USER_JWT_PRIVATE_KEY='''-----BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn
-NhAAAAAwEAAQAAAQEAu4fYnMBWsc55c5QLc1DpxQSs1Xr7TnBkLrScxl/GjAHd8H6Qc5SZ
-WtLWaTnBBNJYaMKn5I+LvCqDATh8pe1ow0W6I9lvETtGPkszh3lV7mJUcq6/y8UnV9HpNm
-81rk6TKlPsiSpqdPBKdr65FEJ49fiKS8ES9GZ/4UmlsGafRKjhWZnQ9Ava4yah8BsKyNCR
-3jg96xxcseDxslQ2yH8fpaF8nfjora/JvOqgvUcBWAvDXxhH9gd886PomsQ+OzreArJPux
-TiVCVwp9QHDFzuVZMXdoBfr0t7lR8ZlKND5Y5JievF8lUow/L5CmhZXc1qGM4MzGNhnL72
-ov098Jbs9QAAA9BRPYCtUT2ArQAAAAdzc2gtcnNhAAABAQC7h9icwFaxznlzlAtzUOnFBK
-zVevtOcGQutJzGX8aMAd3wfpBzlJla0tZpOcEE0lhowqfkj4u8KoMBOHyl7WjDRboj2W8R
-O0Y+SzOHeVXuYlRyrr/LxSdX0ek2bzWuTpMqU+yJKmp08Ep2vrkUQnj1+IpLwRL0Zn/hSa
-WwZp9EqOFZmdD0C9rjJqHwGwrI0JHeOD3rHFyx4PGyVDbIfx+loXyd+Oitr8m86qC9RwFY
-C8NfGEf2B3zzo+iaxD47Ot4Csk+7FOJUJXCn1AcMXO5Vkxd2gF+vS3uVHxmUo0PljkmJ68
-XyVSjD8vkKaFldzWoYzgzMY2Gcvvai/T3wluz1AAAAAwEAAQAAAQEAuchFIlWyDYi97XC3
-P1DjpxmQmBW0LetOdK7dufFcY4vd8cmRFdAbdUz2uVxMCpjQmUhuyBIlnw6Gpojtg/yFEx
-9a3vUkAXA1kLUzoXzlUrr7anoQ7LCu32PHpPPbvIl/ZimqZeEtghgjzSv5c0a/Sv8lExN9
-0b5R5kDt8qpYEs2BMMaBPWdLiwlKEhHTcp2PbluT/DA6hJhzBKNqxZ7X9qrWWMhp2dGxJz
-s8vncTpTiFL1S3Q/NuXMmqt6lZLgXVKRRcr5R1KW4I0I34RN1Td2LwLHcPx9OKwIdSqLru
-p/kda8+Bqsb8IAFyhIxLO0bPEZnFBkVA0jvItoH1bd1o6QAAAIEA0wu1mtFZAafFn4iOvJ
-WPo099jcRRiBcbE/EbEybD6/SxDmzSQqiat66VUYhGcJFR3N9RaK0cChDUjUlutxV7nH0K
-SRIO2TgfBoy1QdxRPUs63V7CsUH5QNVwKD8cPMEoXDVmfzR2+psSLO5QTIUUJfXs8vSgZ3
-uL1NCLBx/0yv8AAACBAOjrzj36vjXvSABZg6c3nuDuQHLefFpTyuNYZno/AvqeMf5y5XrF
-F7yqGjlX7u11I7xsozZVJ2reHWs3kvJpQvD1vKTaQJjcPVM+lKlbmMF5o9VuC8tQYBJmWx
-EfYvVvEAp4Nkzscd1vhl2/T3bQ+AgBOVU16DCGbSzuep0d/yaDAAAAgQDOHK6Z6/NKtoOZ
-kiDbnMxVX99uqLW3YpfT9bR8tl14WniMvCpj/Lh3Vxq8iobbPaILyiUcgiIfKHWTlL9PXw
-8bGcavKRdUekCByda9kGFpMPuBqKkVOxSw977a7rgmpLSXKrQaR9nR2flB6iEEJVCtiO/8
-cIBqcYBz8+L4c5KFJwAAABRkYXRhbWFuY2VyQHByby5sb2NhbAECAwQF
------END OPENSSH PRIVATE KEY-----'''
-USER_JWT_PUBLIC_KEY='''ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7h9icwFaxznlzlAtzUOnFBKzVevtOcGQutJzGX8aMAd3wfpBzlJla0tZpOcEE0lhowqfkj4u8KoMBOHyl7WjDRboj2W8RO0Y+SzOHeVXuYlRyrr/LxSdX0ek2bzWuTpMqU+yJKmp08Ep2vrkUQnj1+IpLwRL0Zn/hSaWwZp9EqOFZmdD0C9rjJqHwGwrI0JHeOD3rHFyx4PGyVDbIfx+loXyd+Oitr8m86qC9RwFYC8NfGEf2B3zzo+iaxD47Ot4Csk+7FOJUJXCn1AcMXO5Vkxd2gF+vS3uVHxmUo0PljkmJ68XyVSjD8vkKaFldzWoYzgzMY2Gcvvai/T3wluz1 datamancer@pro.local'''
+class UserAlreadyExistsException(Exception):
+    pass
+
+
+class UserActionNotPermittedException(Exception):
+    pass
+
+
+class UserNotFoundException(Exception):
+    pass
+
+
+class UserNotInvitedSession(Exception):
+    pass
 
 _log = logging.getLogger(__name__)
 
@@ -57,11 +43,11 @@ class UserStore(object):
     def create_user(self, username, password, email=''):
         if not self._rejson.exists(username):
             user = User(username=username, password=password, email=email)
-            print(f"Storing user {user.__dict__}")
+            print(f"Storing user {user.username}")
             self._rejson.jsonset(username, Path.rootPath(), user)
+            return True
         else:
-            return False
-        return True
+            raise UserAlreadyExistsException(f'Username {username} already exists.')
 
     def check_for_session(self, username, session_name):
         exists = self._rejson.jsonarrindex(username, '.sessions', session_name)
@@ -80,8 +66,9 @@ class UserStore(object):
             _log.info(f'User {username} added to session {session_name}.')
             return True
         else:
-            _log.info(f'User {username} already in session {session_name}.')
-            return True
+            msg=(f'User {username} already in session {session_name}.')
+            _log.warning(msg)
+            raise UserActionNotPermittedException(msg)
 
     def get_user_sessions(self, username):
         return self._rejson.jsonget(username, '.sessions')
@@ -91,18 +78,20 @@ class UserStore(object):
             user = self._rejson.jsonget(username)
             return user
         else:
-            return None  # Maybe dont do this
+            return False
 
     def get_user_password_hash(self, username):
         if self._rejson.exists(username):
             return self._rejson.jsonget(username, Path(".password_hash"))
+        else:
+            raise UserNotFoundException
 
     def delete_user(self, username):
         if self._rejson.exists(username):
             self._rejson.jsondel(username)
+            return True
         else:
-            return False
-        return True
+            raise UserNotFoundException(f"User {username} not found.")
 
     def update_user(self, username, user):
         if self._rejson.exists(username):
@@ -112,10 +101,13 @@ class UserStore(object):
 
     def check_password(self, username, password):
         if self._rejson.exists(username):
+            _log.info(f"Check password: {username} exists.")
             password_hash = self.get_user_password_hash(username).encode('utf-8')
             if bcrypt.hashpw(password.encode('utf-8'), password_hash) == password_hash:
+                _log.info(f"Password match!")
                 return True
             else:
+                _log.warning(f"Incorrect password entered for {username}.")
                 return False
         else:
             return False
@@ -124,16 +116,14 @@ class UserStore(object):
         return list(self._rejson.scan_iter())
 
     def get_friends(self, username):
-        friends = []
         if self._rejson.exists(username):
-            user = self._rejson[username]
-            if user['friends']:
-                friends = user['friends']
-            else:
-                _log.warning(f'No "friends" item for user {username} - apply migration.')
+            user = self.get_user(username)
+            friends = user.friends
+            return friends
         else:
-            _log.warning(f'No username {username} exists in UserStore.')
-        return friends
+            msg = f'No username {username} exists in UserStore.'
+            _log.warning(msg)
+            raise UserNotFoundException(msg)
 
     def add_friend_one_way(self, username, friend_username):
         """
