@@ -14,14 +14,18 @@ class User(object):
     email = None
     password_hash = None
     sessions = []
+    friends = []
 
-    def __init__(self, username, email='', password='', sessions=None):
+    def __init__(self, username, email='', password='', sessions=None, friends=None):
         if sessions is None:
             sessions = []
+        if friends is None:
+            friends = []
         self._type = "User"
         self.username = username
         self.email = email
         self.sessions = sessions
+        self.friends = friends
         if password != '':
             _log.info(f'New password for user object being hashed. {username}')
             encoded_password = password.encode('utf-8')

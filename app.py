@@ -156,7 +156,7 @@ def join():
     try:
         username = request.json['username']
         session_name = request.json['session_name']
-        inviter = request.json['inviter']
+        inviter = current_identity.username
         if sessions.join_session(session_name, username, inviter):
             users.join_session(username, session_name)
             return build_response(status=HTTPStatus.OK,
@@ -225,7 +225,7 @@ def get_session():
 @jwt_required()
 def add_loop():
     try:
-        username = request.json['username']
+        username = current_identity.username
         session_name = request.json['session_name']
         wav_link = request.json['wav_link']
         hash = request.json['hash']
@@ -255,7 +255,7 @@ def add_loop():
 def add_slot():
     try:
         session_name = request.json['session_name']
-        username = request.json['username']
+        username = current_identity.username
         slot = sessions.add_slot(session_name, username)
         return build_response(HTTPStatus.OK,
                        message=f'Slot {slot} created.',
@@ -275,7 +275,7 @@ def add_slot():
 @jwt_required()
 def update_slot():
     try:
-        username = request.json['username']
+        username = current_identity.username
         session_name = request.json['session_name']
         wav_link = request.json['wav_link'] #wav_link for now
         slot_number = request.json['slot_number']
@@ -307,7 +307,7 @@ def update_slot():
 @jwt_required()
 def delete_slot():
     try:
-        username = request.json['username']
+        username = current_identity.username
         session_name = request.json['session_name']
         slot_number = request.json['slot_number']
         sessions.delete_slot(session_name, username, slot_number)
@@ -339,6 +339,38 @@ def links():
         return render_template("links.html", session=session_name, links=links)
     except Exception as e:
         _log.error(e)
+
+@app.route('/add_friend', methods=['POST'])
+@jwt_required()
+def add_friend():
+    try:
+        username = current_identity.username
+        friend_username = request.json['friend_username']
+        result = users.add_friend_mutual(username, friend_username)
+        friends = users.get_friends(username)
+        if result:
+            msg = f'{username} added {friend_username} as friend successfully.'
+            return build_response(HTTPStatus.OK, msg, friends)
+        else:
+            msg = f'{username} could not add {friend_username} as friend - You are probably already friends!'
+            return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, friends)
+    except Exception as e:
+        msg = f'An unknown error occurred: {e}'
+        return build_response(HTTPStatus.BAD_REQUEST, msg, {})
+
+
+@app.route('/friends', methods=['GET'])
+@jwt_required()
+def get_friends():
+    try:
+        username = current_identity.username
+        result = users.get_friends(username)
+        msg = f'Got {len(result)} friends for user {username}'
+        return build_response(HTTPStatus.OK, msg, result)
+    except Exception as e:
+        msg = f'An unknown error occurred while getting friends: {e}'
+        _log.error(msg)
+        return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, [])
 
 
 @socketio.on('message')

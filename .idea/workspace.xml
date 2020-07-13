@@ -7,10 +7,6 @@
     <list default="true" id="7ad24ead-9ef4-4dd7-a660-551ecca95138" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sessionstore.py" beforeDir="false" afterPath="$PROJECT_DIR$/sessionstore.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_sessionstore.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_sessionstore.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userstore.py" beforeDir="false" afterPath="$PROJECT_DIR$/userstore.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +45,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="IgnoreLang" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -137,6 +134,8 @@
       <workItem from="1590506492792" duration="13377000" />
       <workItem from="1591737132560" duration="16000" />
       <workItem from="1591894605373" duration="8264000" />
+      <workItem from="1594171469844" duration="1951000" />
+      <workItem from="1594650655260" duration="4504000" />
     </task>
     <servers />
   </component>
@@ -151,11 +150,13 @@
     <state x="304" y="200" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1588481214844" />
     <state x="2267" y="205" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@1920.23.1920.1057" timestamp="1588199107065" />
     <state x="2224" y="417" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1057/1920.240.1680.1027@1920.240.1680.1027" timestamp="1587895209130" />
-    <state x="2642" y="-65" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592340705319">
-      <screen x="1920" y="-589" width="3008" height="1669" />
+    <state x="614" y="469" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594650664033">
+      <screen x="0" y="23" width="2560" height="1417" />
     </state>
-    <state x="403" y="346" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1680.1027@0.23.1680.1027" timestamp="1588095870559" />
+    <state x="-1946" y="353" key="#com.intellij.fileTypes.FileTypeChooser/-2560.-93.2560.1417/0.23.1920.1057/-4240.-93.1680.1027@-2560.-93.2560.1417" timestamp="1594224491343" />
+    <state x="403" y="346" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1680.1027@0.23.1680.1027" timestamp="1594148094247" />
     <state x="2381" y="355" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@1920.23.1920.1057" timestamp="1588876820227" />
+    <state x="614" y="469" key="#com.intellij.fileTypes.FileTypeChooser/0.23.2560.1417/2560.139.1920.1057/-1680.23.1680.1027@0.23.2560.1417" timestamp="1594650664033" />
     <state x="2642" y="-65" key="#com.intellij.fileTypes.FileTypeChooser/1920.-589.3008.1669/0.23.1920.1057/4928.-210.1680.1027@1920.-589.3008.1669" timestamp="1592340705319" />
     <state x="707" y="409" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1590421799761">
       <screen x="0" y="23" width="1920" height="1057" />
@@ -248,13 +249,14 @@
     <state x="567" y="381" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1589388053647" />
     <state x="2487" y="381" key="com.intellij.ide.util.TipDialog/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@1920.23.1920.1057" timestamp="1588193722058" />
     <state x="888" y="589" key="com.intellij.ide.util.TipDialog/0.23.3008.1669/-1680.23.1680.1027@0.23.3008.1669" timestamp="1588535520008" />
-    <state x="2899" y="-218" width="1201" height="1069" key="search.everywhere.popup" timestamp="1592334711170">
-      <screen x="1920" y="-589" width="3008" height="1669" />
+    <state x="833" y="338" width="1023" height="908" key="search.everywhere.popup" timestamp="1594656844819">
+      <screen x="0" y="23" width="2560" height="1417" />
     </state>
     <state x="625" y="258" width="766" height="677" key="search.everywhere.popup/-3008.-689.3008.1669/0.23.1920.1057/-4688.-146.1680.1027@0.23.1920.1057" timestamp="1590595379982" />
     <state x="547" y="251" width="670" height="657" key="search.everywhere.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1590440816478" />
     <state x="625" y="258" width="766" height="677" key="search.everywhere.popup/0.23.1920.1057/1920.23.1920.1057/-1680.23.1680.1027@0.23.1920.1057" timestamp="1588536955474" />
     <state x="625" y="258" width="670" height="676" key="search.everywhere.popup/0.23.1920.1057/1920.240.1680.1027@0.23.1920.1057" timestamp="1587915086494" />
+    <state x="833" y="338" width="1023" height="908" key="search.everywhere.popup/0.23.2560.1417/2560.139.1920.1057/-1680.23.1680.1027@0.23.2560.1417" timestamp="1594656844819" />
     <state x="2899" y="-218" width="1201" height="1069" key="search.everywhere.popup/1920.-589.3008.1669/0.23.1920.1057/4928.-210.1680.1027@1920.-589.3008.1669" timestamp="1592334711170" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
