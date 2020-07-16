@@ -1,13 +1,24 @@
 import pytest
-from userstore import UserStore
 
-def test_userstore_init():
-    store = UserStore(flush=True)
+
+@pytest.fixture
+def store():
+    from userstore import UserStore
+    return UserStore(flush=True)
+
+
+def test_userstore_init(store):
     assert store._data == dict()
     assert list(store._data.keys()) == []
 
 
-def test_userstore_get_session_names_empty():
-    store = UserStore(flush=True)
-    names = store.get_session_names()
-    assert names == []
+def test_search_usernames(store):
+    results = store.search_users(query='dummy')
+    assert results == []
+
+
+def test_search_usernames(store):
+    store.create_user(username='test1', password='password1')
+    results = store.search_users(query='st')
+    assert len(results) == 1
+    assert results[0] == 'test1'

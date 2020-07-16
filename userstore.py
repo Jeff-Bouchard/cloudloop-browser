@@ -157,3 +157,9 @@ class UserStore(object):
         else:
             _log.error(f'No username {username} exists in userstore.')
             return False
+
+    def search_users(self, query):
+        usernames = []
+        for key in self._rejson.scan_iter(f'*{query}*'):
+            usernames.append(key)
+        return usernames

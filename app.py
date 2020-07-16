@@ -62,9 +62,10 @@ def login_user():
             auth_token = user.encode_auth_token(user.username)
             return build_response(HTTPStatus.OK, f'User {username} logged in.', auth_token.decode())
         else:
-            return build_response(HTTPStatus.NOT_ACCEPTABLE, f'Incorrect login details.')
+            return build_response(HTTPStatus.UNAUTHORIZED, f'Incorrect login details.')
     except Exception as e:
-        return build_response(HTTPStatus.BAD_REQUEST, f'Request failed. {e}')
+        _log.error(e)
+        return build_response(HTTPStatus.BAD_REQUEST, f'Bad Request. {e}')
 
 
 @app.route('/register_user', methods=['POST'])
@@ -358,6 +359,20 @@ def add_friend():
         msg = f'An unknown error occurred: {e}'
         return build_response(HTTPStatus.BAD_REQUEST, msg, {})
 
+@app.route('/search_users', methods=['GET'])
+@jwt_required()
+def search_users():
+    try:
+        query = request.json['search_query']
+        result = users.search_users(query)
+        msg = f'Found {len(result)} keys for user search query: {query}'
+        _log.info(msg)
+        return build_response(HTTPStatus.OK, msg, result)
+    except KeyError as e:
+        msg = f'Error issuing search. Invalid query: {e}'
+        return build_response(HTTPStatus.BAD_REQUEST, msg)
+    except Exception as e:
+        return build_response(HTTPStatus.BAD_REQUEST, e)
 
 @app.route('/friends', methods=['GET'])
 @jwt_required()

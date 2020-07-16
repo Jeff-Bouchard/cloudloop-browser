@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  cloudloop-flask:
+  session-server:
     build: .
     image: registry.digitalocean.com/cloudloop/session-server:latest
     deploy:
@@ -17,19 +17,6 @@ services:
     ports:
       - "6379"
     command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so
-
-  cloudloop-nginx:
-    build: nginx/
-    image: registry.digitalocean.com/cloudloop/nginx-proxy:latest
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-    - type: bind
-      source: $HOST/opt/cloudloop/private/nginx/certs
-      target: /etc/ssl/private
-    depends_on:
-      - cloudloop-flask
 
 volumes:
   redis-data:
