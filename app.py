@@ -372,7 +372,9 @@ def search_users():
         msg = f'Error issuing search. Invalid query: {e}'
         return build_response(HTTPStatus.BAD_REQUEST, msg)
     except Exception as e:
-        return build_response(HTTPStatus.BAD_REQUEST, e)
+        msg = f'Error in search: {e}'
+        _log.error(msg)
+        return build_response(HTTPStatus.BAD_REQUEST, msg)
 
 @app.route('/friends', methods=['GET'])
 @jwt_required()
