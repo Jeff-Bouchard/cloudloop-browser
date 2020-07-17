@@ -363,7 +363,7 @@ def add_friend():
 @jwt_required()
 def search_users():
     try:
-        query = request.args.get['search_query']
+        query = request.args.get('search_query')
         result = users.search_users(query)
         msg = f'Found {len(result)} keys for user search query: {query}'
         _log.info(msg)
