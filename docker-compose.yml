@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  cloudloop-flask:
+  session-server:
     build: .
     image: registry.digitalocean.com/cloudloop/session-server:latest
     deploy:

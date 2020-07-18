@@ -9,4 +9,5 @@ gunicorn
 eventlet
 bcrypt
 flask-JWT
-wavio
+wavy
+airtable-python-wrapper

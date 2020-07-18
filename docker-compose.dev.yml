@@ -12,8 +12,35 @@ services:
     depends_on:
       - cloudloop-rejson
 
+  uploader:
+    image: registry.digitalocean.com/cloudloop/session-server:latest
+    deploy:
+      replicas: 1
+    environment:
+      - FLASK_APP=uploader.py
+      - FLASK_RUN_PORT=5001
+      - FLASK_RUN_HOST=0.0.0.0
+      - AIRTABLE_KEY=keypPtZeMX7BJDv9f
+    command: ["flask", "run"]
+    ports:
+      - "5001:5001"
+
+  downloader:
+    image: registry.digitalocean.com/cloudloop/session-server:latest
+    deploy:
+      replicas: 1
+    environment:
+      - FLASK_APP=downloader.py
+      - FLASK_RUN_PORT=5002
+      - FLASK_RUN_HOST=0.0.0.0
+    command: ["flask", "run"]
+    ports:
+      - "5002:5002"
+
   cloudloop-rejson:
     image: registry.digitalocean.com/cloudloop/cloudloop-rejson:latest
+    environment:
+      - REDIS_PASSWORD #Not yet implemented
     ports:
       - "6379"
     command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so
