@@ -4,8 +4,11 @@ from flask import Flask, request, send_file
 from uuid import uuid4
 import io
 import os
+from airtable import Airtable
 
-app = Flask(__name__)
+
+
+
 
 def get_download_options():
         return type('obj', (object,), {
@@ -24,7 +27,6 @@ def download():
     filename = f'/tmp/cloudloop-file-{uuid4()}.wav'
 
     Skynet.download_file(filename, skylink, get_download_options())
-
     print("Download successful from skylink: " + skylink)
     with open(filename, 'rb') as bites:
         return send_file(

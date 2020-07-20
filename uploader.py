@@ -66,6 +66,7 @@ def upload():
     print(f'Analyzed file {filename} : {airtable_records}')
     start_airtable = time.time()
     airtable = Airtable('appHcObTX28Vj70uM', 'Loops', api_key=os.environ['AIRTABLE_KEY'])
+
     airtable.insert(airtable_records)
     end_airtable = time.time()
     print(f'Processed airtable record in {end_airtable-start_airtable}')
