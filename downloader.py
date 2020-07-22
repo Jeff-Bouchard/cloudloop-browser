@@ -6,9 +6,7 @@ import io
 import os
 from airtable import Airtable
 
-
-
-
+app = Flask(__name__)
 
 def get_download_options():
         return type('obj', (object,), {

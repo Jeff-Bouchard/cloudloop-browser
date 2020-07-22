@@ -47,6 +47,8 @@ def upload():
     # upload
     start = time.time()
     data_to_upload = request.get_data()
+    creator = request.headers.get("CloudLoop/Loop/Creator")
+    session = request.headers.get("CloudLoop/Loop/Session")
     print(f'Got {len(data_to_upload)} bytes to upload')
     filename = f'/tmp/cloudloop-file-{uuid4()}.wav'
     with open(filename, 'wb') as f:
@@ -63,11 +65,12 @@ def upload():
                          'samples': file_data['samples'],
                          'sample_rate': file_data['samplerate'],
                          'bit_depth': file_data['samplewidth'],
-                         'channels': file_data['channels']}
+                         'channels': file_data['channels'],
+                         'creator': creator,
+                         'session': session}
     print(f'Analyzed file {filename} : {airtable_records}')
     start_airtable = time.time()
     airtable = Airtable('appHcObTX28Vj70uM', 'Loops', api_key=os.environ['AIRTABLE_KEY'])
-
     airtable.insert(airtable_records)
     end_airtable = time.time()
     print(f'Processed airtable record in {end_airtable-start_airtable}')
