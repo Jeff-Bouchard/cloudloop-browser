@@ -4,6 +4,7 @@ from flask import request, Flask
 from uuid import uuid4
 import wavy
 from airtable import Airtable
+import os
 
 import time
 
