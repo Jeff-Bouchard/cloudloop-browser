@@ -3,6 +3,7 @@ from user import User
 from serde import CloudLoopDecoder, CloudLoopEncoder
 import bcrypt
 import logging
+import sys
 
 class UserAlreadyExistsException(Exception):
     pass
@@ -25,9 +26,9 @@ class UserStore(object):
     """
     UserStore is a secondary Redis DB which stores user data.
     """
-    def __init__(self, flush=False, redis_host='cloudloop-rejson'):
+    def __init__(self, flush=False, redis_host='redis'):
         self._data = {}
-        self._rejson = Client(host=redis_host,
+        self._rejson = Client(host='redis',
                               port=6379,
                               decode_responses=True,
                               db=2,

@@ -36,16 +36,16 @@ class SessionStore(object):
     We will just save a snapshot of each session, keyed by session name.
     """
 
-    def __init__(self, flush=False, redis_host='cloudloop-rejson'):
+    def __init__(self, flush=False, redis_host='redis'):
         self._data = {}
         self._next_slot = 0  # eventually a FIFO queue (list.append(in) + list.pop(0)
         self._rejson = Client(host=redis_host,
                               port=6379,
                               decode_responses=True,
-                              # password='cloudloop',
                               encoder=CloudLoopEncoder(),
                               decoder=CloudLoopDecoder(),
                               db=1)
+
 
         if flush:
             self._rejson.flushall()

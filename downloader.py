@@ -5,6 +5,7 @@ from uuid import uuid4
 import io
 import os
 from airtable import Airtable
+from time import time
 
 app = Flask(__name__)
 
@@ -17,15 +18,16 @@ def get_download_options():
             'custom_filename': ''
         })
 
-@app.route('/', methods=['GET'])
+@app.route('/download', methods=['GET'])
 def download():
     request_args = request.args
     skylink = request_args['skylink']
-    print(f"Received request for skylink {skylink}")
-    filename = f'/tmp/cloudloop-file-{uuid4()}.wav'
-
+    filename = f'/tmp/cloudloop-file-{uuid4()}.wav'    
+    print(f"Received request for skylink {skylink} --> {filename}")
+    start_time = time()
     Skynet.download_file(filename, skylink, get_download_options())
-    print("Download successful from skylink: " + skylink)
+    end_time = time()
+    print(f"Download successful from skylink: {skylink} in {str(end_time-start_time)}")
     with open(filename, 'rb') as bites:
         return send_file(
                      io.BytesIO(bites.read()),

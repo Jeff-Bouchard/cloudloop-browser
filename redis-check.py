@@ -3,7 +3,7 @@ import time
 import os, sys
 import subprocess
 
-REDIS_HOST='cloudloop-rejson'
+REDIS_HOST='redis'
 
 rejson_client = Client(host=REDIS_HOST,
                       port=6379,
@@ -15,7 +15,7 @@ redis_healthy = False
 saved_args=sys.argv[1:]
 print(f'Subprocess command: {saved_args}')
 
-while redis_healthy is not True:
+while not redis_healthy:
     try:
         res = rejson_client.ping()
         print(f'Redis healthy? {res}')

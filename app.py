@@ -23,7 +23,9 @@ app.config['SECRET_KEY'] = 'secret!'
 app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
 app.json_decoder = CloudLoopDecoder
 app.json_encoder = CloudLoopEncoder
-app.config['REDIS_HOST'] = 'cloudloop-rejson'
+app.config['REDIS_HOST'] = 'redis'
+print(app.config['REDIS_HOST'])
+
 socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.config["REDIS_HOST"]}:6379', async_mode="eventlet")
 
 

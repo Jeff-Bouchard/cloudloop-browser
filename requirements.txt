@@ -1,3 +1,4 @@
+dnspython<2.0.0
 flask
 flask-socketio
 siaskynet
@@ -11,3 +12,6 @@ bcrypt
 flask-JWT
 wavy
 airtable-python-wrapper
+matplotlib
+grequests
+numpy

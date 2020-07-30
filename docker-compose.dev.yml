@@ -10,7 +10,7 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - cloudloop-rejson
+      - redis
 
   uploader:
     image: registry.digitalocean.com/cloudloop/session-server:latest
@@ -37,7 +37,7 @@ services:
     ports:
       - "5002:5002"
 
-  cloudloop-rejson:
+  redis:
     image: registry.digitalocean.com/cloudloop/cloudloop-rejson:latest
     environment:
       - REDIS_PASSWORD #Not yet implemented

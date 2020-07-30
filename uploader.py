@@ -34,7 +34,7 @@ def get_upload_options():
             'custom_filename': ''
         })
 
-@app.route('/', methods=['post'])
+@app.route('/upload', methods=['post'])
 def upload():
     """Responds to any HTTP request.
     Args:
