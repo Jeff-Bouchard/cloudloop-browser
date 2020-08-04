@@ -1,3 +1,6 @@
+from eventlet import wsgi
+import eventlet
+eventlet.monkey_patch()
 from siaskynet import Skynet
 from flask.json import jsonify
 from flask import request, Flask
@@ -47,9 +50,9 @@ def upload():
     # upload
     start = time.time()
     data_to_upload = request.get_data()
-    creator = request.headers.get("CloudLoop/Loop/Creator")
-    session = request.headers.get("CloudLoop/Loop/Session")
-    print(f'Got {len(data_to_upload)} bytes to upload')
+    creator = request.headers.get("CloudLoop-Loop-Creator")
+    session = request.headers.get("CloudLoop-Loop-Session")
+    print(f'Got {len(data_to_upload)} bytes to upload - creator: {creator}, session: {session}')
     filename = f'/tmp/cloudloop-file-{uuid4()}.wav'
     with open(filename, 'wb') as f:
         f.write(data_to_upload)
@@ -76,3 +79,5 @@ def upload():
     print(f'Processed airtable record in {end_airtable-start_airtable}')
     print("Upload successful, skylink: " + skylink)
     return jsonify(skylink)
+
+wsgi.server(eventlet.listen(('', 5001)), app)

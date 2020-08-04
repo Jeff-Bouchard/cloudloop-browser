@@ -1,3 +1,6 @@
+from eventlet import wsgi
+import eventlet
+eventlet.monkey_patch()
 from siaskynet import Skynet
 from flask.json import jsonify
 from flask import Flask, request, send_file
@@ -34,3 +37,5 @@ def download():
                      attachment_filename='cloudloop-sound.wav',
                      mimetype='audio/wav'
                )
+
+wsgi.server(eventlet.listen(('', 5002)), app)
