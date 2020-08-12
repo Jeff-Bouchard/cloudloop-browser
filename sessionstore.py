@@ -226,7 +226,7 @@ class SessionStore(object):
         """
         MUTATES DATASTORE
         """
-        if self.check_user_auth(session_name, username):
+        if self.check_user_auth(session_name, username) and slot_number > 0:
             slots = self.get_slots_with_int_keys(session_name)
             if slot_number in slots:
                 if slots[slot_number].creator == username:
