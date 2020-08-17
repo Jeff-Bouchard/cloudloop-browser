@@ -184,6 +184,22 @@ def get_public_session_headers():
                           message=f'Got {len(session_headers)} public session headers.',
                           data=session_headers)
 
+@app.route('/friends_sessions', methods=['GET'])
+@jwt_required()
+def get_friends_sessions():
+    try:
+        username = current_identity.username
+        friends = users.get_friends(username)
+        session_names = []
+        for friend in friends:
+            session_names.extend(users.get_user_sessions(friend))
+        friend_session_headers = sessions.get_sessions_headers(session_names)
+        return friend_session_headers
+    except Exception as e:
+        msg = f'An unknown error occurred while getting friends sessions: {e}'
+        _log.error(msg)
+        return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, [])
+
 
 @app.route('/sessions', methods=['GET'])
 @jwt_required()

@@ -57,12 +57,15 @@ class SessionStore(object):
         return list(self._rejson.scan_iter())
 
     def get_public_session_headers(self):
-        public_session_headers = []
         sessions = self.get_session_names()
-        if len(sessions) > 0:
-            session_privacy = self.get_sessions_data(sessions, '.private')
+        return self.get_sessions_headers(sessions)
+
+    def get_sessions_headers(self, session_names_list):
+        session_headers = []
+        if len(session_names_list) > 0:
+            session_privacy = self.get_sessions_data(session_names_list, '.private')
             public_sessions_names = list(
-                map(lambda y: y[0], filter(lambda x: x[1] == False, zip(sessions, session_privacy))))
+                map(lambda y: y[0], filter(lambda x: x[1] == False, zip(session_names_list, session_privacy))))
             public_sessions_creators = self.get_sessions_data(public_sessions_names, '.creator')
             public_sessions_users_online = self.get_sessions_data(public_sessions_names, '.users_online')
             for x in range(len(public_sessions_names)):
@@ -70,8 +73,8 @@ class SessionStore(object):
                 entry['name'] = public_sessions_names[x]
                 entry['creator'] = public_sessions_creators[x]
                 entry['users_online'] = len(public_sessions_users_online[x])
-                public_session_headers.append(entry)
-        return public_session_headers
+                session_headers.append(entry)
+        return session_headers
 
     def get_session_users_online(self, session_names):
         return self._rejson.jsonmget('.users_online', *session_names)
