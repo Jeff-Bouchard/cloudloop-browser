@@ -213,16 +213,16 @@ class SessionStore(object):
             _log.warning(msg)
             raise SessionActionNotPermittedException(msg)
 
-    def reserve_slot(self, session_name, username):
+    def reserve_slot(self, session_name, username, new_id):
         """
         MUTATES DATASTORE
         """
         if self.check_user_auth(session_name, username):
             # Possible race condition here.
             next_slot = self.next_slot(session_name)
-            new_loop = Loop(link=f'reserve://{username}', creator=username, hash='')
+            new_loop = Loop(link=f'reserve://{username}', creator=username, hash=new_id)
             self._rejson.jsonset(session_name, f'.slots.{next_slot}', new_loop)
-            msg = f"Slot {next_slot} reserved in session {session_name} by {username}"
+            msg = f"Slot {next_slot} reserved in session {session_name} by {username} with id {new_id}"
             _log.info(msg)
             return next_slot
         else:

@@ -282,14 +282,15 @@ def add_loop():
 def reserve_slot():
     try:
         session_name = request.json['session_name']
+        new_id = request.json['new_id']
         username = current_identity.username
-        slot = sessions.reserve_slot(session_name, username)
+        slot = sessions.reserve_slot(session_name, username, new_id)
         session_data = sessions[session_name]
         session_json = json.dumps(session_data, cls=CloudLoopEncoder)
         socketio.emit("state_update", session_json, room=session_name, broadcast=True)
         return build_response(HTTPStatus.OK,
                        message=f'Slot {slot} in {session_name} reserved by {username}',
-                       data=jsonify(sessions[session_name]))
+                       data=slot)
     except KeyError as e:
         return build_response(HTTPStatus.NOT_FOUND,
                        message=f'Missing parameter {e}')
