@@ -53,6 +53,9 @@ class SessionStore(object):
     def __getitem__(self, session_name):
         return self.get_session_data(session_name)
 
+    def healthz_check(self):
+        return self._rejson.ping()
+
     def get_session_names(self):
         return list(self._rejson.scan_iter())
 
@@ -204,22 +207,23 @@ class SessionStore(object):
             else:
                 _log.info(f'Loop {loop.link} added to session {session_name} by {username}.')
                 self._rejson.jsonarrappend(session_name, '.library', loop)
-                next_slot = self.add_slot(session_name=session_name, username=username)
-                self.update_slot(session_name=session_name, username=username, loop=loop, slot_number=next_slot)
                 return True
         else:
             msg = f'Operation not permitted. User {username} not in session {session_name}.'
             _log.warning(msg)
             raise SessionActionNotPermittedException(msg)
 
-    def add_slot(self, session_name, username):
+    def reserve_slot(self, session_name, username, new_id):
         """
         MUTATES DATASTORE
         """
         if self.check_user_auth(session_name, username):
+            # Possible race condition here.
             next_slot = self.next_slot(session_name)
-            new_loop = Loop(link='', creator=username, hash='')
+            new_loop = Loop(link=f'reserve://{username}', creator=username, hash=new_id)
             self._rejson.jsonset(session_name, f'.slots.{next_slot}', new_loop)
+            msg = f"Slot {next_slot} reserved in session {session_name} by {username} with id {new_id}"
+            _log.info(msg)
             return next_slot
         else:
             raise SessionActionNotPermittedException(
@@ -253,7 +257,6 @@ class SessionStore(object):
         """
         MUTATES DATASTORE
         """
-        self.add_loop(session_name, username, loop)
         slots = self.get_slots_with_int_keys(session_name)
         if slot_number in slots:
             if slots[slot_number].creator == username:
