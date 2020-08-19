@@ -6,9 +6,9 @@ services:
     image: registry.digitalocean.com/cloudloop/session-server:latest
     deploy:
       replicas: 1
-    command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "5000"]
+    command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "56000"]
     ports:
-      - "5000:5000"
+      - "56000:56000"
     depends_on:
       - redis
     links:
@@ -20,12 +20,12 @@ services:
       replicas: 1
     environment:
       - FLASK_APP=uploader.py
-      - FLASK_RUN_PORT=5001
+      - FLASK_RUN_PORT=56001
       - FLASK_RUN_HOST=0.0.0.0
       - AIRTABLE_KEY=keyBfwKRUJ6tkf1rX
     command: ["python", "uploader.py"]
     ports:
-      - "5001:5001"
+      - "56001:56001"
 
   downloader:
     image: registry.digitalocean.com/cloudloop/session-server:latest
@@ -33,11 +33,11 @@ services:
       replicas: 1
     environment:
       - FLASK_APP=downloader.py
-      - FLASK_RUN_PORT=5002
+      - FLASK_RUN_PORT=56002
       - FLASK_RUN_HOST=0.0.0.0
     command: ["python", "downloader.py"]
     ports:
-      - "5002:5002"
+      - "56002:56002"
 
   redis:
     image: registry.digitalocean.com/cloudloop/cloudloop-rejson:latest

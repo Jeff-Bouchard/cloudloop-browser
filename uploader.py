@@ -80,4 +80,4 @@ def upload():
     print("Upload successful, skylink: " + skylink)
     return jsonify(skylink)
 
-wsgi.server(eventlet.listen(('', 5001)), app)
+wsgi.server(eventlet.listen(('', 56001)), app)
