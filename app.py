@@ -263,7 +263,6 @@ def add_loop():
         session_data = sessions[session_name]
         session_json = json.dumps(session_data, cls=CloudLoopEncoder)
         socketio.emit("state_update", session_json, room=session_name, broadcast=True)
-        _log.info(session_data)
         return build_response(status=HTTPStatus.OK,
                               message=f'Loop {session_name}/{loop.link} created',
                               data=session_data)
@@ -278,15 +277,18 @@ def add_loop():
                               message=f'Session {session_name} not found.')
 
 
-@app.route('/add_slot', methods=['POST'])
+@app.route('/reserve_slot', methods=['POST'])
 @jwt_required()
-def add_slot():
+def reserve_slot():
     try:
         session_name = request.json['session_name']
         username = current_identity.username
-        slot = sessions.add_slot(session_name, username)
+        slot = sessions.reserve_slot(session_name, username)
+        session_data = sessions[session_name]
+        session_json = json.dumps(session_data, cls=CloudLoopEncoder)
+        socketio.emit("state_update", session_json, room=session_name, broadcast=True)
         return build_response(HTTPStatus.OK,
-                       message=f'Slot {slot} created.',
+                       message=f'Slot {slot} in {session_name} reserved by {username}',
                        data=jsonify(sessions[session_name]))
     except KeyError as e:
         return build_response(HTTPStatus.NOT_FOUND,
@@ -307,9 +309,10 @@ def update_slot():
         session_name = request.json['session_name']
         wav_link = request.json['wav_link'] #wav_link for now
         slot_number = request.json['slot_number']
+        hash = request.json['hash']
         loop = sessions.get_loop_from_library(session_name, wav_link)
         if loop is None:
-            loop = Loop(creator=username)
+            loop = Loop(creator=username, link=wav_link, hash=hash)
             sessions.add_loop(session_name=session_name, username=username, loop=loop)
         sessions.update_slot(session_name, username, slot_number, loop=loop)
         session_data = sessions[session_name]

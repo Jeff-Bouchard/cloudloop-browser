@@ -116,46 +116,46 @@ def test_get_session_names_single(store):
 
 def test_add_slot_fail_invalid_session(store):
     with pytest.raises(SessionNotFoundException):
-        store.add_slot(session_name='session_does_not_exist', username='test_user')
+        store.reserve_slot(session_name='session_does_not_exist', username='test_user')
 
 
 def test_add_slot_fail_user_not_in_session(store):
     store.create_session(session_name='test_session', creator='test_user')
     with pytest.raises(SessionActionNotPermittedException):
-        store.add_slot(session_name='test_session', username='test_user_2')
+        store.reserve_slot(session_name='test_session', username='test_user_2')
 
 
 def test_add_slot_success(store):
     store.create_session(session_name='test_session', creator='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     assert len(store.get_slots_with_int_keys('test_session')) == 1
     assert isinstance(store.get_slots_with_int_keys('test_session')[0], Loop)
 
 
 def test_delete_slot_fail_slot_number(store):
     store.create_session(session_name='test_session', creator='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     with pytest.raises(SessionActionNotPermittedException):
         store.delete_slot(session_name='test_session', username='test_user', slot_number=2)
 
 
 def test_delete_slot_failure_session_not_exist(store):
     store.create_session(session_name='test_session', creator='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     with pytest.raises(SessionNotFoundException):
         store.delete_slot(session_name='test_session_2', username='test_user', slot_number=1)
 
 
 def test_delete_slot_failure_user_not_in_session(store):
     store.create_session(session_name='test_session', creator='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     with pytest.raises(SessionActionNotPermittedException):
         store.delete_slot(session_name='test_session', username='test_user_2', slot_number=1)
 
 
 def test_delete_slot_user_not_owner(store):
     store.create_session(session_name='test_session', creator='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
     with pytest.raises(SessionActionNotPermittedException):
         store.delete_slot(session_name='test_session', username='test_user_2', slot_number=0)
@@ -163,13 +163,13 @@ def test_delete_slot_user_not_owner(store):
 
 def test_delete_slot_success(store):
     store.create_session(session_name='test_session', creator='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     assert store.delete_slot(session_name='test_session', username='test_user', slot_number=0)
 
 
 def test_add_and_delete_many_slot(store):
     store.create_session(session_name='test_session', creator='test_user')
-    list(map(lambda y: store.add_slot(session_name='test_session', username='test_user'), range(100)))
+    list(map(lambda y: store.reserve_slot(session_name='test_session', username='test_user'), range(100)))
     results = list(map(lambda x: store.delete_slot(session_name='test_session', username='test_user', slot_number=x),
                        range(0, 100)))
     assert results == [True for x in range(100)]
@@ -241,7 +241,7 @@ def test_update_slot_failure_slot_not_exist(store):
 def test_update_slot_failure_slot_not_exist_with_slots(store):
     store.create_session(session_name='test_session', creator='test_user')
     store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     loop = Loop(link='http://test.link', creator='test_user_2', hash='test_hash', created_at='test_timestamp')
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     with pytest.raises(SessionActionNotPermittedException):
@@ -251,7 +251,7 @@ def test_update_slot_failure_slot_not_exist_with_slots(store):
 def test_update_slot_failure_user_not_slot_owner(store):
     store.create_session(session_name='test_session', creator='test_user')
     store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     loop = Loop(link='http://test.link', creator='test_user_2', hash='test_hash', created_at='test_timestamp')
     store.add_loop(session_name='test_session', username='test_user_2', loop=loop)
     with pytest.raises(SessionActionNotPermittedException):
@@ -261,7 +261,7 @@ def test_update_slot_failure_user_not_slot_owner(store):
 def test_update_slot_success_new_loop(store):
     store.create_session(session_name='test_session', creator='test_user')
     store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     loop = Loop(link='http://test.link', creator='test_user', hash='test_hash', created_at='test_timestamp')
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=0)
     assert len(store['test_session']['library']) == 1
@@ -271,7 +271,7 @@ def test_update_slot_success_new_loop(store):
 def test_update_slot_success_loop_exists(store):
     store.create_session(session_name='test_session', creator='test_user')
     store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     loop = Loop(link='http://test.link', creator='test_user', hash='test_hash', created_at='test_timestamp')
     store.add_loop(session_name='test_session', username='test_user', loop=loop)
     store.update_slot(session_name='test_session', username='test_user', loop=loop, slot_number=1)
@@ -282,7 +282,7 @@ def test_update_slot_success_loop_exists(store):
 def test_update_slot_success_empty_loop(store):
     store.create_session(session_name='test_session', creator='test_user')
     store.join_session(session_name='test_session', username='test_user_2', inviter='test_user')
-    store.add_slot(session_name='test_session', username='test_user')
+    store.reserve_slot(session_name='test_session', username='test_user')
     loop = Loop(link='http://test.link', creator='test_user', hash='test_hash', created_at='test_timestamp')
     empty_loop = Loop()
     store.add_loop(session_name='test_session', username='test_user', loop=loop)
