@@ -194,7 +194,9 @@ def get_friends_sessions():
         for friend in friends:
             session_names.extend(users.get_user_sessions(friend))
         friend_session_headers = sessions.get_sessions_headers(session_names)
-        return friend_session_headers
+        return build_response(status=HTTPStatus.OK,
+                              message=f'Got {len(friend_session_headers)} friends sessions.',
+                              data=friend_session_headers)
     except Exception as e:
         msg = f'An unknown error occurred while getting friends sessions: {e}'
         _log.error(msg)

@@ -1,0 +1,10 @@
+Non-user install because user site-packages disabled
+Created temporary directory: /tmp/pip-ephem-wheel-cache-9fm0sc0d
+Created temporary directory: /tmp/pip-req-tracker-4d2p2arc
+Initialized build tracking at /tmp/pip-req-tracker-4d2p2arc
+Created build tracker: /tmp/pip-req-tracker-4d2p2arc
+Entered build tracker: /tmp/pip-req-tracker-4d2p2arc
+Created temporary directory: /tmp/pip-install-jkvevqu7
+Requirement already satisfied: greenlet in ./env/lib/python3.8/site-packages (0.4.15)
+Cleaning up...
+Removed build tracker: '/tmp/pip-req-tracker-4d2p2arc'
