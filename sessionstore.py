@@ -221,7 +221,7 @@ class SessionStore(object):
         """
         if self.check_user_auth(session_name, username):
             next_slot = self.next_slot(session_name)
-            new_loop = Loop(link='', creator=username, hash='')
+            new_loop = Loop(link=f'reserve://{username}', creator=username, hash='')
             self._rejson.jsonset(session_name, f'.slots.{next_slot}', new_loop)
             return next_slot
         else:
