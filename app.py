@@ -53,6 +53,13 @@ def build_response(status, message, data=None):
 def not_permitted_response(message='Operation not permitted.'):
     return build_response(HTTPStatus.FORBIDDEN, message=message)
 
+@app.route('/healthz/ready/', methods=['GET'])
+def healthz():
+    result = sessions.healthz_check()
+    if result:
+        return build_response(HTTPStatus.OK, message="Session server communicating with memstore")
+    else:
+        return build_response(HTTPStatus.INTERNAL_SERVER_ERROR, message="Session server cannot communicate with memstore.")
 
 @app.route('/auth/login', methods=['POST'])
 def login_user():

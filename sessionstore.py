@@ -53,6 +53,9 @@ class SessionStore(object):
     def __getitem__(self, session_name):
         return self.get_session_data(session_name)
 
+    def healthz_check(self):
+        return self._rejson.ping()
+
     def get_session_names(self):
         return list(self._rejson.scan_iter())
 

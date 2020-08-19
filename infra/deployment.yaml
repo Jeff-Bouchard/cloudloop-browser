@@ -1,0 +1,90 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: session-server
+spec:
+  template:
+    metadata:
+      labels: {name: session-server}
+      name: session-server
+    spec:
+      containers:
+      - name: session-server
+        image: registry.digitalocean.com/cloudloop/session-server:latest
+        env:
+        - {name: DEBUG, value: 'false'}
+        envFrom:
+        - secretRef: {name: session-server}
+        - configMapRef:
+            name: session-server-config
+        - configMapRef:
+            name: session-server-env
+        livenessProbe:
+          httpGet:
+            httpHeaders:
+            - {name: Accept, value: application/json; version=v1}
+            path: /
+            port: 443
+            scheme: HTTPS
+        readinessProbe:
+          httpGet:
+            httpHeaders:
+            - {name: Accept, value: application/json; version=v1}
+            path: /healthz/ready/
+            port: 443
+            scheme: HTTPS
+        resources:
+          limits: {memory: 300Mi}
+          requests: {memory: 300Mi}
+        volumeMounts:
+        - {mountPath: /usr/src/app/qwil/mounted_secrets/all/, name: django, readOnly: true}
+        - {mountPath: /jwt-secrets/, name: jwt-secrets, readOnly: true}
+
+      - name: nginx-proxy
+        image: registry.digitalocean.com/cloudloop/nginx-proxy:latest
+        env:
+        - {name: ENABLE_SSL, value: 'true'}
+        - {name: TARGET_SERVICE, value: 'localhost:8000'}
+        livenessProbe:
+          httpGet: {path: /healthz/, port: 443, scheme: HTTPS}
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+        ports:
+        - {containerPort: 443, name: https, protocol: TCP}
+        - {containerPort: 80, name: http, protocol: TCP}
+        volumeMounts:
+        - {mountPath: /etc/secrets/, name: certificates, readOnly: true}
+        - {mountPath: /etc/dhparam/, name: dhparam, readOnly: true}
+        - {mountPath: /app/gunicorn-socket, name: gunicorn-socket-dir, readOnly: false}
+
+      volumes:
+      - name: django
+        secret: {secretName: django}
+      - name: jwt-secrets
+        secret: {secretName: jwt-secrets}
+      - name: svb-secrets
+        secret: {defaultMode: 256, secretName: monolith-svb-secret}
+      - name: cb-secrets
+        secret: {defaultMode: 256, secretName: monolith-cb-secret}
+      - name: email-secrets
+        secret: {defaultMode: 256, secretName: monolith-email-secret}
+      - name: saml-secrets
+        secret: {defaultMode: 256, secretName: monolith-saml-secret}
+      - name: certificates
+        secret:
+          items:
+          - {key: tls.key, path: proxykey}
+          - {key: tls.crt, path: proxycert}
+          secretName: star.builds.qwil.co
+      - name: dhparam
+        secret:
+          items:
+          - {key: dhparam.pem, path: dhparam}
+          secretName: dhparam
+      - configMap:
+          items:
+          - {key: MONOLITH_SVB_KNOWNHOSTS, path: known_hosts}
+          name: django-config
+        name: svb-known-hosts
+      - emptyDir: {}
+        name: gunicorn-socket-dir
