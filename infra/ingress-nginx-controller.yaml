@@ -1,21 +1,25 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: nginx-config
-  namespace: nginx-ingress
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
 data:
-  proxy-connect-timeout: "10s"
-  proxy-send-timeout: "3600s"
-  proxy-read-timeout: "3600s"
+  proxy-connect-timeout: "10"
+  proxy-send-timeout: "3600"
+  proxy-read-timeout: "3600"
   client-max-body-size: "20m"
   keepalive-timeout: "180"
   variables-hash-max-size: "2048"
-  server-tokens: "False"
+  server-tokens: "false"
   worker-connections: "768"
   ssl-protocols: "TLSv1.2 TLSv1.3"
-  ssl-prefer-server-ciphers: "True"
+  ssl-prefer-server-ciphers: "true"
   ssl-ciphers: "ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384 OLD_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 OLD_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256"
   ssl-dh-param: "ingress-nginx/lb-dhparam"
-  ssl-redirect: "True"
-  hsts: "True"
+  ssl-redirect: "true"
+  hsts: "true"
   hsts-max-age: "2592000"
+  proxy-set-headers: "ingress-nginx/custom-headers"
+  http-snippet: "map $http_upgrade $connection_upgrade { default upgrade; '' close; }"
+
+
