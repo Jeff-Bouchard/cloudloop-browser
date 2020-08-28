@@ -273,7 +273,7 @@ class SessionStore(object):
     def user_connect(self, session_name, username):
         """MUTATES DATASTORE"""
         if self.check_user_auth(session_name=session_name, username=username):
-            self._rejson.jsonset(session_name, '.users_online', {username: datetime.datetime.now().isoformat()})
+            self._rejson.jsonset(session_name, f'.users_online.{username}', datetime.datetime.now().isoformat())
 
     def user_disconnect(self, session_name, username):
         """MUTATES DATASTORE"""

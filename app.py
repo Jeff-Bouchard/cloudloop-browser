@@ -464,6 +464,8 @@ def on_leave(data):
         session_name = data['session_name']
         leave_room(session_name)
         sessions.user_disconnect(username=username, session_name=session_name)
+        jsondata = json.dumps(sessions[session_name], cls=CloudLoopEncoder)
+        emit("state_update", jsondata, room=session_name, broadcast=True)
         emit('message', username + ' has left the session ' + session_name, room=session_name)
     except KeyError as e:
         _log.info("username and room not found.")
