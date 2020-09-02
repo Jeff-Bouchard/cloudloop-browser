@@ -16,14 +16,20 @@ from serde import CloudLoopDecoder, CloudLoopEncoder
 
 import logging
 
+#SECRET
 JWT_SECRET_KEY=b'|\xc7\xf6E9&\xf9vf`N(\xe3x.\xd4R\xc1|<_\xddJ\xa7'
 
 app = Flask(__name__)
+
+#SECRET
 app.config['SECRET_KEY'] = 'secret!'
+
+#SECRET (defined above)
 app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
 app.json_decoder = CloudLoopDecoder
 app.json_encoder = CloudLoopEncoder
 app.config['REDIS_HOST'] = 'redis'
+
 print(app.config['REDIS_HOST'])
 
 socketio = SocketIO(app, cors_allowed_origins="*", message_queue=f'redis://{app.config["REDIS_HOST"]}:6379', async_mode="eventlet")

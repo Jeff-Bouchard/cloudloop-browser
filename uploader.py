@@ -1,9 +1,9 @@
 from eventlet import wsgi
 import eventlet
 eventlet.monkey_patch()
-from siaskynet import Skynet
+from siaskynet import upload_file
 from flask.json import jsonify
-from flask import request, Flask
+from flask import request, Flask, make_response
 from uuid import uuid4
 import wavy
 from airtable import Airtable
@@ -29,13 +29,17 @@ def get_wav_data(filename):
 
 
 def get_upload_options():
-        return type('obj', (object,), {
+        return {
             'portal_url': 'https://skynet.cloudloop.io',
             'portal_upload_path': 'skynet/skyfile',
             'portal_file_fieldname': 'file',
             'portal_directory_file_fieldname': 'files[]',
             'custom_filename': ''
-        })
+        }
+
+@app.route('/healthz/ready/', methods=['GET'])
+def healthz_ready():
+    return make_response(jsonify({'status': 'ok', 'message': 'ok', 'data': {'results': 'ok'}}), 200)
 
 @app.route('/upload', methods=['post'])
 def upload():
@@ -61,7 +65,7 @@ def upload():
     file_data = get_wav_data(filename)
     print(f'Uploading file {filename} : {file_data}')
     begin_upload = time.time()
-    skylink = Skynet.upload_file(filename, get_upload_options())
+    skylink = upload_file(filename, get_upload_options())
     finish_upload = time.time()
     print(f'Finished uploading {filename} to skynet in {finish_upload-begin_upload}')
     airtable_records =  {'link': skylink,

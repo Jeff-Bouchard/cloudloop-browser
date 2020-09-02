@@ -37,7 +37,6 @@ spec:
           limits: {memory: 300Mi}
           requests: {memory: 300Mi}
         volumeMounts:
-        - {mountPath: /usr/src/app/qwil/mounted_secrets/all/, name: django, readOnly: true}
         - {mountPath: /jwt-secrets/, name: jwt-secrets, readOnly: true}
 
       - name: nginx-proxy
@@ -75,16 +74,9 @@ spec:
           items:
           - {key: tls.key, path: proxykey}
           - {key: tls.crt, path: proxycert}
-          secretName: star.builds.qwil.co
+          secretName: app.cloudloop.io
       - name: dhparam
         secret:
           items:
           - {key: dhparam.pem, path: dhparam}
           secretName: dhparam
-      - configMap:
-          items:
-          - {key: MONOLITH_SVB_KNOWNHOSTS, path: known_hosts}
-          name: django-config
-        name: svb-known-hosts
-      - emptyDir: {}
-        name: gunicorn-socket-dir

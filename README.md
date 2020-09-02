@@ -13,6 +13,12 @@ A session is a mutable description of a session in-progress.
 Loops are just HATEOAS references to external HTTPS URLs. No audio processing here!
 
 ### Running
+
+build all the images with docker-compose build
+
+run dev server with `./run.sh dev build && ./run.sh dev up`
+
+
 The production configuration can be launched using `docker-compose up`.
 All three containers run just fine on 1GB memory and 1 shared vCore. Could probably use ARM instances for the API and a "fat" redis
 
