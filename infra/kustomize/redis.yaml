@@ -1,0 +1,31 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    server : redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: cloudloop-rejson
+        image: cloudloop-rejson
+        imagePullPolicy: Never
+        command: ["redis-server" , "--appendonly yes" , "--loadmodule /usr/lib/redis/modules/rejson.so"]
+        ports:
+            - containerPort: 6379
+        resources:
+          limits:
+            cpu: 250m
+            memory: 500Mi
+          requests:
+            cpu: 250m
+            memory: 500Mi
