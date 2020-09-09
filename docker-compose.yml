@@ -6,9 +6,9 @@ services:
     image: registry.digitalocean.com/cloudloop/session-server:latest
     deploy:
       replicas: 1
-    command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "56000"]
     ports:
       - "56000:56000"
+    command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "56000"]
     depends_on:
       - redis
     links:
@@ -39,16 +39,17 @@ services:
     ports:
       - "56002:56002"
 
+  #only one of this
   redis:
     image: registry.digitalocean.com/cloudloop/cloudloop-rejson:latest
     ports:
       - "6379"
     command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so --bind redis --port 6379
 
-
+  #Sidecar this for each pod
   cloudloop-nginx:
     build: nginx/
-    image: registry.digitalocean.com/cloudloop/nginx-proxy:latest
+    image: registry.digitalocean.com/cloudloop/nginx:latest
     ports:
       - "80:80"
       - "443:443"
