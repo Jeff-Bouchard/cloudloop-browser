@@ -5,6 +5,7 @@ metadata:
   labels:
     service: redis
 spec:
+  type: NodePort
   ports:  
   - name: http
     port: 6379
@@ -20,6 +21,7 @@ metadata:
   labels:
     service: session-server
 spec:
+  type: NodePort
   ports:  
   - name: http
     port: 56000
@@ -35,6 +37,7 @@ metadata:
   labels:
     service: uploader
 spec:
+  type: NodePort
   ports:  
   - name: http
     port: 56001
@@ -50,6 +53,7 @@ metadata:
   labels:
     service: downloader
 spec:
+  type: NodePort
   ports:  
   - name: http
     port: 56002
