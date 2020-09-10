@@ -1,0 +1,40 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-server
+  labels:
+    server : session-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session-server
+  template:
+    metadata:
+      labels:
+        app: session-server
+    spec:
+      containers:
+      - name: session-server
+        image: session-server
+        imagePullPolicy: Never
+        command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "5000"]
+        ports:
+            - containerPort: 56000
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz/ready
+            port: 56000
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 250m
+            memory: 500Mi
+          requests:
+            cpu: 250m
+            memory: 500Mi

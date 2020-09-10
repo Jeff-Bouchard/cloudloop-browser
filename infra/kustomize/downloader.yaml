@@ -1,0 +1,47 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: downloader
+  labels:
+    server : downloader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: downloader
+  template:
+    metadata:
+      labels:
+        app: downloader
+    spec:
+      containers:
+      - name: session-server
+        image: session-server
+        imagePullPolicy: Never
+        command: ["python", "downloader.py"]
+        env:
+        - name: FLASK_APP
+          value: "downloader.py"
+        - name: FLASK_RUN_PORT
+          value: "5002"
+        - name: FLASK_RUN_HOST
+          value: "0.0.0.0"
+        ports:
+            - containerPort: 56002
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz/ready
+            port: 56002
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 250m
+            memory: 500Mi
+          requests:
+            cpu: 250m
+            memory: 500Mi
