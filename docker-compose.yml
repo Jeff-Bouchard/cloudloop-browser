@@ -42,8 +42,8 @@ services:
   loops:
     image: registry.digitalocean.com/cloudloop/session-server:latest
     deploy:
-      replices: 1
-    envrionment:
+      replicas: 1
+    environment:
       - AIRTABLE_KEY=keyBfwKRUJ6tkf1rX
     command: ["python", "loops.py"]
     ports:
