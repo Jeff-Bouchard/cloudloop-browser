@@ -1,9 +1,9 @@
 # kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-commonLabels:
-  app: cloudloop
-  environment: dev
+#commonLabels:
+ # app: cloudloop
+  #environment: dev
 images:
   - name: session-server # match images with this name
     newTag: latest # override the tag
