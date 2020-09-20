@@ -197,6 +197,7 @@ def get_public_session_headers():
                           message=f'Got {len(session_headers)} public session headers.',
                           data=session_headers)
 
+
 @app.route('/friends_sessions', methods=['GET'])
 @jwt_required()
 def get_friends_sessions():
