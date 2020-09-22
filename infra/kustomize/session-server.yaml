@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: session-server
   labels:
-    server : session-server
+    app : session-server
 spec:
   replicas: 1
   selector:
