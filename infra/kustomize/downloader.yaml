@@ -15,24 +15,19 @@ spec:
       labels:
         app: downloader
     spec:
+      imagePullSecrets:
+        - name: registry-cloudloop
       containers:
       - name: session-server
         image: session-server
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
         command: ["python", "downloader.py"]
-        env:
-        - name: FLASK_APP
-          value: "downloader.py"
-        - name: FLASK_RUN_PORT
-          value: "5002"
-        - name: FLASK_RUN_HOST
-          value: "0.0.0.0"
         ports:
             - containerPort: 56002
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /healthz/ready
+            path: /healthz/ready/
             port: 56002
             scheme: HTTP
           periodSeconds: 10

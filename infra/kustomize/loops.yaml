@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: session-server
+  name: loops
   labels:
-    app : session-server
+    app : loops
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: session-server
+       app: loops
   template:
     metadata:
       labels:
-        app: session-server
+        app: loops
     spec:
       imagePullSecrets:
         - name: registry-cloudloop
@@ -21,14 +21,17 @@ spec:
       - name: session-server
         image: session-server
         imagePullPolicy: IfNotPresent
-        command: ["python", "redis-check.py", "python", "app.py", "-h", "0.0.0.0", "-p", "5000"]
+        command: ["python", "loops.py"]
+        env:
+        - name: AIRTABLE_KEY
+          value: "keyBfwKRUJ6tkf1rX"
         ports:
-            - containerPort: 56000
+            - containerPort: 56003
         readinessProbe:
           failureThreshold: 3
           httpGet:
             path: /healthz/ready/
-            port: 56000
+            port: 56003
             scheme: HTTP
           periodSeconds: 10
           successThreshold: 1

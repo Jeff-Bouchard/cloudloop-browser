@@ -15,18 +15,14 @@ spec:
       labels:
         app: uploader
     spec:
+      imagePullSecrets:
+        - name: registry-cloudloop
       containers:
       - name: session-server
         image: session-server
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
         command: ["python", "uploader.py"]
         env:
-        - name: FLASK_APP
-          value: "uploader.py"
-        - name: FLASK_RUN_PORT
-          value: "5001"
-        - name: FLASK_RUN_HOST
-          value: "0.0.0.0"
         - name: AIRTABLE_KEY
           value: "keyBfwKRUJ6tkf1rX"
         ports:
@@ -34,7 +30,7 @@ spec:
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /healthz/ready
+            path: /healthz/ready/
             port: 56001
             scheme: HTTP
           periodSeconds: 10

@@ -61,4 +61,20 @@ spec:
     protocol: TCP
   selector:
     app: downloader
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loops
+  labels:
+    server: loops
+spec:
+  #type: NodePort
+  ports:
+  - name: http
+    port: 56003
+    targetPort: 56003
+    protocol: TCP
+  selector:
+    app: loops
 
