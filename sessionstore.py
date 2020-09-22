@@ -63,6 +63,14 @@ class SessionStore(object):
         sessions = self.get_session_names()
         return self.get_sessions_headers(sessions)
 
+    def build_public_index(self):
+        session_names = self.get_session_names()
+        session_privacy = self.get_session_data(session_names, '.private')
+        public_sessions_names = list(
+            map(lambda y: y[0], filter(lambda x: x[1] == False, zip(session_names, session_privacy))))
+        self._rejson.jsonmget()
+        self._rejson
+
     def get_sessions_headers(self, session_names_list):
         session_headers = []
         if len(session_names_list) > 0:

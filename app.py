@@ -216,12 +216,15 @@ def get_friends_sessions():
         _log.error(msg)
         return build_response(HTTPStatus.NOT_ACCEPTABLE, msg, [])
 
-
 @app.route('/sessions', methods=['GET'])
 @jwt_required()
 def get_sessions_for_user():
     try:
-        username = current_identity.username
+        params = request.args
+        if params['username']:
+            username = params['username']
+        else:
+            username = current_identity.username
         session_names = users.get_user_sessions(username)
         if len(session_names) == 0:
             valid_sessions = []
@@ -463,6 +466,13 @@ def on_join(data):
     except KeyError as e:
         _log.info("username and room not found.")
 
+@socketio.on('join', namespace='/lobby')
+def on_join_lobby(data):
+    try:
+        print(f"JOIN LOBBY {data}")
+        username = data['username']
+    except KeyError as e:
+        _log.error("No username present in joinLobby payload.")
 
 @socketio.on('leaveSession')
 def on_leave(data):

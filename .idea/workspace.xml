@@ -5,16 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7ad24ead-9ef4-4dd7-a660-551ecca95138" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/admin.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/upload.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/upload_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/downloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/downloader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infra/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/infra/deployment.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploader.py" beforeDir="false" afterPath="$PROJECT_DIR$/uploader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sessionstore.py" beforeDir="false" afterPath="$PROJECT_DIR$/sessionstore.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,6 +150,8 @@
       <workItem from="1598586578500" duration="1309000" />
       <workItem from="1598837116402" duration="3350000" />
       <workItem from="1599016785811" duration="3050000" />
+      <workItem from="1600716553764" duration="4594000" />
+      <workItem from="1600785220322" duration="3047000" />
     </task>
     <servers />
   </component>
