@@ -234,7 +234,7 @@ def get_sessions_for_user():
         _log.info(msg)
         return build_response(status=HTTPStatus.OK,
                           message=msg,
-                          data={'sessions': valid_sessions})
+                          data=valid_sessions)
     except Exception as e:
         _log.error(f"Error retrieving user: {e}")
 
