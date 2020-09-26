@@ -130,7 +130,6 @@ def get_user():
 @jwt_required()
 def create_session():
     try:
-        username = request.json['username'] # deprecate username
         session_name = request.json['session_name']
         private = request.json['private_session']
         identity = current_identity.username
