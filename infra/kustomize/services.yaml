@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    server: redis
+spec:
+  #type: NodePort
+  ports:  
+  - name: http
+    port: 6379
+    targetPort: 6379
+    protocol: TCP
+  selector:
+    app: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-server
+  labels:
+    server: session-server
+spec:
+  #type: NodePort
+  ports:  
+  - name: http
+    port: 56000
+    targetPort: 56000
+    protocol: TCP
+  selector:
+    app: session-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uploader
+  labels:
+    server: uploader
+spec:
+  #type: NodePort
+  ports:  
+  - name: http
+    port: 56001
+    targetPort: 56001
+    protocol: TCP
+  selector:
+    app: uploader
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: downloader
+  labels:
+    server: downloader
+spec:
+  #type: NodePort
+  ports:  
+  - name: http
+    port: 56002
+    targetPort: 56002
+    protocol: TCP
+  selector:
+    app: downloader
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loops
+  labels:
+    server: loops
+spec:
+  #type: NodePort
+  ports:
+  - name: http
+    port: 56003
+    targetPort: 56003
+    protocol: TCP
+  selector:
+    app: loops
+

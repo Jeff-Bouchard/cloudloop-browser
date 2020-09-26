@@ -1,0 +1,42 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: downloader
+  labels:
+    app : downloader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+       app: downloader
+  template:
+    metadata:
+      labels:
+        app: downloader
+    spec:
+      imagePullSecrets:
+        - name: registry-cloudloop
+      containers:
+      - name: session-server
+        image: session-server
+        imagePullPolicy: IfNotPresent
+        command: ["python", "downloader.py"]
+        ports:
+            - containerPort: 56002
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz/ready/
+            port: 56002
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 250m
+            memory: 500Mi
+          requests:
+            cpu: 250m
+            memory: 500Mi
