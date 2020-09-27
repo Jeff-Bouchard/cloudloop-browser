@@ -174,6 +174,9 @@ def join():
         inviter = current_identity.username
         if sessions.join_session(session_name, username, inviter):
             users.join_session(username, session_name)
+            session_data = sessions[session_name]
+            session_json = json.dumps(session_data, cls=CloudLoopEncoder)
+            socketio.emit("state_update", session_json, room=session_name, broadcast=True)
             return build_response(status=HTTPStatus.OK,
                                   message=f'{username} has joined session {session_name}',
                                   data=sessions[session_name])
