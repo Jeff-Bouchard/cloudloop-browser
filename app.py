@@ -87,16 +87,17 @@ def login_user():
 def register_user():
     try:
         username = request.json['username']
+        username = username.trim()
         email = request.json['email']
         password = request.json['password']
-        if not users.get_user(username):
+        if not users.get_user(username) and username != "":
             users.create_user(username=username, email=email, password=password)
             new_user = users.get_user(username)
             token = new_user.encode_auth_token(username)
-            print("success registering")
+            print(f"success registering user {username}")
             return build_response(HTTPStatus.OK, f'User {username} created.', token.decode())
         else:
-            return build_response(HTTPStatus.CONFLICT, f'{username} already exists.')
+            return build_response(HTTPStatus.CONFLICT, f'{username} already exists or is invalid.')
     except KeyError as e:
         print("error Creating user: " + str(e))
         return build_response(HTTPStatus.BAD_REQUEST, 'Keys username, email, password not present in request exist.')
