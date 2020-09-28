@@ -79,7 +79,7 @@ class UserStore(object):
             user = self._rejson.jsonget(username)
             return user
         else:
-            return False
+            return None
 
     def get_user_password_hash(self, username):
         if self._rejson.exists(username):
