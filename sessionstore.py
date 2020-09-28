@@ -9,6 +9,9 @@ import json
 class SessionAlreadyExistsException(Exception):
     pass
 
+class SessionNameInvalidException(Exception):
+    pass
+
 
 class SessionActionNotPermittedException(Exception):
     pass
@@ -151,6 +154,8 @@ class SessionStore(object):
         """
         if session_name in self.get_session_names():
             raise SessionAlreadyExistsException(f'Session {session_name} already exists. Aborting create_session.')
+        elif session_name.trim() == "":
+            raise SessionNameInvalidException(f'Session name {session_name} is invalid.')
         else:
             session_data = {
                 "name": session_name,
