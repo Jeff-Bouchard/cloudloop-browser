@@ -25,7 +25,6 @@ export const Loop: FunctionComponent<Props> = ({
         waveColor: "violet",
         progressColor: "purple",
       });
-
       wavesurfer.load(Download);
     }
   }, []);

@@ -7,7 +7,9 @@ import { LoopData } from "./types";
 import Grid from "@material-ui/core/Grid";
 import { Loop } from "./components/Loop";
 import { Typography } from "@material-ui/core";
-import { LoopListContainer } from "./styled";
+
+
+import { LoopListContainer, UserListContainer } from "./styled";
 import Waveform from "./components/Waveform";
 
 const getSessionData = (sessionName: string): any => {

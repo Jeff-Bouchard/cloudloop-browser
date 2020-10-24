@@ -7,7 +7,7 @@ import PauseRoundedIcon from "@material-ui/icons/PauseRounded";
 import { WaveformContianer, Wave, PlayButton, DownloadLink } from "./styled";
 import { Typography } from "@material-ui/core";
 
-const DOWNLOAD_HOST = "http://0.0.0.0:56002";
+const DOWNLOAD_HOST = "https://cloudloop.io";
 
 const Waveform: FunctionComponent<any> = (props) => {
   const { loopData } = props;
@@ -29,9 +29,9 @@ const Waveform: FunctionComponent<any> = (props) => {
         cursorColor: "transparent",
       });
 
-      // const audioSource = `${DOWNLOAD_HOST}/download?skylink=${loopData.fields.link}`;
-      const audioSource =
-        "https://www.mfiles.co.uk/mp3-downloads/gs-cd-track2.mp3";
+      const audioSource = `${DOWNLOAD_HOST}/download?skylink=${loopData.fields.link}`;
+      //const audioSource =
+      //  "https://www.mfiles.co.uk/mp3-downloads/gs-cd-track2.mp3";
       newWaveform.load(audioSource);
       setWaveform(newWaveform);
     }

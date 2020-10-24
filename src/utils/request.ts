@@ -46,7 +46,7 @@ function checkStatus(response: Response) {
  * @return {object}           The response data
  */
 
-const API_HOST = "http://localhost:56003";
+const API_HOST = "https://cloudloop.io";
 
 export default async function request(
   url: string,
