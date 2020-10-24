@@ -10,7 +10,7 @@ function App() {
         <Route exact path="/">
           <h1>Home</h1>
         </Route>
-        <Route path="/session/:sessionName">
+        <Route path="/browser/session/:sessionName">
           <SessionView />
         </Route>
       </Switch>
