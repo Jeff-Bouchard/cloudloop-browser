@@ -1,56 +1,75 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
+    <v-app-bar app color="teal" dark>
+      <router-link to="/" class="text-decoration-none white--text">
         <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
           contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
+          width="50"
+          alt="cloudloop Logo"
+          :src="require('./assets/infinity.svg')"
         />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
+      </router-link>
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>open_in_new</v-icon>
-      </v-btn>
+      <v-text-field
+        dense
+        filled
+        outlined
+        single-line
+        v-model="search"
+        hide-details="true"
+        placeholder="Search cloudloop"
+      ></v-text-field>
+      <v-spacer></v-spacer>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }" v-if="!$vuetify.breakpoint.mobile">
+          <h6 class="text-h6 text-uppercase mr-4" v-on="on">
+            Username
+          </h6>
+        </template>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title v-for="(link, index) in menuLinks" :key="index">
+              <router-link
+                :to="link.to"
+                class="text-decoration-none black--text"
+              >
+                {{ link.text }}
+              </router-link>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-avatar color="red" size="40" v-on="on"></v-avatar>
+        </template>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title v-for="(link, index) in menuLinks" :key="index">
+              <router-link
+                :to="link.to"
+                class="text-decoration-none black--text"
+              >
+                {{ link.text }}
+              </router-link>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
     <v-main>
-      <HelloWorld />
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
-
 export default {
   name: "App",
-
-  components: {
-    HelloWorld
-  },
-
   data: () => ({
-    //
+    search: "",
+    menuLinks: [{ text: "My Sessions", to: "sessions" }]
   })
 };
 </script>
