@@ -19,7 +19,7 @@
       @change="onFile"
     />
     <v-img :src="require('../assets/Waves.svg')" contain height="64"></v-img>
-    <label class="text-h6 font-weight-black" for="file">
+    <label class="text-h6 font-weight-black text-center" for="file">
       DROP IT LIKE IT'S HOT
     </label>
   </div>

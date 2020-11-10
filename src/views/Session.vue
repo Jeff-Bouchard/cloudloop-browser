@@ -8,8 +8,8 @@
             dark
             large
             x-large
-            color="black"
             class="mr-4"
+            color="black"
             @click="isPlaying = !isPlaying"
           >
             <v-icon dark>
