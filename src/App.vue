@@ -18,6 +18,7 @@
         v-model="search"
         hide-details="true"
         placeholder="Search cloudloop"
+        append-icon="search"
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-menu offset-y>

@@ -29,15 +29,14 @@
         </h2>
 
         <v-row justify="center">
-          <a
+          <router-link
             v-for="(next, i) in whatsNext"
             :key="i"
-            :href="next.href"
+            :to="next.to"
             class="subheading mx-3"
-            target="_blank"
           >
             {{ next.text }}
-          </a>
+          </router-link>
         </v-row>
       </v-col>
     </v-row>
@@ -51,16 +50,8 @@ export default {
   data: () => ({
     whatsNext: [
       {
-        text: "Explore components",
-        href: "https://vuetifyjs.com/components/api-explorer"
-      },
-      {
-        text: "Select a layout",
-        href: "https://vuetifyjs.com/getting-started/pre-made-layouts"
-      },
-      {
-        text: "Frequently Asked Questions",
-        href: "https://vuetifyjs.com/getting-started/frequently-asked-questions"
+        text: "My Sessions",
+        to: "sessions"
       }
     ]
   })
