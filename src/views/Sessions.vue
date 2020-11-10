@@ -36,11 +36,22 @@
         :key="session.id"
       >
         <router-link to="session">
-          <v-card>
-            <v-responsive aspect-ratio="1">
-              <v-img :src="session.coverUrl" />
-            </v-responsive>
-          </v-card>
+          <v-hover>
+            <template v-slot:default="{ hover }">
+              <v-card :elevation="hover ? 12 : 5" class="transition-swing">
+                <v-responsive aspect-ratio="1">
+                  <v-img :src="session.coverUrl">
+                    <span
+                      class="rating white--text text-h6 text-decoration-none"
+                    >
+                      {{ session.stars }}
+                      <v-icon color="white">grade</v-icon>
+                    </span>
+                  </v-img>
+                </v-responsive>
+              </v-card>
+            </template>
+          </v-hover>
         </router-link>
       </v-col>
     </v-row>
@@ -51,6 +62,12 @@
 .dropzone {
   width: 100%;
   height: 100%;
+}
+
+.rating {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
 }
 </style>
 
@@ -73,6 +90,12 @@ export default {
           stars: 100,
           coverUrl:
             "https://skyportal.xyz/HAClCALSAo5HaaELUam8iSp6fAHMik5Oy6sXtAUNIUE8_Q"
+        },
+        {
+          id: 0,
+          stars: 69,
+          coverUrl:
+            "https://skyportal.xyz/3AEym3jDLSjzBHj7TS_wfFJm7PNpKYfqia50TF4oxQYnQg"
         }
       ]
     };
