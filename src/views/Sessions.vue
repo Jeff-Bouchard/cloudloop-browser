@@ -1,5 +1,5 @@
 <template>
-  <v-container class="my-10">
+  <v-container class="my-10 px-6">
     <v-row>
       <v-col cols="12">
         <span class="text-h3 text-uppercase font-weight-bold">
@@ -22,12 +22,19 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="2">
+      <v-col cols="12" sm="6" lg="4" xl="2">
         <v-responsive aspect-ratio="1">
           <Dropzone class="dropzone" @drop="onFile" />
         </v-responsive>
       </v-col>
-      <v-col v-for="session in sessions" :key="session.id" cols="2">
+      <v-col
+        cols="12"
+        sm="6"
+        lg="4"
+        xl="2"
+        v-for="session in sessions"
+        :key="session.id"
+      >
         <router-link to="session">
           <v-card>
             <v-responsive aspect-ratio="1">
