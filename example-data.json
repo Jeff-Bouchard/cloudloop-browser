@@ -1,0 +1,76 @@
+{
+  "name": "justine",
+  "created_at": "2020-09-08T21:06:21.876944",
+  "private": false,
+  "creator": "liamsargent",
+  "generation": 0,
+  "users": [
+    "liamsargent",
+    "jusamalav"
+  ],
+  "users_online": {
+    "jusamalav": "2020-09-08T21:10:01.614775",
+    "liamsargent": "2020-09-08T21:21:36.863771"
+  },
+  "slots": {
+    "0": {
+      "_type": "Loop",
+      "link": "sia://_Ao_w9PoFV-63id4mxi317Ogryn6IydG34cygr8ZTW5keQ",
+      "creator": "jusamalav",
+      "hash": "70F12554-9522-4198-9E66-7374698A7D38",
+      "created_at": "2020-09-08T21:12:06.919646"
+    },
+    "1": {
+      "_type": "Loop",
+      "link": "sia://_AoPD7bAZ-tu0pBaRC8alfGI1idFUwPJGEBLqHYJd7K9ww",
+      "creator": "liamsargent",
+      "hash": "079D5665-F81C-48E8-A33B-4B754A1B7D54",
+      "created_at": "2020-09-08T21:12:38.304089"
+    },
+    "2": {
+      "_type": "Loop",
+      "link": "reserve://liamsargent",
+      "creator": "liamsargent",
+      "hash": "E648967C-2A75-4038-BDE3-E12443C484C3",
+      "created_at": "2020-09-08T21:12:53.166927"
+    },
+    "3": {
+      "_type": "Loop",
+      "link": "sia://_AowqyOZ5K7oJqBVVoWFxSx_XYIAzCkZhfCeifq8NCkBXg",
+      "creator": "jusamalav",
+      "hash": "07AE96F7-B5FD-47BE-88E7-2C86C9138A00",
+      "created_at": "2020-09-08T21:13:52.336973"
+    },
+    "4": {
+      "_type": "Loop",
+      "link": "reserve://jusamalav",
+      "creator": "jusamalav",
+      "hash": "765793DC-96A5-49E1-805D-2F08DA57985A",
+      "created_at": "2020-09-08T21:14:19.331224"
+    }
+  },
+  "library": [
+    {
+      "_type": "Loop",
+      "link": "sia://_Ao_w9PoFV-63id4mxi317Ogryn6IydG34cygr8ZTW5keQ",
+      "creator": "jusamalav",
+      "hash": "70F12554-9522-4198-9E66-7374698A7D38",
+      "created_at": "2020-09-08T21:12:06.919646"
+    },
+    {
+      "_type": "Loop",
+      "link": "sia://_AoPD7bAZ-tu0pBaRC8alfGI1idFUwPJGEBLqHYJd7K9ww",
+      "creator": "liamsargent",
+      "hash": "079D5665-F81C-48E8-A33B-4B754A1B7D54",
+      "created_at": "2020-09-08T21:12:38.304089"
+    },
+    {
+      "_type": "Loop",
+      "link": "sia://_AowqyOZ5K7oJqBVVoWFxSx_XYIAzCkZhfCeifq8NCkBXg",
+      "creator": "jusamalav",
+      "hash": "07AE96F7-B5FD-47BE-88E7-2C86C9138A00",
+      "created_at": "2020-09-08T21:13:52.336973"
+    }
+  ],
+  "favorited_by": []
+}
