@@ -21,7 +21,10 @@
         append-icon="search"
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-menu offset-y>
+      <v-btn v-if="!isLoggedIn" outlined to="login">
+        Login
+      </v-btn>
+      <v-menu v-if="isLoggedIn" offset-y>
         <template v-slot:activator="{ on }" v-if="!$vuetify.breakpoint.mobile">
           <h6 class="text-h6 text-uppercase mr-4" v-on="on">
             Username
@@ -40,7 +43,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-menu offset-y>
+      <v-menu v-if="isLoggedIn" offset-y>
         <template v-slot:activator="{ on }">
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
         </template>
@@ -71,6 +74,12 @@ export default {
   data: () => ({
     search: "",
     menuLinks: [{ text: "My Sessions", to: "sessions" }]
-  })
+  }),
+
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.isLoggedIn;
+    }
+  }
 };
 </script>
