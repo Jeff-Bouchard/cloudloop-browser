@@ -23,6 +23,7 @@ function SessionView() {
   const { sessionName } = useParams();
 
   useEffect(() => {
+    document.title = `CloudLoop Session: ${sessionName}`
     getSessionData(sessionName)
       .then((res: any) => {
         const {

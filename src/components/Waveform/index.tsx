@@ -35,7 +35,7 @@ const Waveform: FunctionComponent<any> = (props) => {
       newWaveform.load(audioSource);
       setWaveform(newWaveform);
     }
-  }, []);
+  }, [loopData.fields.link]);
 
   const handleClick = () => {
     setPlaying(!playing);
