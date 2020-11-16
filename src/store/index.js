@@ -7,7 +7,22 @@ export default new Vuex.Store({
   state: {
     isLoggedIn: false
   },
-  mutations: {},
-  actions: {},
+  mutations: {
+    setIsLoggedIn(state, value) {
+      state.isLoggedIn = value;
+    }
+  },
+  actions: {
+    logInUser({ commit }) {
+      setTimeout(() => {
+        commit("setIsLoggedIn", true);
+      }, 500);
+    },
+    logOutUser({ commit }) {
+      setTimeout(() => {
+        commit("setIsLoggedIn", false);
+      }, 500);
+    }
+  },
   modules: {}
 });
