@@ -30,6 +30,9 @@ export default new Vuex.Store({
         fetch("https://dev.cloudloop.io/auth/login", fetchOptions)
           .then(response => {
             if (response.ok) {
+              response.json().then(jsonData => {
+                window.localStorage.setItem("JWT", jsonData.data.results);
+              });
               commit("setLoggedInUser", userPass.username);
               resolve(userPass.username);
             } else {
@@ -37,16 +40,32 @@ export default new Vuex.Store({
             }
           })
           .catch(error => {
-            console.error(error);
             reject(error);
           });
       });
     },
 
     logOutUser({ commit }) {
-      setTimeout(() => {
-        commit("setIsLoggedIn", false);
-      }, 500);
+      return new Promise((resolve, reject) => {
+        const fetchOptions = {
+          method: "POST",
+          credentials: "include"
+        };
+
+        fetch("https://dev.cloudloop.io/auth/logout", fetchOptions)
+          .then(response => {
+            if (response.ok) {
+              commit("setLoggedInUser", null);
+              window.localStorage.removeItem("JWT");
+              resolve();
+            } else {
+              reject("Error logging out user");
+            }
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
     }
   },
   modules: {}

@@ -49,13 +49,21 @@
         </template>
         <v-list>
           <v-list-item>
-            <v-list-item-title v-for="(link, index) in menuLinks" :key="index">
+            <v-list-item-title>
               <router-link
-                :to="link.to"
+                to="link.to"
                 class="text-decoration-none black--text"
               >
-                {{ link.text }}
+                My Sessions
               </router-link>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logOutUser">
+            <v-list-item-icon>
+              <v-icon>account_circle</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title v-for="(link, index) in menuLinks" :key="index">
+              Logout
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -79,6 +87,14 @@ export default {
   computed: {
     loggedInUser() {
       return this.$store.state.loggedInUser;
+    }
+  },
+
+  methods: {
+    logOutUser() {
+      this.$store.dispatch("logOutUser").then(() => {
+        this.$router.push("/");
+      });
     }
   }
 };
