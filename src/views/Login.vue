@@ -62,7 +62,7 @@ export default {
     async submitForm(event) {
       if (event) event.preventDefault();
       if (!this.$refs.loginForm.validate()) return;
-
+      this.loading = true;
       this.$store
         .dispatch("logInUser", {
           username: this.username,
