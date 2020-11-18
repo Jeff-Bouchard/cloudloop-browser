@@ -92,7 +92,7 @@ export default {
             "https://skyportal.xyz/HAClCALSAo5HaaELUam8iSp6fAHMik5Oy6sXtAUNIUE8_Q"
         },
         {
-          id: 0,
+          id: 1,
           stars: 69,
           coverUrl:
             "https://skyportal.xyz/3AEym3jDLSjzBHj7TS_wfFJm7PNpKYfqia50TF4oxQYnQg"
