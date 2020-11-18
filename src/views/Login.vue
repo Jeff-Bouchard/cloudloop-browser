@@ -28,10 +28,15 @@
           <v-card-actions class="pa-4">
             <v-btn outlined class="mr-2" to="sign-up">Sign Up</v-btn>
             <v-spacer />
-            <v-btn outlined class="mr-2" v-if="!!username">
+            <v-btn
+              outlined
+              class="mr-2"
+              v-if="!!username"
+              @click="resetPassword()"
+            >
               Reset Password
             </v-btn>
-            <v-btn outlined @click="submitForm">Login</v-btn>
+            <v-btn outlined @click="submitForm" :loading="loading">Login</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -57,31 +62,24 @@ export default {
     async submitForm(event) {
       if (event) event.preventDefault();
       if (!this.$refs.loginForm.validate()) return;
-      const fetchOptions = {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
+
+      this.$store
+        .dispatch("logInUser", {
           username: this.username,
           password: this.password
         })
-      };
-      this.loading = true;
-      try {
-        const response = await fetch(
-          "https://dev.cloudloop.io/auth/login",
-          fetchOptions
-        );
-        this.loading = false;
-        response.headers.forEach(header => {
-          console.log(header);
+        .then(() => {
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+          console.log("error logging in");
+          console.error(error);
         });
-      } catch (error) {
-        console.error(error);
-        this.loading = false;
-      }
+    },
+
+    resetPassword() {
+      void 0;
     }
   }
 };

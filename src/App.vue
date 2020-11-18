@@ -21,13 +21,13 @@
         append-icon="search"
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-btn v-if="!isLoggedIn" outlined to="login">
+      <v-btn v-if="!loggedInUser" outlined to="login">
         Login
       </v-btn>
-      <v-menu v-if="isLoggedIn" offset-y>
+      <v-menu v-if="!!loggedInUser" offset-y>
         <template v-slot:activator="{ on }" v-if="!$vuetify.breakpoint.mobile">
           <h6 class="text-h6 text-uppercase mr-4" v-on="on">
-            Username
+            {{ loggedInUser }}
           </h6>
         </template>
         <v-list>
@@ -43,7 +43,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-menu v-if="isLoggedIn" offset-y>
+      <v-menu v-if="!!loggedInUser" offset-y>
         <template v-slot:activator="{ on }">
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
         </template>
@@ -77,8 +77,8 @@ export default {
   }),
 
   computed: {
-    isLoggedIn() {
-      return this.$store.state.isLoggedIn;
+    loggedInUser() {
+      return this.$store.state.loggedInUser;
     }
   }
 };
