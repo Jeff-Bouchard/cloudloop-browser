@@ -7,7 +7,7 @@
             Login
           </v-card-title>
           <v-card-text>
-            <v-form ref="loginForm">
+            <v-form ref="loginForm" @submit="submitForm">
               <v-text-field
                 :rules="[rules.required]"
                 autocomplete="off"
@@ -22,6 +22,7 @@
                 label="Password"
                 type="password"
               ></v-text-field>
+              <input type="submit" class="d-none" />
             </v-form>
           </v-card-text>
           <v-card-actions class="pa-4">
@@ -53,20 +54,30 @@ export default {
   },
 
   methods: {
-    async submitForm() {
+    async submitForm(event) {
+      if (event) event.preventDefault();
       if (!this.$refs.loginForm.validate()) return;
-
       const fetchOptions = {
-        method: "POST"
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password
+        })
       };
       this.loading = true;
       try {
         const response = await fetch(
-          "https://cloudloop.io/auth/login",
+          "https://dev.cloudloop.io/auth/login",
           fetchOptions
         );
         this.loading = false;
-        console.log(response.headers);
+        response.headers.forEach(header => {
+          console.log(header);
+        });
       } catch (error) {
         console.error(error);
         this.loading = false;
