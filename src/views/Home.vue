@@ -25,6 +25,9 @@
           consectetur quod sunt.
         </p>
       </v-col>
+      <v-col cols="12">
+        <SessionCard />
+      </v-col>
 
       <v-col class="mb-5" cols="12">
         <h2 class="headline font-weight-bold mb-3">
@@ -47,8 +50,11 @@
 </template>
 
 <script>
+import SessionCard from "@/components/SessionCard.vue";
+
 export default {
   name: "Home",
+  components: { SessionCard },
   data: () => ({
     whatsNext: [
       {
