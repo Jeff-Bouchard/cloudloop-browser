@@ -16,6 +16,7 @@
         outlined
         single-line
         v-model="search"
+        class="mx-4"
         hide-details="true"
         placeholder="Search cloudloop"
         append-icon="search"
