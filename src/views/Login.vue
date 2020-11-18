@@ -70,6 +70,7 @@ export default {
         })
         .then(() => {
           this.loading = false;
+          this.$router.push("/");
         })
         .catch(error => {
           this.loading = false;
