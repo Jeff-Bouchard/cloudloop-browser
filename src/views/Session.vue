@@ -43,7 +43,7 @@
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
           with
           <v-avatar
-              color="purple"
+              :color="randomColor()"
               v-for="(user, index) in this.$store.state.selectedSession.users"
               :key="index"
               v-on="on"></v-avatar>
