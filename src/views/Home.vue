@@ -20,11 +20,13 @@
 
         <p class="subheading font-weight-regular">
           CloudLoop is a collaborative loop station and audio library.<br />
-          Check out the sessions below, or create your own by dragging and dropping some audio!<br />
+          Check out the sessions below, or create your own by dragging and
+          dropping some audio!<br />
         </p>
       </v-col>
       <v-col cols="12">
         <SessionCard
+          class="mb-4 col-md-6 offset-md-3"
           v-for="(sessionHeader, index) in sessionHeaders"
           :key="index"
           :sessionHeader="sessionHeader"

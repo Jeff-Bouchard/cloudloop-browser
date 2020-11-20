@@ -1,5 +1,5 @@
 <template>
-  <v-card color="pink" dark v-if="sessionHeader" max-width="600">
+  <v-card color="pink" dark v-if="sessionHeader" max-width="600" @click="selectSession">
     <div class="d-flex flex-no-wrap justify-space-between">
       <div>
         <v-card-title
@@ -34,8 +34,23 @@
 </template>
 
 <script>
+import { getDownloadLink } from "@/filters/utils";
+
 export default {
   name: "SessionCard",
-  props: ["sessionHeader"]
+  props: ["sessionHeader"],
+  beforeMount() {
+    console.log("Mounting card.");
+    this.sessionHeader.picture = getDownloadLink(this.sessionHeader.picture);
+  },
+  methods: {
+    async selectSession(event) {
+      if (event) event.preventDefault();
+      console.log("Session selected" + this.sessionHeader.name);
+      await this.$router.push("/session/" + this.sessionHeader.name);
+    }
+  }
+
+
 };
 </script>

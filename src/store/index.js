@@ -5,14 +5,22 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    loggedInUser: null
+    loggedInUser: null,
+    selectedSession: null
   },
   mutations: {
     setLoggedInUser(state, value) {
       state.loggedInUser = value;
+    },
+    setSelectedSession(state, value) {
+      state.selectedSession = value;
     }
   },
   actions: {
+    setSelectedSession({ commit }, payload) {
+      console.log("Selecting session: " + payload.session.name);
+      commit("setSelectedSession", payload.session);
+    },
     logInUser({ commit }, userPass) {
       return new Promise((resolve, reject) => {
         const fetchOptions = {
