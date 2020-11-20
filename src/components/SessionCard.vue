@@ -19,15 +19,7 @@
           }}
         </v-card-subtitle>
         <v-card-actions>
-          <v-btn
-            fab
-            icon
-            right
-            width="40px"
-            height="40px"
-            class="ml-2 mt-3"
-            @click="toggleFavorite"
-          >
+          <v-btn fab icon right width="40px" height="40px" class="ml-2 mt-3">
             <v-icon>grade</v-icon>
             {{ sessionHeader.favorited_by.length }}
           </v-btn>
@@ -44,23 +36,6 @@
 <script>
 export default {
   name: "SessionCard",
-  data() {
-    return {
-      sessionHeader: {
-        created_at: "2020-09-29T21:05:24.379402",
-        creator: "datamancer",
-        favorited_by: [],
-        generation: 0,
-        name: "determine it!",
-        picture:
-          "https://siasky.net/NABSbY8aexCzOBkaC4UuCDpeD0SfJMOeAtIOPdBn93gYZw",
-        private: false,
-        users: ["datamancer"],
-        users_online: {
-          datamancer: "2020-09-29T21:05:25.771431"
-        }
-      }
-    };
-  }
+  props: ["sessionHeader"]
 };
 </script>
