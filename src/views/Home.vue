@@ -24,7 +24,11 @@
         </p>
       </v-col>
       <v-col cols="12">
-        <SessionCard />
+        <SessionCard
+          v-for="(sessionHeader, index) in sessionHeaders"
+          :key="index"
+          :sessionHeader="sessionHeader"
+        />
       </v-col>
 
       <v-col class="mb-5" cols="12">
@@ -54,6 +58,7 @@ export default {
   name: "Home",
   components: { SessionCard },
   data: () => ({
+    sessionHeaders: [],
     whatsNext: [
       {
         text: "My Sessions",
@@ -65,6 +70,31 @@ export default {
   computed: {
     loggedInUser() {
       return this.$store.state.loggedInUser;
+    }
+  },
+
+  beforeMount() {
+    if (this.loggedInUser) {
+      const fetchOptions = {
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${window.localStorage.getItem("JWT")}`
+        }
+      };
+
+      fetch("https://dev.cloudloop.io/publicSessionHeaders", fetchOptions).then(
+        response => {
+          if (response.ok) {
+            response.json().then(jsonData => {
+              console.log(jsonData);
+              this.sessionHeaders = jsonData.data.results;
+            });
+          } else {
+            console.error(response.status);
+          }
+        }
+      );
     }
   }
 };
