@@ -19,10 +19,8 @@
         </h1>
 
         <p class="subheading font-weight-regular">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tenetur<br />
-          dicta facere quidem natus vero? Ducimus minima neque, reprehenderit<br />
-          quisquam ipsa magni saepe, perspiciatis non earum harum itaque,<br />
-          consectetur quod sunt.
+          CloudLoop is a collaborative loop station and audio library.<br />
+          Check out the sessions below, or create your own by dragging and dropping some audio!<br />
         </p>
       </v-col>
       <v-col cols="12">
