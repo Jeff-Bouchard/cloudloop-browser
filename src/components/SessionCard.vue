@@ -23,6 +23,11 @@
             <v-icon>grade</v-icon>
             {{ sessionHeader.favorited_by.length }}
           </v-btn>
+          <v-btn fab icon right width="40px" height="40px" class="ml-2 mt-3">
+            <v-icon>people_alt</v-icon>
+            {{ sessionHeader.users.length }}
+          </v-btn>
+
           <v-spacer />
         </v-card-actions>
       </div>
@@ -40,7 +45,6 @@ export default {
   name: "SessionCard",
   props: ["sessionHeader"],
   beforeMount() {
-    console.log("Mounting card.");
     this.sessionHeader.picture = getDownloadLink(this.sessionHeader.picture);
   },
   methods: {

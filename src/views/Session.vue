@@ -43,6 +43,7 @@
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
           with
           <v-avatar
+              class="ma-4"
               :color="randomColor()"
               v-for="(user, index) in this.$store.state.selectedSession.users"
               :key="index"
@@ -63,7 +64,7 @@
     <v-row>
       <v-col cols="12" lg="4">
         <v-img
-          :src= "this.$store.state.selectedSession.picture"
+          :src="this.$store.state.selectedSession.picture"
           class="rounded-lg"
           aspect-ratio="1"
           max-height="400"
@@ -90,6 +91,9 @@
           </v-chip>
         </div>
       </v-col>
+      <v-col cols="12" lg="4">
+        <WaveformPlayer audioURL="https://cloudloop.io/download?skylink=sia://nACEFLDmnfn1erQV_14p_zL4Ww7OW_dSyOpaWtEuvqHQ_Q"></WaveformPlayer>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -101,10 +105,11 @@
 </style>
 
 <script>
-
+import WaveformPlayer from "@/components/WaveformPlayer.vue";
 import {getDownloadLink} from "@/filters/utils";
 
 export default {
+  components: { WaveformPlayer},
   name: "Session",
   data() {
     return {
