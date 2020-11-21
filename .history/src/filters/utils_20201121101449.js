@@ -52,6 +52,7 @@ export const getColorForString = stringToHash => {
   var lightnessArray = [35, 50, 65];
   const hashResult = stringToHash.hashCode();
   let hue = Math.abs(hashResult % 359.0);
+  console.log(hue);
   let saturationIndex = (hue*180) % (saturationArray.length-1) + 1
   let lightnessIndex = (hue*180) % (saturationArray.length-1) + 1
   return hslToHex(hue, saturationArray[saturationIndex], lightnessArray[lightnessIndex]);

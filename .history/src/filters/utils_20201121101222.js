@@ -48,10 +48,11 @@ function hslToHex(h, s, l) {
 }
 
 export const getColorForString = stringToHash => {
-  var saturationArray = [35, 50, 65];
-  var lightnessArray = [35, 50, 65];
+  var saturationArray = [0.35, 0.5, 0.65];
+  var lightnessArray = [0.35, 0.5, 0.65];
   const hashResult = stringToHash.hashCode();
-  let hue = Math.abs(hashResult % 359.0);
+  console.log(hashResult);
+  let hue = Math.abs((hashResult % 359.0) / 360.0);
   let saturationIndex = (hue*180) % (saturationArray.length-1) + 1
   let lightnessIndex = (hue*180) % (saturationArray.length-1) + 1
   return hslToHex(hue, saturationArray[saturationIndex], lightnessArray[lightnessIndex]);

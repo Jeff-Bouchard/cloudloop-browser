@@ -1,5 +1,5 @@
 <template>
-  <v-card :color="sessionHeader.name | getColorForString" dark v-if="sessionHeader" max-width="600" @click="selectSession">
+  <v-card color="pink" dark v-if="sessionHeader" max-width="600" @click="selectSession">
     <div class="d-flex flex-no-wrap justify-space-between">
       <div>
         <v-card-title

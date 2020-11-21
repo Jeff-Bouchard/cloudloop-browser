@@ -1,5 +1,5 @@
 <template>
-  <v-card :color="sessionHeader.name | getColorForString" dark v-if="sessionHeader" max-width="600" @click="selectSession">
+  <v-card :color="getColorForString(sessionHeader.name)" dark v-if="sessionHeader" max-width="600" @click="selectSession">
     <div class="d-flex flex-no-wrap justify-space-between">
       <div>
         <v-card-title
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { getDownloadLink } from "@/filters/utils";
+import { getDownloadLink, getColorForString } from "@/filters/utils";
 
 export default {
   name: "SessionCard",
