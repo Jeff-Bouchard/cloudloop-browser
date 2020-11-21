@@ -10,7 +10,7 @@
             x-large
             class="mr-4"
             color="black"
-            @click="isPlaying = !isPlaying"
+            @click="playPauseAllLoops"
           >
             <v-icon dark>
               {{ isPlaying ? "pause" : "play_arrow" }}
@@ -91,8 +91,14 @@
           </v-chip>
         </div>
       </v-col>
-      <v-col cols="12" lg="4">
-        <WaveformPlayer audioURL="https://cloudloop.io/download?skylink=sia://nACEFLDmnfn1erQV_14p_zL4Ww7OW_dSyOpaWtEuvqHQ_Q"></WaveformPlayer>
+      <v-spacer></v-spacer>
+      <v-col cols="12" lg="7">
+        <div
+          v-for="loop in this.$store.state.selectedSession.library"
+          :key="loop.hash"
+        >
+          <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash"/>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -150,7 +156,6 @@ export default {
       ).then(response => {
         if (response.ok) {
           response.json().then(jsonData => {
-            console.log(jsonData);
             var session_raw = jsonData.data.results;
             session_raw.picture = getDownloadLink(session_raw.picture);
             session_raw.private = session_raw.private === "true";
@@ -170,7 +175,25 @@ export default {
   methods: {
     randomColor() {
       return this.colors[Math.floor(Math.random() * this.colors.length)];
-    }
+    },
+    playPauseAllLoops() {
+      const playPauseFuncs = this.$store.state.selectedSession.library.map(loop => {
+        const refHandle = `ref-${loop.hash}`;
+        return this.$refs[refHandle][0].playPause;
+      });
+
+      playPauseFuncs.forEach(func => func());
+      this.isPlaying = !this.isPlaying;
+    },
+    // pauseAllLoops() {
+    //   const pauseFuncs = this.$store.state.selectedSession.library.map(loop => {
+    //     const refHandle = `ref-${loop.hash}`;
+    //     return this.$refs[refHandle][0].pause;
+    //   });
+
+    //   pauseFuncs.forEach(func => func());
+    //   this.isPlaying = false;
+    // },
   }
 };
 </script>
