@@ -19,12 +19,66 @@
           </v-btn>
         </div>
       </v-col>
-      <v-col cols="12" lg="10">
+      <v-col class="waveform-wrapper" cols="12" lg="10">
+        <v-icon
+          medium
+          class="icon star-icon"
+        >
+          star
+        </v-icon>
+                <v-icon
+          medium
+          class="icon download-icon"
+        >
+          mdi-download-circle
+        </v-icon>
         <div :id="'waveform-' + loop.hash"></div>
+        <p class="wave-tag creator-tag">
+          <span>
+            <strong>CREATOR: </strong>
+          </span>
+          <span class="tag-value">{{loop.creator}}</span>
+        </p>
+        <p class="wave-tag created-on-tag">
+          <span>
+            <strong>CREATED ON: </strong>
+          </span>
+          <span class="tag-value">{{loop.created_at | formatDate}}</span>
+        </p>
       </v-col>
     </v-row>
   </v-container>
 </template>
+
+<style scoped>
+  .waveform-wrapper {
+    position: relative;
+  }
+  .wave-tag {
+    position: absolute;
+    font-size: 12px;
+  }
+  .creator-tag {
+    right: 45%;
+  }
+  .created-on-tag {
+    right: 12%;
+  }
+  .tag-value {
+    font-size: 12px;
+    color: #646464;
+  }
+  .icon {
+    position: absolute;
+    z-index: 3;
+  }
+  .star-icon {
+    right: 6%;
+  }
+  .download-icon {
+    right: 0;
+  }
+</style>
 
 <script>
   import WaveSurfer from "wavesurfer.js";
@@ -40,11 +94,12 @@
     },
     mounted() {
       const { loop } = this.$props;
+      console.log({loop})
 
       this.waveSurfer = WaveSurfer.create({
         container: `#waveform-${loop.hash}`,
         barWidth: 2,
-        barHeight: 8,
+        barHeight: 3,
         barMinHeight: 1,
         cursorWidth: 1,
         backend: "WebAudio",
@@ -80,7 +135,12 @@
       playFromStart() {
         this.waveSurfer.play(0);
       }
+    },
+    filters: {
+      formatDate(dateStr) {
+        const dateObj = new Date(dateStr);
+        return dateObj.getFullYear() + "-" + (dateObj.getMonth() + 1) + "-" + dateObj.getDate(); 
+      }
     }
-
   };
 </script>

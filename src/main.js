@@ -7,6 +7,7 @@ import vuetify from "./plugins/vuetify";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import { getDownloadLink, getColorForString } from "./filters/utils.js";
+import '@mdi/font/css/materialdesignicons.css'
 import VueWaveSurfer from "vue-wave-surfer";
 
 Vue.config.productionTip = false;
