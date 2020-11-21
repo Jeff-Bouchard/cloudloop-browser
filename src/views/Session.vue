@@ -10,7 +10,7 @@
             x-large
             class="mr-4"
             color="black"
-            @click="isPlaying = !isPlaying"
+            @click="playPauseAllLoops"
           >
             <v-icon dark>
               {{ isPlaying ? "pause" : "play_arrow" }}
@@ -43,6 +43,7 @@
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
           with
           <v-avatar
+              class="ma-4"
               :color="randomColor()"
               v-for="(user, index) in this.$store.state.selectedSession.users"
               :key="index"
@@ -63,7 +64,7 @@
     <v-row>
       <v-col cols="12" lg="4">
         <v-img
-          :src= "this.$store.state.selectedSession.picture"
+          :src="this.$store.state.selectedSession.picture"
           class="rounded-lg"
           aspect-ratio="1"
           max-height="400"
@@ -90,6 +91,15 @@
           </v-chip>
         </div>
       </v-col>
+      <v-spacer></v-spacer>
+      <v-col cols="12" lg="7">
+        <div
+          v-for="loop in this.$store.state.selectedSession.library"
+          :key="loop.hash"
+        >
+          <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash"/>
+        </div>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -101,11 +111,12 @@
 </style>
 
 <script>
-
+import WaveformPlayer from "@/components/WaveformPlayer.vue";
 import {getDownloadLink} from "@/filters/utils";
 
 export default {
   name: "Session",
+  components: { WaveformPlayer },
   data() {
     return {
       session: this.selectedSession,
@@ -145,7 +156,6 @@ export default {
       ).then(response => {
         if (response.ok) {
           response.json().then(jsonData => {
-            console.log(jsonData);
             var session_raw = jsonData.data.results;
             session_raw.picture = getDownloadLink(session_raw.picture);
             session_raw.private = session_raw.private === "true";
@@ -165,7 +175,25 @@ export default {
   methods: {
     randomColor() {
       return this.colors[Math.floor(Math.random() * this.colors.length)];
-    }
+    },
+    playPauseAllLoops() {
+      const playPauseFuncs = this.$store.state.selectedSession.library.map(loop => {
+        const refHandle = `ref-${loop.hash}`;
+        return this.$refs[refHandle][0].playPause;
+      });
+
+      playPauseFuncs.forEach(func => func());
+      this.isPlaying = !this.isPlaying;
+    },
+    // pauseAllLoops() {
+    //   const pauseFuncs = this.$store.state.selectedSession.library.map(loop => {
+    //     const refHandle = `ref-${loop.hash}`;
+    //     return this.$refs[refHandle][0].pause;
+    //   });
+
+    //   pauseFuncs.forEach(func => func());
+    //   this.isPlaying = false;
+    // },
   }
 };
 </script>
