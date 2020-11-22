@@ -13,7 +13,7 @@
     "bytes": "^3.1.0",
     "core-js": "^3.6.5",
     "material-design-icons-iconfont": "^5.0.1",
-    "music-metadata": "^7.5.0",
+    "music-metadata-browser": "^2.1.6",
     "register-service-worker": "^1.7.1",
     "roboto-fontface": "*",
     "uuid": "^8.3.1",
