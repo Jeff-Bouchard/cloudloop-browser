@@ -22,12 +22,15 @@
       <v-col class="waveform-wrapper" cols="12" lg="10">
         <v-icon
           medium
+          @click="toggleStar"
           class="icon star-icon"
+          :style="isStarred && 'color: gold'"
         >
-          star
+          {{isStarred ? 'star' : 'mdi-star-outline'}}
         </v-icon>
-                <v-icon
+        <v-icon
           medium
+          @click="downloadLoop"
           class="icon download-icon"
         >
           mdi-download-circle
@@ -77,6 +80,7 @@
   }
   .download-icon {
     right: 0;
+    color: black;
   }
 </style>
 
@@ -89,12 +93,12 @@
     props: ["loop"],
     data() {
       return {
-        isPlaying: false
+        isPlaying: false,
+        isStarred: false
       }
     },
     mounted() {
       const { loop } = this.$props;
-      console.log({loop})
 
       this.waveSurfer = WaveSurfer.create({
         container: `#waveform-${loop.hash}`,
@@ -120,6 +124,13 @@
     },
 
     methods: {
+      downloadLoop() {
+        const downloadLink = getDownloadLink(this.$props.loop.link)
+        location.href = downloadLink;
+      },
+      toggleStar() {
+        this.isStarred = !this.isStarred;
+      },
       playPause() {
         this.waveSurfer.playPause();
         this.isPlaying = !this.isPlaying;
