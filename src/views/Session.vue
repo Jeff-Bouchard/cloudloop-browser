@@ -94,7 +94,7 @@
       <v-spacer></v-spacer>
       <v-col cols="12" lg="7">
         <div
-          v-for="loop in this.$store.state.selectedSession.library"
+          v-for="loop in this.$store.state.selectedSession.slots"
           :key="loop.hash"
         >
           <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash"/>
@@ -177,7 +177,7 @@ export default {
       return this.colors[Math.floor(Math.random() * this.colors.length)];
     },
     playPauseAllLoops() {
-      const playPauseFuncs = this.$store.state.selectedSession.library.map(loop => {
+      const playPauseFuncs = this.$store.state.selectedSession.slots.map(loop => {
         const refHandle = `ref-${loop.hash}`;
         return this.$refs[refHandle][0].playPause;
       });
@@ -186,7 +186,7 @@ export default {
       this.isPlaying = !this.isPlaying;
     },
     // pauseAllLoops() {
-    //   const pauseFuncs = this.$store.state.selectedSession.library.map(loop => {
+    //   const pauseFuncs = this.$store.state.selectedSession.slots.map(loop => {
     //     const refHandle = `ref-${loop.hash}`;
     //     return this.$refs[refHandle][0].pause;
     //   });
