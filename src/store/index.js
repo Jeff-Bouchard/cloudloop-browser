@@ -6,21 +6,30 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     loggedInUser: null,
-    selectedSession: null
+    selectedSession: null,
+    files: []
   },
+
   mutations: {
     setLoggedInUser(state, value) {
       state.loggedInUser = value;
     },
+
     setSelectedSession(state, value) {
       state.selectedSession = value;
+    },
+
+    addFile(state, file) {
+      state.files.push(file);
     }
   },
+
   actions: {
     setSelectedSession({ commit }, payload) {
       console.log("Selecting session: " + payload.session.name);
       commit("setSelectedSession", payload.session);
     },
+
     logInUser({ commit }, userPass) {
       return new Promise((resolve, reject) => {
         const fetchOptions = {
@@ -34,7 +43,6 @@ export default new Vuex.Store({
             password: userPass.password
           })
         };
-
         fetch("https://dev.cloudloop.io/auth/login", fetchOptions)
           .then(response => {
             if (response.ok) {
