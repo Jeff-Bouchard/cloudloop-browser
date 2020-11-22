@@ -15,7 +15,7 @@
       ref="file"
       type="file"
       name="files[]"
-      accept="audio/*"
+      accept=".wav"
       @change="onFile"
     />
     <v-img :src="require('../assets/Waves.svg')" contain height="64"></v-img>
