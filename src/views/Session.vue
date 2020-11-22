@@ -10,7 +10,7 @@
             x-large
             class="mr-4"
             color="black"
-            @click="playPauseAllLoops"
+            @click="handleClick"
           >
             <v-icon dark>
               {{ isPlaying ? "pause" : "play_arrow" }}
@@ -117,6 +117,7 @@ import {getDownloadLink} from "@/filters/utils";
 export default {
   components: { WaveformPlayer},
   name: "Session",
+  props: ['on'],
   data() {
     return {
       session: this.selectedSession,
@@ -176,24 +177,29 @@ export default {
     randomColor() {
       return this.colors[Math.floor(Math.random() * this.colors.length)];
     },
-    playPauseAllLoops() {
-      const playPauseFuncs = this.$store.state.selectedSession.slots.map(loop => {
+    handleClick() {
+      if (this.isPlaying) this.pauseAllLoops()
+      else this.playAllLoops();
+    },
+    playAllLoops() {
+      const playFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
         const refHandle = `ref-${loop.hash}`;
-        return this.$refs[refHandle][0].playPause;
+        return this.$refs[refHandle][0].play;
+      });
+      console.log({playFuncs})
+
+      playFuncs.forEach(func => func());
+      this.isPlaying = true;
+    },
+    pauseAllLoops() {
+      const pauseFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
+        const refHandle = `ref-${loop.hash}`;
+        return this.$refs[refHandle][0].pause;
       });
 
-      playPauseFuncs.forEach(func => func());
-      this.isPlaying = !this.isPlaying;
+      pauseFuncs.forEach(func => func());
+      this.isPlaying = false;
     },
-    // pauseAllLoops() {
-    //   const pauseFuncs = this.$store.state.selectedSession.slots.map(loop => {
-    //     const refHandle = `ref-${loop.hash}`;
-    //     return this.$refs[refHandle][0].pause;
-    //   });
-
-    //   pauseFuncs.forEach(func => func());
-    //   this.isPlaying = false;
-    // },
   }
 };
 </script>
