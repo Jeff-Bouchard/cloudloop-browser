@@ -1,5 +1,11 @@
 <template>
-  <v-card color="pink" dark v-if="sessionHeader" max-width="600" @click="selectSession">
+  <v-card
+    color="pink"
+    dark
+    v-if="sessionHeader"
+    max-width="600"
+    @click="selectSession"
+  >
     <div class="d-flex flex-no-wrap justify-space-between">
       <div>
         <v-card-title
@@ -50,7 +56,5 @@ export default {
       await this.$router.push("/session/" + this.sessionHeader.name);
     }
   }
-
-
 };
 </script>

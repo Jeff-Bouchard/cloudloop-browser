@@ -38,17 +38,17 @@
         </div>
         <div>
           <span class="text-h5 font-weight-medium text-uppercase">
-            {{this.$store.state.selectedSession.creator}}
+            {{ this.$store.state.selectedSession.creator }}
           </span>
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
           with
           <v-avatar
-              :color="randomColor()"
-              v-for="(user, index) in this.$store.state.selectedSession.users"
-              :key="index"
-              v-on="on"></v-avatar>
+            :color="randomColor()"
+            v-for="(user, index) in this.$store.state.selectedSession.users"
+            :key="index"
+            v-on="on"
+          ></v-avatar>
         </div>
-
 
         <!-- This inline flex thing doesn't really work how I wanted -->
         <!-- need to find a way to bring that avatar(s) below the title -->
@@ -63,7 +63,7 @@
     <v-row>
       <v-col cols="12" lg="4">
         <v-img
-          :src= "this.$store.state.selectedSession.picture"
+          :src="this.$store.state.selectedSession.picture"
           class="rounded-lg"
           aspect-ratio="1"
           max-height="400"
@@ -101,8 +101,7 @@
 </style>
 
 <script>
-
-import {getDownloadLink} from "@/filters/utils";
+import { getDownloadLink } from "@/filters/utils";
 
 export default {
   name: "Session",
@@ -140,8 +139,8 @@ export default {
       };
 
       fetch(
-          "https://dev.cloudloop.io/session?session_name=" + this.sessionName,
-          fetchOptions
+        "https://dev.cloudloop.io/session?session_name=" + this.sessionName,
+        fetchOptions
       ).then(response => {
         if (response.ok) {
           response.json().then(jsonData => {
