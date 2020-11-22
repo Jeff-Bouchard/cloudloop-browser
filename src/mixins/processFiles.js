@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import * as mm from "music-metadata";
+import * as musicMetadata from "music-metadata-browser";
 import { v4 as uuidv4 } from "uuid";
 import bytes from "bytes";
 
@@ -23,8 +23,36 @@ export default {
             status: "added",
             fileUrl: URL.createObjectURL(file)
           });
+          this.parseFiles();
         });
+        resolve();
       });
+    },
+
+    parseFiles() {
+      // only parse one file at a time
+      if (this.$store.state.files.find(file => file.status === "processing"))
+        return;
+
+      const file = this.$store.state.files.find(
+        file => file.status === "added"
+      );
+
+      if (!file) return;
+
+      musicMetadata
+        .parseBlob(file.file)
+        .then(metadata => {
+          file.metadata = metadata;
+          this.$store.commit("updateFile", { uuid: file.uuid, newFile: file });
+          // run again untill all added files are parsed
+          this.parseFiles();
+        })
+        .catch(error => {
+          console.error(error);
+          // run again untill all added files are parsed
+          this.parseFiles();
+        });
     }
   }
 };

@@ -95,13 +95,6 @@ export default {
         });
       }
     }
-
-    // onFile(event) {
-    //   console.log(event);
-    //   if (event.dataTransfer && event.dataTransfer.files)
-    //     console.log(event.dataTransfer.files);
-    //   this.$router.push("session");
-    // }
   }
 };
 </script>

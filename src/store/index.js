@@ -10,6 +10,12 @@ export default new Vuex.Store({
     files: []
   },
 
+  getters: {
+    filteredFiles: state => status => {
+      return state.files.filter(file => file.status === status);
+    }
+  },
+
   mutations: {
     setLoggedInUser(state, value) {
       state.loggedInUser = value;
@@ -21,6 +27,11 @@ export default new Vuex.Store({
 
     addFile(state, file) {
       state.files.push(file);
+    },
+
+    updateFile(state, payload) {
+      const index = state.files.findIndex(file => file.uuid === payload.uuid);
+      state.files[index] = payload.newFile;
     }
   },
 
