@@ -108,7 +108,7 @@ export default {
   data() {
     return {
       session: this.selectedSession,
-      sessionName: this.$route.params.sessionName,
+      sessionName: this.$route.params.sessionName ?? null,
       isPlaying: false,
       isPrivate: this.isPrivateSession,
       sessionTags: ["Drums", "Vocals", "Keys", "Other"],
@@ -130,6 +130,10 @@ export default {
 
   beforeMount: function() {
     return new Promise((resolve, reject) => {
+      // return to home if no sessionName was provided
+      // might want to default to creating a new session instead
+      if (!this.sessionName) return this.$router.push("/");
+
       const fetchOptions = {
         credentials: "include",
         headers: {
