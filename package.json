@@ -12,6 +12,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "material-design-icons-iconfont": "^5.0.1",
+    "music-metadata": "^7.5.0",
     "register-service-worker": "^1.7.1",
     "roboto-fontface": "*",
     "uuid": "^8.3.1",
