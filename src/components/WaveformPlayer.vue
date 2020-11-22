@@ -86,7 +86,7 @@
 
 <script>
   import WaveSurfer from "wavesurfer.js";
-  import {getDownloadLink} from "@/filters/utils";
+  import {getWavDownloadFromProxy} from "@/filters/utils";
 
   export default {
     name: "WaveformPlayer",
@@ -114,7 +114,7 @@
         cursorColor: "transparent",
       })
 
-      const downloadLink = getDownloadLink(loop.link);
+      const downloadLink = getWavDownloadFromProxy(loop.link);
       this.waveSurfer.load(downloadLink);
 
       // Loop tracks
@@ -125,7 +125,7 @@
 
     methods: {
       downloadLoop() {
-        const downloadLink = getDownloadLink(this.$props.loop.link)
+        const downloadLink = getWavDownloadFromProxy(this.$props.loop.link)
         location.href = downloadLink;
       },
       toggleStar() {

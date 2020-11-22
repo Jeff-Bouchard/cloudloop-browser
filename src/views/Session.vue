@@ -34,6 +34,7 @@
               </template>
               <span>{{ isPrivateSession ? "Private" : "Public" }}</span>
             </v-tooltip>
+            <v-btn class="ma-2" outlined color="indigo" @click="downloadAllLoops">Download all loops</v-btn>
           </span>
         </div>
         <div>
@@ -72,10 +73,7 @@
         >
         </v-img>
         <p class="text-body-1 my-6 cover-text">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum ea
-          corporis voluptate iure, quaerat excepturi fugiat sit, alias fugit
-          optio blanditiis, laborum autem magnam iste delectus modi at obcaecati
-          a.
+          {{this.$store.state.selectedSession.blurb}}
         </p>
         <div>
           <v-chip
@@ -112,7 +110,7 @@
 
 <script>
 import WaveformPlayer from "@/components/WaveformPlayer.vue";
-import {getDownloadLink} from "@/filters/utils";
+import {getGenericSkynetDownloadLink} from "@/filters/utils";
 
 export default {
   components: { WaveformPlayer},
@@ -158,7 +156,7 @@ export default {
         if (response.ok) {
           response.json().then(jsonData => {
             var session_raw = jsonData.data.results;
-            session_raw.picture = getDownloadLink(session_raw.picture);
+            session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
             session_raw.private = session_raw.private === "true";
 
             this.$store
@@ -200,6 +198,9 @@ export default {
       pauseFuncs.forEach(func => func());
       this.isPlaying = false;
     },
+    downloadAllLoops() {
+      location.href = "https://dev.cloudloop.io/download/library?session_name=" + this.sessionName;
+    }
   }
 };
 </script>

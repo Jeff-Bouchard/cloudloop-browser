@@ -39,13 +39,13 @@
 </template>
 
 <script>
-import { getDownloadLink } from "@/filters/utils";
+import { getGenericSkynetDownloadLink } from "@/filters/utils";
 
 export default {
   name: "SessionCard",
   props: ["sessionHeader"],
   beforeMount() {
-    this.sessionHeader.picture = getDownloadLink(this.sessionHeader.picture);
+    this.sessionHeader.picture = getGenericSkynetDownloadLink(this.sessionHeader.picture);
   },
   methods: {
     async selectSession(event) {
