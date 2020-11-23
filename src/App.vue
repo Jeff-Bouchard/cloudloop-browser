@@ -21,7 +21,7 @@
         append-icon="search"
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-btn v-if="!loggedInUser" outlined to="login">
+      <v-btn v-if="!loggedInUser" outlined @click="goToLoginPage">
         Login
       </v-btn>
       <v-menu v-if="!!loggedInUser" offset-y>
@@ -48,6 +48,16 @@
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
         </template>
         <v-list>
+          <v-list-item>
+            <v-list-item-title>
+              <router-link
+                :to="'/users/' + loggedInUser"
+                class="text-decoration-none black--text"
+              >
+                My Profile
+              </router-link>
+            </v-list-item-title>
+          </v-list-item>
           <v-list-item>
             <v-list-item-title>
               <router-link
@@ -81,13 +91,13 @@ export default {
   name: "App",
   data: () => ({
     search: "",
-    menuLinks: [{ text: "My Sessions", to: "sessions" }]
+    menuLinks: [{ text: "My Sessions", to: "sessions" }],
   }),
 
   computed: {
     loggedInUser() {
       return this.$store.state.loggedInUser;
-    }
+    },
   },
 
   methods: {
@@ -95,7 +105,10 @@ export default {
       this.$store.dispatch("logOutUser").then(() => {
         this.$router.push("/");
       });
-    }
-  }
+    },
+    goToLoginPage() {
+      this.$router.push("/login");
+    },
+  },
 };
 </script>
