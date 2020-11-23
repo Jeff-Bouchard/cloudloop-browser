@@ -14,6 +14,12 @@ export const getGenericSkynetDownloadLink = siaLink => {
   }
 };
 
+export const sessionViewFilter = session_raw => {
+    session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
+    session_raw.private = session_raw.private === "true";
+    return session_raw;
+}
+
 Object.defineProperty(String.prototype, 'hashCode', {
   value: function() {
     var hash = 0, i, chr;

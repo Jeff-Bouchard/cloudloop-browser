@@ -1,0 +1,52 @@
+{             "blurb": "",
+                "created_at": "2020-08-28T04:31:48.730602",
+                "creator": "datamancer",
+                "favorited_by": [],
+                "generation": 0,
+                "library": [
+                    {
+                        "_type": "Loop",
+                        "created_at": "2020-08-28T04:32:02.563606",
+                        "creator": "datamancer",
+                        "hash": "95130F91-2BB4-408A-BF18-EA0371A85788",
+                        "link": "sia://fAVc1ohP_ajB7Ckf2xDonyH-XaQGoxd14OhZNYXFeD3mVA"
+                    },
+                    {
+                        "_type": "Loop",
+                        "created_at": "2020-08-28T04:32:13.040715",
+                        "creator": "datamancer",
+                        "hash": "E3DF3D0B-24EA-4B79-9A44-B4DA07D848B6",
+                        "link": "sia://fAXYBKOqy9frZhvgpc32zSpWtrFBoWRG4x4PSEEuJIHr1g"
+                    }
+                ],
+                "name": "uruguag",
+                "picture": "sia://NABSbY8aexCzOBkaC4UuCDpeD0SfJMOeAtIOPdBn93gYZw",
+                "private": false,
+                "slots": {
+                    "0": {
+                        "_type": "Loop",
+                        "created_at": "2020-08-28T04:32:02.563606",
+                        "creator": "datamancer",
+                        "hash": "95130F91-2BB4-408A-BF18-EA0371A85788",
+                        "link": "sia://fAVc1ohP_ajB7Ckf2xDonyH-XaQGoxd14OhZNYXFeD3mVA"
+                    },
+                    "1": {
+                        "_type": "Loop",
+                        "created_at": "2020-08-28T04:32:13.040715",
+                        "creator": "datamancer",
+                        "hash": "E3DF3D0B-24EA-4B79-9A44-B4DA07D848B6",
+                        "link": "sia://fAXYBKOqy9frZhvgpc32zSpWtrFBoWRG4x4PSEEuJIHr1g"
+                    },
+                    "2": {
+                        "_type": "Loop",
+                        "created_at": "2020-09-27T00:11:42.367627",
+                        "creator": "datamancer",
+                        "hash": "98A8D538-2CA8-4BDD-AF35-1584A8EDCE92",
+                        "link": "reserve://datamancer"
+                    }
+                },
+                "users": [
+                    "datamancer"
+                ],
+                "users_online": {}
+            }

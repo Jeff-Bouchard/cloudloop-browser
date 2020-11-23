@@ -4,6 +4,7 @@
       <v-col align-self="center" cols="12" lg="2">
         <div style="text-align: end">
           <v-btn
+          v-if="!this.isReservation"
             fab
             dark
             large
@@ -12,11 +13,11 @@
             class="mr-4"
             color="black"
             @click="playPause"
-          >
-            <v-icon dark>
+          ><v-icon dark>
               {{ isPlaying ? "pause" : "play_arrow" }}
             </v-icon>
           </v-btn>
+
         </div>
       </v-col>
       <v-col class="waveform-wrapper" cols="12" lg="10" align-self="center">
@@ -45,6 +46,11 @@
             <strong>CREATOR: </strong>
           </span>
           <span class="tag-value">{{ loop.creator }}</span>
+        </p>
+        <p v-if="isReservation" class="wave-tag" style="color:#e85b5b">
+          <span>
+            <strong>RESERVED</strong>
+          </span>
         </p>
         <p class="wave-tag created-on-tag">
           <span>
@@ -103,36 +109,43 @@ export default {
     return {
       isPlaying: false,
       isStarred: false,
+      isReservation: false,
       percentLoaded: 0,
     };
   },
   mounted() {
     const { loop } = this.$props;
+    console.log(loop.link.substring(0,10))
+    this.isReservation = loop.link.substring(0,10) === "reserve://" ? true : false;
 
-    this.waveSurfer = WaveSurfer.create({
-      container: `#waveform-${loop.hash}`,
-      barWidth: 2,
-      barHeight: 3,
-      barMinHeight: 1,
-      cursorWidth: 1,
-      backend: "WebAudio",
-      height: 80,
-      progressColor: "#079688",
-      responsive: true,
-      waveColor: "#76CCC4",
-      cursorColor: "transparent",
-    });
+    if (!this.isReservation) {
+      this.waveSurfer = WaveSurfer.create({
+        container: `#waveform-${loop.hash}`,
+        barWidth: 2,
+        barHeight: 3, 
+        barMinHeight: 1,
+        cursorWidth: 1,
+        backend: "WebAudio",
+        height: 80,
+        progressColor: "#079688",
+        responsive: true,
+        waveColor: "#76CCC4",
+        cursorColor: "transparent",
+      });
 
-    const downloadLink = getWavDownloadFromProxy(loop.link);
-    this.waveSurfer.load(downloadLink);
+      const downloadLink = getWavDownloadFromProxy(loop.link);
+      this.waveSurfer.load(downloadLink);
 
-    // Loop tracks
-    this.waveSurfer.on("finish", () => {
-      this.waveSurfer.play();
-    });
-    this.waveSurfer.on("loading", (percent) => {
-      this.percentLoaded = percent;
-    });
+      // Loop tracks
+      this.waveSurfer.on("finish", () => {
+        this.waveSurfer.play();
+      });
+      this.waveSurfer.on("loading", (percent) => {
+        this.percentLoaded = percent;
+      });
+      }
+
+
   },
 
   methods: {

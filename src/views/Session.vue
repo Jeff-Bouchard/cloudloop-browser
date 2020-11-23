@@ -47,14 +47,20 @@
                     </div>
                 </v-flex>
                   <v-flex lg8>
-                    with
-                    <v-avatar
-                        class="ma-1"
-                        :color="randomColor()"
-                        v-for="(user, index) in this.$store.state.selectedSession.users"
-                        :key="index"
-                        v-on="on">
-                    </v-avatar>
+                    <v-tooltip v-for="user in this.$store.state.selectedSession.users" :key="user" top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-avatar
+                  class="avatar"
+                  :color="user | getColorForString"
+                  size="33"
+                  @click="user | goToProfile"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                </v-avatar>
+              </template>
+              <span>{{ user }}</span>
+            </v-tooltip>
                   </v-flex>
              </v-layout>
            </v-container>
@@ -107,7 +113,7 @@
             v-for="(tag, index) in sessionTags"
             :key="index"
             @click:close="removeTag()"
-            :color="randomColor()"
+            :color="tag | getColorForString"
           >
             {{ tag }}
           </v-chip>
@@ -130,20 +136,43 @@
 .cover-text {
   max-width: 400px;
 }
-</style>
 
+.avatar {
+  z-index: 999;
+}
+.avatar:not(:first-child) {
+  margin-left: -10px;
+}
+.avatar:hover {
+  z-index: 1000;
+}
+</style>
 <script>
 import WaveformPlayer from "@/components/WaveformPlayer.vue";
-import { getGenericSkynetDownloadLink } from "@/filters/utils";
+import { sessionViewFilter } from "@/filters/utils";
 
 export default {
   components: { WaveformPlayer},
   name: "Session",
   props: ['on'],
+  sockets: {
+    message: function(data) {
+      console.log("Message from client" + data)
+    },
+    state_update: function(data) {
+      console.log("STATE UPDATE RECEIVED: " + data)
+      var session_raw = JSON.parse(data);
+      var session_decoded = sessionViewFilter(session_raw)
+            
+      this.$store
+        .dispatch("setSelectedSession", { session: session_decoded })
+    }
+  },
   data() {
     return {
       session: this.selectedSession,
       sessionName: this.$route.params.sessionName,
+      connected: false,
       showImagePicker: false,
       isPlaying: false,
       isPrivate: this.isPrivateSession,
@@ -182,12 +211,11 @@ export default {
         if (response.ok) {
           response.json().then(jsonData => {
             var session_raw = jsonData.data.results;
-            session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
-            session_raw.private = session_raw.private === "true";
-
+            var session_decoded = sessionViewFilter(session_raw)
+            
             this.$store
-              .dispatch("setSelectedSession", { session: session_raw })
-              .then(resolve(this.session));
+              .dispatch("setSelectedSession", { session: session_decoded })
+              .then(resolve(this.session))
           });
         } else {
           console.error(response.status);
@@ -195,6 +223,9 @@ export default {
         }
       });
     });
+  },
+  mounted() {
+    this.$socket.client.emit('joinSession', {"username":this.$store.state.loggedInUser.username,"session_name":this.$route.params.sessionName})
   },
 
   methods: {
@@ -208,7 +239,10 @@ export default {
     playAllLoops() {
       const playFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
         const refHandle = `ref-${loop.hash}`;
-        return this.$refs[refHandle][0].play;
+        if (loop.link.substring(0,10) !== "reserve://") {
+          console.log(`Playing ref:${loop.hash}`)
+            return this.$refs[refHandle][0].play;
+        }
       });
       console.log({playFuncs})
 
