@@ -91,7 +91,7 @@ export default {
   name: "App",
   data: () => ({
     search: "",
-    menuLinks: [{ text: "My Sessions", to: "sessions" }],
+    menuLinks: [{ text: "My Sessions", to: "sessions" }]
   }),
 
   beforeMount() {
@@ -101,7 +101,7 @@ export default {
   computed: {
     loggedInUser() {
       return this.$store.state.loggedInUser;
-    },
+    }
   },
 
   methods: {
@@ -112,7 +112,7 @@ export default {
     },
     goToLoginPage() {
       this.$router.push("/login");
-    },
-  },
+    }
+  }
 };
 </script>

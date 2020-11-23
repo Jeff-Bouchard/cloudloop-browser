@@ -59,10 +59,10 @@ export default {
   data() {
     return {
       sessions: [],
-      loading: false,
+      loading: false
     };
   },
-  beforeMount: function () {
+  beforeMount: function() {
     this.fetchUserSessions();
   },
   computed: {
@@ -70,7 +70,7 @@ export default {
       const { loggedInUser } = this.$store.state;
       const { userName } = this.$route.params;
       return loggedInUser ? loggedInUser.username === userName : false;
-    },
+    }
   },
   methods: {
     newLoopSession() {
@@ -83,15 +83,15 @@ export default {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `JWT ${window.localStorage.getItem("JWT")}`,
-        },
+          Authorization: `JWT ${window.localStorage.getItem("JWT")}`
+        }
       };
 
       fetch(
         `https://dev.cloudloop.io/sessions?username=${userName}`,
         fetchOptions
       )
-        .then((response) => {
+        .then(response => {
           if (response.ok) return response.json();
           else console.error(response.status);
         })
@@ -100,7 +100,7 @@ export default {
           this.loading = false;
           console.log("sessions", results);
         });
-    },
-  },
+    }
+  }
 };
 </script>

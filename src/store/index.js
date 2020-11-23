@@ -8,7 +8,7 @@ export default new Vuex.Store({
     loggedInUser: null,
     selectedSession: null,
     selectedProfile: null,
-    files: [],
+    files: []
   },
 
   getters: {
@@ -29,7 +29,7 @@ export default new Vuex.Store({
     addFile(state, file) {
       state.files.push(file);
     },
-  
+
     setSelectedProfile(state, profile) {
       state.selectedProfile = profile;
     },
@@ -57,17 +57,20 @@ export default new Vuex.Store({
             }
           };
           fetch(
-            `https://dev.cloudloop.io/user${userName ? `?username=${userName}` : ''}`,
+            `https://dev.cloudloop.io/user${
+              userName ? `?username=${userName}` : ""
+            }`,
             fetchOptions
-          ).then(response => {
-            if (response.ok) return response.json()
-            else reject(response.json().message);
-          })
-            .then(({ data: { results } }) => {
-              console.log({ results })
-              commit('setSelectedProfile', results);
-              resolve(results);
+          )
+            .then(response => {
+              if (response.ok) return response.json();
+              else reject(response.json().message);
             })
+            .then(({ data: { results } }) => {
+              console.log({ results });
+              commit("setSelectedProfile", results);
+              resolve(results);
+            });
         });
       }
     },
@@ -81,16 +84,14 @@ export default new Vuex.Store({
             Authorization: `JWT ${token}`
           }
         };
-        fetch(
-          "https://dev.cloudloop.io/user",
-          fetchOptions
-        ).then(response => {
-          if (response.ok) return response.json()
-          else console.log(response.json().message);
-        })
-          .then(({ data: { results } }) => {
-            commit('setLoggedInUser', results);
+        fetch("https://dev.cloudloop.io/user", fetchOptions)
+          .then(response => {
+            if (response.ok) return response.json();
+            else console.log(response.json().message);
           })
+          .then(({ data: { results } }) => {
+            commit("setLoggedInUser", results);
+          });
       }
     },
     logInUser({ dispatch }, userPass) {
@@ -108,12 +109,12 @@ export default new Vuex.Store({
         };
         fetch("https://dev.cloudloop.io/auth/login", fetchOptions)
           .then(response => {
-            if (response.ok) return response.json()
+            if (response.ok) return response.json();
             else console.log(response.json().message);
           })
           .then(({ data: { results } }) => {
             window.localStorage.setItem("JWT", results);
-            dispatch('fetchUser');
+            dispatch("fetchUser");
           })
           .catch(error => {
             reject(error);

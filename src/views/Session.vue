@@ -34,30 +34,34 @@
               </template>
               <span>{{ isPrivateSession ? "Private" : "Public" }}</span>
             </v-tooltip>
-            <v-btn class="ma-2" outlined color="black" @click="downloadAllLoops">Download all loops</v-btn>
+            <v-btn class="ma-2" outlined color="black" @click="downloadAllLoops"
+              >Download all loops</v-btn
+            >
           </span>
         </div>
         <div>
           <v-container>
             <v-layout row wrap>
-                <v-flex lg2 class="ma-1">
-                    <v-avatar color="red" size="40" v-on="on" center></v-avatar>
-                    <div class="text-h5 font-weight-medium text-uppercase">
-                      {{this.$store.state.selectedSession.creator}}
-                    </div>
-                </v-flex>
-                  <v-flex lg8>
-                    with
-                    <v-avatar
-                        class="ma-1"
-                        :color="randomColor()"
-                        v-for="(user, index) in this.$store.state.selectedSession.users"
-                        :key="index"
-                        v-on="on">
-                    </v-avatar>
-                  </v-flex>
-             </v-layout>
-           </v-container>
+              <v-flex lg2 class="ma-1">
+                <v-avatar color="red" size="40" v-on="on" center></v-avatar>
+                <div class="text-h5 font-weight-medium text-uppercase">
+                  {{ this.$store.state.selectedSession.creator }}
+                </div>
+              </v-flex>
+              <v-flex lg8>
+                with
+                <v-avatar
+                  class="ma-1"
+                  :color="randomColor()"
+                  v-for="(user, index) in this.$store.state.selectedSession
+                    .users"
+                  :key="index"
+                  v-on="on"
+                >
+                </v-avatar>
+              </v-flex>
+            </v-layout>
+          </v-container>
         </div>
 
         <!-- This inline flex thing doesn't really work how I wanted -->
@@ -81,7 +85,7 @@
         >
         </v-img>
         <p class="text-body-1 my-6 cover-text">
-          {{this.$store.state.selectedSession.blurb}}
+          {{ this.$store.state.selectedSession.blurb }}
         </p>
         <div>
           <v-chip
@@ -103,7 +107,7 @@
           v-for="loop in this.$store.state.selectedSession.slots"
           :key="loop.hash"
         >
-          <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash"/>
+          <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash" />
         </div>
       </v-col>
     </v-row>
@@ -117,14 +121,13 @@
 </style>
 
 <script>
-import { getDownloadLink } from "@/filters/utils";
 import WaveformPlayer from "@/components/WaveformPlayer.vue";
-import {getGenericSkynetDownloadLink} from "@/filters/utils";
+import { getGenericSkynetDownloadLink } from "@/filters/utils";
 
 export default {
-  components: { WaveformPlayer},
+  components: { WaveformPlayer },
   name: "Session",
-  props: ['on'],
+  props: ["on"],
   data() {
     return {
       session: this.selectedSession,
@@ -165,7 +168,9 @@ export default {
         if (response.ok) {
           response.json().then(jsonData => {
             var session_raw = jsonData.data.results;
-            session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
+            session_raw.picture = getGenericSkynetDownloadLink(
+              session_raw.picture
+            );
             session_raw.private = session_raw.private === "true";
 
             this.$store
@@ -185,21 +190,25 @@ export default {
       return this.colors[Math.floor(Math.random() * this.colors.length)];
     },
     handleClick() {
-      if (this.isPlaying) this.pauseAllLoops()
+      if (this.isPlaying) this.pauseAllLoops();
       else this.playAllLoops();
     },
     playAllLoops() {
-      const playFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
+      const playFuncs = Object.values(
+        this.$store.state.selectedSession.slots
+      ).map(loop => {
         const refHandle = `ref-${loop.hash}`;
         return this.$refs[refHandle][0].play;
       });
-      console.log({playFuncs})
+      console.log({ playFuncs });
 
       playFuncs.forEach(func => func());
       this.isPlaying = true;
     },
     pauseAllLoops() {
-      const pauseFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
+      const pauseFuncs = Object.values(
+        this.$store.state.selectedSession.slots
+      ).map(loop => {
         const refHandle = `ref-${loop.hash}`;
         return this.$refs[refHandle][0].pause;
       });
@@ -208,7 +217,9 @@ export default {
       this.isPlaying = false;
     },
     downloadAllLoops() {
-      location.href = "https://dev.cloudloop.io/download/library?session_name=" + this.sessionName;
+      location.href =
+        "https://dev.cloudloop.io/download/library?session_name=" +
+        this.sessionName;
     }
   }
 };

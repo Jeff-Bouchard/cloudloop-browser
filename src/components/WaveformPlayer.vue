@@ -103,7 +103,7 @@ export default {
     return {
       isPlaying: false,
       isStarred: false,
-      percentLoaded: 0,
+      percentLoaded: 0
     };
   },
   mounted() {
@@ -120,7 +120,7 @@ export default {
       progressColor: "#079688",
       responsive: true,
       waveColor: "#76CCC4",
-      cursorColor: "transparent",
+      cursorColor: "transparent"
     });
 
     const downloadLink = getWavDownloadFromProxy(loop.link);
@@ -130,7 +130,7 @@ export default {
     this.waveSurfer.on("finish", () => {
       this.waveSurfer.play();
     });
-    this.waveSurfer.on("loading", (percent) => {
+    this.waveSurfer.on("loading", percent => {
       this.percentLoaded = percent;
     });
   },
@@ -157,7 +157,7 @@ export default {
     },
     playFromStart() {
       this.waveSurfer.play(0);
-    },
+    }
   },
   filters: {
     formatDate(dateStr) {
@@ -169,7 +169,7 @@ export default {
         "-" +
         dateObj.getDate()
       );
-    },
-  },
+    }
+  }
 };
 </script>
