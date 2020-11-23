@@ -21,7 +21,7 @@ const routes = [
     component: () => import("../views/Sessions.vue")
   },
   {
-    path: "/session/:sessionName",
+    path: "/session/:sessionName?",
     name: "Session",
     component: () => import("../views/Session.vue")
   },
