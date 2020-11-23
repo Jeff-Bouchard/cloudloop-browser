@@ -34,7 +34,7 @@
               </template>
               <span>{{ isPrivateSession ? "Private" : "Public" }}</span>
             </v-tooltip>
-            <v-btn class="ma-2" outlined color="indigo" @click="downloadAllLoops">Download all loops</v-btn>
+            <v-btn class="ma-2" outlined color="black" @click="downloadAllLoops">Download all loops</v-btn>
           </span>
         </div>
         <div>

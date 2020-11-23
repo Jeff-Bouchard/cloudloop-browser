@@ -32,7 +32,7 @@
         </v-card-actions>
       </div>
       <v-avatar class="ma-3" width="30%" height="auto" tile>
-        <v-img class="rounding" :src="sessionHeader.picture"></v-img>
+        <v-img :src="sessionHeader.picture"></v-img>
       </v-avatar>
     </div>
   </v-card>
