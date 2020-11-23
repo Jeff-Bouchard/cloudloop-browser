@@ -108,9 +108,9 @@
         cursorWidth: 1,
         backend: "WebAudio",
         height: 80,
-        progressColor: "#3b2898",
+        progressColor: "#079688",
         responsive: true,
-        waveColor: "#7cecdc",
+        waveColor: "#76CCC4",
         cursorColor: "transparent",
       })
 
@@ -150,7 +150,7 @@
     filters: {
       formatDate(dateStr) {
         const dateObj = new Date(dateStr);
-        return dateObj.getFullYear() + "-" + (dateObj.getMonth() + 1) + "-" + dateObj.getDate(); 
+        return dateObj.getFullYear() + "-" + (dateObj.getMonth() + 1) + "-" + dateObj.getDate();
       }
     }
   };
