@@ -71,8 +71,24 @@
           aspect-ratio="1"
           max-height="400"
           max-width="400"
+          @click="overlay = !overlay"
         >
         </v-img>
+        <v-overlay
+          :absolute="absolute"
+          :value="overlay"
+        >
+        <div>
+          <v-btn @click="overlay=false">Close</v-btn>
+          <v-img
+        :src="this.$store.state.selectedSession.picture"
+        class="rounded-lg"
+          aspect-ratio="1"
+          min-height="50vw"
+          min-width="50vw"
+          @click="overlay=false"
+        ></v-img></div>
+        </v-overlay>
         <p class="text-body-1 my-6 cover-text">
           {{this.$store.state.selectedSession.blurb}}
         </p>
@@ -111,7 +127,7 @@
 
 <script>
 import WaveformPlayer from "@/components/WaveformPlayer.vue";
-import {getGenericSkynetDownloadLink} from "@/filters/utils";
+import { getGenericSkynetDownloadLink } from "@/filters/utils";
 
 export default {
   components: { WaveformPlayer},
@@ -121,8 +137,11 @@ export default {
     return {
       session: this.selectedSession,
       sessionName: this.$route.params.sessionName,
+      showImagePicker: false,
       isPlaying: false,
       isPrivate: this.isPrivateSession,
+      absolute: false,
+      overlay: false,
       sessionTags: ["Drums", "Vocals", "Keys", "Other"],
       colors: ["red", "orange", "amber", "green", "blue", "purple", "blue-grey"]
     };
@@ -149,7 +168,6 @@ export default {
           Authorization: `JWT ${window.localStorage.getItem("JWT")}`
         }
       };
-
       fetch(
           "https://dev.cloudloop.io/session?session_name=" + this.sessionName,
           fetchOptions
