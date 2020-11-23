@@ -18,7 +18,7 @@
           </v-btn>
         </div>
         <div class="d-inline-flex">
-          <span class="text-h3 font-weight-medium text-uppercase">
+          <span class="text-h3 font-weight-bold text-uppercase">
             {{ sessionName }}
             <v-tooltip bottom close-delay="500">
               <template v-slot:activator="{ on, attrs }">
@@ -34,6 +34,7 @@
               </template>
               <span>{{ isPrivateSession ? "Private" : "Public" }}</span>
             </v-tooltip>
+            <v-btn class="ma-2" outlined color="black" @click="downloadAllLoops">Download all loops</v-btn>
           </span>
         </div>
         <div>
@@ -47,7 +48,8 @@
               :color="randomColor()"
               v-for="(user, index) in this.$store.state.selectedSession.users"
               :key="index"
-              v-on="on"></v-avatar>
+              v-on="on">
+          </v-avatar>
         </div>
 
 
@@ -72,10 +74,7 @@
         >
         </v-img>
         <p class="text-body-1 my-6 cover-text">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum ea
-          corporis voluptate iure, quaerat excepturi fugiat sit, alias fugit
-          optio blanditiis, laborum autem magnam iste delectus modi at obcaecati
-          a.
+          {{this.$store.state.selectedSession.blurb}}
         </p>
         <div>
           <v-chip
@@ -112,7 +111,7 @@
 
 <script>
 import WaveformPlayer from "@/components/WaveformPlayer.vue";
-import {getDownloadLink} from "@/filters/utils";
+import {getGenericSkynetDownloadLink} from "@/filters/utils";
 
 export default {
   components: { WaveformPlayer},
@@ -158,7 +157,7 @@ export default {
         if (response.ok) {
           response.json().then(jsonData => {
             var session_raw = jsonData.data.results;
-            session_raw.picture = getDownloadLink(session_raw.picture);
+            session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
             session_raw.private = session_raw.private === "true";
 
             this.$store
@@ -200,6 +199,9 @@ export default {
       pauseFuncs.forEach(func => func());
       this.isPlaying = false;
     },
+    downloadAllLoops() {
+      location.href = "https://dev.cloudloop.io/download/library?session_name=" + this.sessionName;
+    }
   }
 };
 </script>

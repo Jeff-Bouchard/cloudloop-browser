@@ -6,7 +6,7 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
-import { getDownloadLink, getColorForString } from "./filters/utils.js";
+import { getGenericSkynetDownloadLink, getWavDownloadFromProxy, getColorForString } from "./filters/utils.js";
 import '@mdi/font/css/materialdesignicons.css'
 import VueWaveSurfer from "vue-wave-surfer";
 
@@ -20,6 +20,7 @@ new Vue({
   render: h => h(App)
 }).$mount("#app");
 
-Vue.filter("getDownloadLink", getDownloadLink);
+Vue.filter("getGenericSkynetDownloadLink", getGenericSkynetDownloadLink);
+Vue.filter("getWavDownloadFromProxy", getWavDownloadFromProxy);
 Vue.filter("getColorForString", getColorForString);
 

@@ -31,7 +31,7 @@
           <v-spacer />
         </v-card-actions>
       </div>
-      <v-avatar class="ma-3" size="125" tile>
+      <v-avatar class="ma-3" width="30%" height="auto" tile>
         <v-img :src="sessionHeader.picture"></v-img>
       </v-avatar>
     </div>
@@ -39,13 +39,13 @@
 </template>
 
 <script>
-import { getDownloadLink } from "@/filters/utils";
+import { getGenericSkynetDownloadLink } from "@/filters/utils";
 
 export default {
   name: "SessionCard",
   props: ["sessionHeader"],
   beforeMount() {
-    this.sessionHeader.picture = getDownloadLink(this.sessionHeader.picture);
+    this.sessionHeader.picture = getGenericSkynetDownloadLink(this.sessionHeader.picture);
   },
   methods: {
     async selectSession(event) {

@@ -1,4 +1,12 @@
-export const getDownloadLink = siaLink => {
+export const getWavDownloadFromProxy = siaLink => {
+  if (siaLink.startsWith("sia://")) {
+    return "https://dev.cloudloop.io/download?skylink=" + siaLink;
+  } else {
+    return siaLink;
+  }
+};
+
+export const getGenericSkynetDownloadLink = siaLink => {
   if (siaLink.startsWith("sia://")) {
     return "https://siasky.net/" + siaLink.substring(5);
   } else {
