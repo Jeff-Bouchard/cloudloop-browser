@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "bytes": "^3.1.0",
+    "@mdi/font": "^5.8.55",
     "core-js": "^3.6.5",
     "material-design-icons-iconfont": "^5.0.1",
     "music-metadata-browser": "^2.1.6",
@@ -19,8 +20,10 @@
     "uuid": "^8.3.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vue-wave-surfer": "^1.0.1",
     "vuetify": "^2.2.11",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "wavesurfer.js": "^4.2.0"
   },
   "devDependencies": {
     "@nebulous/skynet": "^2.0.1",

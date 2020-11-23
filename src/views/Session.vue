@@ -10,7 +10,7 @@
             x-large
             class="mr-4"
             color="black"
-            @click="isPlaying = !isPlaying"
+            @click="handleClick"
           >
             <v-icon dark>
               {{ isPlaying ? "pause" : "play_arrow" }}
@@ -18,7 +18,7 @@
           </v-btn>
         </div>
         <div class="d-inline-flex">
-          <span class="text-h3 font-weight-medium text-uppercase">
+          <span class="text-h3 font-weight-bold text-uppercase">
             {{ sessionName }}
             <v-tooltip bottom close-delay="500">
               <template v-slot:activator="{ on, attrs }">
@@ -34,20 +34,30 @@
               </template>
               <span>{{ isPrivateSession ? "Private" : "Public" }}</span>
             </v-tooltip>
+            <v-btn class="ma-2" outlined color="black" @click="downloadAllLoops">Download all loops</v-btn>
           </span>
         </div>
         <div>
-          <span class="text-h5 font-weight-medium text-uppercase">
-            {{ this.$store.state.selectedSession.creator }}
-          </span>
-          <v-avatar color="red" size="40" v-on="on"></v-avatar>
-          with
-          <v-avatar
-            :color="randomColor()"
-            v-for="(user, index) in this.$store.state.selectedSession.users"
-            :key="index"
-            v-on="on"
-          ></v-avatar>
+          <v-container>
+            <v-layout row wrap>
+                <v-flex lg2 class="ma-1">
+                    <v-avatar color="red" size="40" v-on="on" center></v-avatar>
+                    <div class="text-h5 font-weight-medium text-uppercase">
+                      {{this.$store.state.selectedSession.creator}}
+                    </div>
+                </v-flex>
+                  <v-flex lg8>
+                    with
+                    <v-avatar
+                        class="ma-1"
+                        :color="randomColor()"
+                        v-for="(user, index) in this.$store.state.selectedSession.users"
+                        :key="index"
+                        v-on="on">
+                    </v-avatar>
+                  </v-flex>
+             </v-layout>
+           </v-container>
         </div>
 
         <!-- This inline flex thing doesn't really work how I wanted -->
@@ -71,10 +81,7 @@
         >
         </v-img>
         <p class="text-body-1 my-6 cover-text">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum ea
-          corporis voluptate iure, quaerat excepturi fugiat sit, alias fugit
-          optio blanditiis, laborum autem magnam iste delectus modi at obcaecati
-          a.
+          {{this.$store.state.selectedSession.blurb}}
         </p>
         <div>
           <v-chip
@@ -90,6 +97,15 @@
           </v-chip>
         </div>
       </v-col>
+      <v-spacer></v-spacer>
+      <v-col cols="12" lg="7">
+        <div
+          v-for="loop in this.$store.state.selectedSession.slots"
+          :key="loop.hash"
+        >
+          <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash"/>
+        </div>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -102,9 +118,13 @@
 
 <script>
 import { getDownloadLink } from "@/filters/utils";
+import WaveformPlayer from "@/components/WaveformPlayer.vue";
+import {getGenericSkynetDownloadLink} from "@/filters/utils";
 
 export default {
+  components: { WaveformPlayer},
   name: "Session",
+  props: ['on'],
   data() {
     return {
       session: this.selectedSession,
@@ -144,9 +164,8 @@ export default {
       ).then(response => {
         if (response.ok) {
           response.json().then(jsonData => {
-            console.log(jsonData);
             var session_raw = jsonData.data.results;
-            session_raw.picture = getDownloadLink(session_raw.picture);
+            session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
             session_raw.private = session_raw.private === "true";
 
             this.$store
@@ -164,6 +183,32 @@ export default {
   methods: {
     randomColor() {
       return this.colors[Math.floor(Math.random() * this.colors.length)];
+    },
+    handleClick() {
+      if (this.isPlaying) this.pauseAllLoops()
+      else this.playAllLoops();
+    },
+    playAllLoops() {
+      const playFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
+        const refHandle = `ref-${loop.hash}`;
+        return this.$refs[refHandle][0].play;
+      });
+      console.log({playFuncs})
+
+      playFuncs.forEach(func => func());
+      this.isPlaying = true;
+    },
+    pauseAllLoops() {
+      const pauseFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
+        const refHandle = `ref-${loop.hash}`;
+        return this.$refs[refHandle][0].pause;
+      });
+
+      pauseFuncs.forEach(func => func());
+      this.isPlaying = false;
+    },
+    downloadAllLoops() {
+      location.href = "https://dev.cloudloop.io/download/library?session_name=" + this.sessionName;
     }
   }
 };

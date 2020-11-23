@@ -1,11 +1,5 @@
 <template>
-  <v-card
-    color="pink"
-    dark
-    v-if="sessionHeader"
-    max-width="600"
-    @click="selectSession"
-  >
+  <v-card :color="sessionHeader.name | getColorForString" dark v-if="sessionHeader" max-width="600" @click="selectSession">
     <div class="d-flex flex-no-wrap justify-space-between">
       <div>
         <v-card-title
@@ -29,10 +23,15 @@
             <v-icon>grade</v-icon>
             {{ sessionHeader.favorited_by.length }}
           </v-btn>
+          <v-btn fab icon right width="40px" height="40px" class="ml-2 mt-3">
+            <v-icon>people_alt</v-icon>
+            {{ sessionHeader.users.length }}
+          </v-btn>
+
           <v-spacer />
         </v-card-actions>
       </div>
-      <v-avatar class="ma-3" size="125" tile>
+      <v-avatar class="ma-3" width="30%" height="auto" tile>
         <v-img :src="sessionHeader.picture"></v-img>
       </v-avatar>
     </div>
@@ -40,14 +39,13 @@
 </template>
 
 <script>
-import { getDownloadLink } from "@/filters/utils";
+import { getGenericSkynetDownloadLink } from "@/filters/utils";
 
 export default {
   name: "SessionCard",
   props: ["sessionHeader"],
   beforeMount() {
-    console.log("Mounting card.");
-    this.sessionHeader.picture = getDownloadLink(this.sessionHeader.picture);
+    this.sessionHeader.picture = getGenericSkynetDownloadLink(this.sessionHeader.picture);
   },
   methods: {
     async selectSession(event) {
