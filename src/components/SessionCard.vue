@@ -31,8 +31,8 @@
           <v-spacer />
         </v-card-actions>
       </div>
-      <v-avatar class="ma-3" size="125" tile>
-        <v-img :src="sessionHeader.picture"></v-img>
+      <v-avatar class="ma-3" width="30%" height="auto" tile>
+        <v-img class="rounding" :src="sessionHeader.picture"></v-img>
       </v-avatar>
     </div>
   </v-card>
