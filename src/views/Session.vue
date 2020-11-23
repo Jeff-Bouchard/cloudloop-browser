@@ -18,7 +18,7 @@
           </v-btn>
         </div>
         <div class="d-inline-flex">
-          <span class="text-h3 font-weight-medium text-uppercase">
+          <span class="text-h3 font-weight-bold text-uppercase">
             {{ sessionName }}
             <v-tooltip bottom close-delay="500">
               <template v-slot:activator="{ on, attrs }">
@@ -48,7 +48,8 @@
               :color="randomColor()"
               v-for="(user, index) in this.$store.state.selectedSession.users"
               :key="index"
-              v-on="on"></v-avatar>
+              v-on="on">
+          </v-avatar>
         </div>
 
 
