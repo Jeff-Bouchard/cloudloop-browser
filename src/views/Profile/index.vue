@@ -55,7 +55,7 @@
 </style>
 
 <script>
-import { getDownloadLink } from "@/filters/utils";
+import { getGenericSkynetDownloadLink } from "@/filters/utils";
 import Sessions from "./Sessions.vue";
 import Followers from "./Followers.vue";
 
@@ -89,7 +89,9 @@ export default {
   },
   computed: {
     profilePicture() {
-      return getDownloadLink(this.$store.state.selectedProfile.picture_link);
+      return getGenericSkynetDownloadLink(
+        this.$store.state.selectedProfile.picture_link
+      );
     },
     loggedInUser() {
       return this.$store.state.loggedInUser;

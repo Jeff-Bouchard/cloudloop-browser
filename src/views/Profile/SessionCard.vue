@@ -74,14 +74,17 @@
 </style>
 
 <script>
-import { getDownloadLink, getColorForString } from "@/filters/utils";
+import {
+  getGenericSkynetDownloadLink,
+  getColorForString,
+} from "@/filters/utils";
 
 export default {
   name: "SessionCard",
   props: ["session"],
   computed: {
     sessionImg() {
-      return getDownloadLink(this.$props.session.picture);
+      return getGenericSkynetDownloadLink(this.$props.session.picture);
     },
     numFavorites() {
       return this.$props.session.favorited_by.length;

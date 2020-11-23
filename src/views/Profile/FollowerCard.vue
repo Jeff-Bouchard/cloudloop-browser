@@ -50,13 +50,13 @@
 </style>
 
 <script>
-import { getDownloadLink } from "@/filters/utils";
+import { getGenericSkynetDownloadLink } from "@/filters/utils";
 export default {
   name: "FollowerCard",
   props: ["follower"],
   filters: {
     getLink(pictureLink) {
-      return getDownloadLink(pictureLink);
+      return getGenericSkynetDownloadLink(pictureLink);
     },
     pluralize(count) {
       return count > 1 ? "Followers" : "Follower";
