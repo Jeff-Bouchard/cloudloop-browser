@@ -38,20 +38,27 @@
           </span>
         </div>
         <div>
-          <span class="text-h5 font-weight-medium text-uppercase">
-            {{this.$store.state.selectedSession.creator}}
-          </span>
-          <v-avatar color="red" size="40" v-on="on"></v-avatar>
-          with
-          <v-avatar
-              class="ma-4"
-              :color="randomColor()"
-              v-for="(user, index) in this.$store.state.selectedSession.users"
-              :key="index"
-              v-on="on">
-          </v-avatar>
+          <v-container>
+            <v-layout row wrap>
+                <v-flex lg2 class="ma-1">
+                    <v-avatar color="red" size="40" v-on="on" center></v-avatar>
+                    <div class="text-h5 font-weight-medium text-uppercase">
+                      {{this.$store.state.selectedSession.creator}}
+                    </div>
+                </v-flex>
+                  <v-flex lg8>
+                    with
+                    <v-avatar
+                        class="ma-1"
+                        :color="randomColor()"
+                        v-for="(user, index) in this.$store.state.selectedSession.users"
+                        :key="index"
+                        v-on="on">
+                    </v-avatar>
+                  </v-flex>
+             </v-layout>
+           </v-container>
         </div>
-
 
         <!-- This inline flex thing doesn't really work how I wanted -->
         <!-- need to find a way to bring that avatar(s) below the title -->
