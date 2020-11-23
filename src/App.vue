@@ -48,26 +48,23 @@
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
         </template>
         <v-list>
-          <v-list-item>
-            <v-list-item-title>
-              <router-link
-                :to="'/users/' + loggedInUser.username"
-                class="text-decoration-none black--text"
-              >
+          <router-link
+            :to="'/users/' + loggedInUser.username"
+            class="text-decoration-none black--text"
+          >
+            <v-list-item>
+              <v-list-item-title>
                 My Profile
-              </router-link>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>
-              <router-link
-                to="link.to"
-                class="text-decoration-none black--text"
-              >
+              </v-list-item-title>
+            </v-list-item>
+          </router-link>
+          <router-link to="link.to" class="text-decoration-none black--text">
+            <v-list-item>
+              <v-list-item-title>
                 My Sessions
-              </router-link>
-            </v-list-item-title>
-          </v-list-item>
+              </v-list-item-title>
+            </v-list-item>
+          </router-link>
           <v-list-item @click="logOutUser">
             <v-list-item-icon>
               <v-icon>account_circle</v-icon>
