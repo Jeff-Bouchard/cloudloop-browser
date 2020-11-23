@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import * as musicMetadata from "music-metadata-browser";
 import { v4 as uuidv4 } from "uuid";
 import bytes from "bytes";

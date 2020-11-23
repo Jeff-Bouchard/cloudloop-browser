@@ -123,10 +123,12 @@
 <script>
 import WaveformPlayer from "@/components/WaveformPlayer.vue";
 import { getGenericSkynetDownloadLink } from "@/filters/utils";
+import cloudloop from "@/mixins/cloudloop";
 
 export default {
-  components: { WaveformPlayer },
   name: "Session",
+  components: { WaveformPlayer },
+  mixins: [cloudloop],
   props: ["on"],
   data() {
     return {
@@ -152,41 +154,53 @@ export default {
   },
 
   beforeMount: function() {
-    return new Promise((resolve, reject) => {
-      // return to home if no sessionName was provided
-      // might want to default to creating a new session instead
-      if (!this.sessionName) return this.$router.push("/");
+    // return to home if no sessionName was provided
+    // might want to default to creating a new session instead
+    if (!this.sessionName) return this.$router.push("/");
 
-      const fetchOptions = {
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${window.localStorage.getItem("JWT")}`
-        }
-      };
-
-      fetch(
-        "https://dev.cloudloop.io/session?session_name=" + this.sessionName,
-        fetchOptions
-      ).then(response => {
-        if (response.ok) {
-          response.json().then(jsonData => {
-            var session_raw = jsonData.data.results;
-            session_raw.picture = getGenericSkynetDownloadLink(
-              session_raw.picture
-            );
-            session_raw.private = session_raw.private === "true";
-
-            this.$store
-              .dispatch("setSelectedSession", { session: session_raw })
-              .then(resolve(this.session));
-          });
-        } else {
-          console.error(response.status);
-          reject(response.json().message);
-        }
+    this.fetchSession(this.sessionName)
+      .then(data => {
+        console.log(`session ${this.sessionName}:`);
+        console.log(data);
+        let session_raw = data.data.results;
+        session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
+        session_raw.private = session_raw.private === "true";
+        this.$store.dispatch("setSelectedSession", { session: session_raw });
+      })
+      .catch(error => {
+        console.error(error);
+        this.$router.push("/");
       });
-    });
+
+    // const fetchOptions = {
+    //   credentials: "include",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `JWT ${window.localStorage.getItem("JWT")}`
+    //   }
+    // };
+
+    // fetch(
+    //   "https://dev.cloudloop.io/session?session_name=" + this.sessionName,
+    //   fetchOptions
+    // ).then(response => {
+    //   if (response.ok) {
+    //     response.json().then(jsonData => {
+    //       var session_raw = jsonData.data.results;
+    //       session_raw.picture = getGenericSkynetDownloadLink(
+    //         session_raw.picture
+    //       );
+    //       session_raw.private = session_raw.private === "true";
+
+    //       this.$store
+    //         .dispatch("setSelectedSession", { session: session_raw })
+    //         .then(resolve(this.session));
+    //     });
+    //   } else {
+    //     console.error(response.status);
+    //     reject(response.json().message);
+    //   }
+    // });
   },
 
   methods: {
