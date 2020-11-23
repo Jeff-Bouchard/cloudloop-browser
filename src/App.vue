@@ -27,7 +27,7 @@
       <v-menu v-if="!!loggedInUser" offset-y>
         <template v-slot:activator="{ on }" v-if="!$vuetify.breakpoint.mobile">
           <h6 class="text-h6 text-uppercase mr-4" v-on="on">
-            {{ loggedInUser }}
+            {{ loggedInUser.username }}
           </h6>
         </template>
         <v-list>
@@ -51,7 +51,7 @@
           <v-list-item>
             <v-list-item-title>
               <router-link
-                :to="'/users/' + loggedInUser"
+                :to="'/users/' + loggedInUser.username"
                 class="text-decoration-none black--text"
               >
                 My Profile
@@ -93,6 +93,10 @@ export default {
     search: "",
     menuLinks: [{ text: "My Sessions", to: "sessions" }],
   }),
+
+  beforeMount() {
+    this.$store.dispatch("fetchUser");
+  },
 
   computed: {
     loggedInUser() {

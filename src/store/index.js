@@ -10,14 +10,14 @@ export default new Vuex.Store({
     selectedProfile: null,
   },
   mutations: {
-    setLoggedInUser(state, value) {
-      state.loggedInUser = value;
+    setLoggedInUser(state, user) {
+      state.loggedInUser = user;
     },
-    setSelectedSession(state, value) {
-      state.selectedSession = value;
+    setSelectedSession(state, session) {
+      state.selectedSession = session;
     },
-    setSelectedProfile(state, value) {
-      state.selectedProfile = value;
+    setSelectedProfile(state, profile) {
+      state.selectedProfile = profile;
     }
   },
   actions: {
@@ -26,30 +26,54 @@ export default new Vuex.Store({
       commit("setSelectedSession", payload.session);
     },
     fetchUserProfile({ commit }, userName) {
-      return new Promise((resolve, reject) => {
+      const token = window.localStorage.getItem("JWT");
+      if (token) {
+        return new Promise((resolve, reject) => {
+          const fetchOptions = {
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${token}`
+            }
+          };
+          fetch(
+            `https://dev.cloudloop.io/user${userName ? `?username=${userName}` : ''}`,
+            fetchOptions
+          ).then(response => {
+            if (response.ok) return response.json()
+            else reject(response.json().message);
+          })
+            .then(({ data: { results } }) => {
+              console.log({ results })
+              commit('setSelectedProfile', results);
+              resolve(results);
+            })
+        });
+      }
+    },
+    fetchUser({ commit }) {
+      const token = window.localStorage.getItem("JWT");
+      if (token) {
         const fetchOptions = {
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `JWT ${window.localStorage.getItem("JWT")}`
+            Authorization: `JWT ${token}`
           }
         };
-  
         fetch(
-            "https://dev.cloudloop.io/user?username=" + userName,
-            fetchOptions
+          "https://dev.cloudloop.io/user",
+          fetchOptions
         ).then(response => {
-            if (response.ok) return response.json()
-            else reject(response.json().message);
+          if (response.ok) return response.json()
+          else console.log(response.json().message);
+        })
+          .then(({ data: { results } }) => {
+            commit('setLoggedInUser', results);
           })
-          .then(({data: {results}}) => {
-            console.log({results})
-            commit('setSelectedProfile', results);
-            resolve(results);
-          })
-      });
+      }
     },
-    logInUser({ commit }, userPass) {
+    logInUser({ dispatch }, userPass) {
       return new Promise((resolve, reject) => {
         const fetchOptions = {
           method: "POST",
@@ -65,15 +89,12 @@ export default new Vuex.Store({
 
         fetch("https://dev.cloudloop.io/auth/login", fetchOptions)
           .then(response => {
-            if (response.ok) {
-              response.json().then(jsonData => {
-                window.localStorage.setItem("JWT", jsonData.data.results);
-              });
-              commit("setLoggedInUser", userPass.username);
-              resolve(userPass.username);
-            } else {
-              reject(response.json().message);
-            }
+            if (response.ok) return response.json()
+            else console.log(response.json().message);
+          })
+          .then(({ data: { results } }) => {
+            window.localStorage.setItem("JWT", results);
+            dispatch('fetchUser');
           })
           .catch(error => {
             reject(error);

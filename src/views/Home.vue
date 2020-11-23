@@ -6,7 +6,7 @@
           Welcome to cloudloop
         </h1>
         <h1 v-else class="display-2 font-weight-bold mb-3">
-          Welcome back {{ loggedInUser }}
+          Welcome back, {{ loggedInUser.username }}
         </h1>
 
         <p class="subheading font-weight-regular">
@@ -25,9 +25,7 @@
       </v-col>
 
       <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
+        <h2 class="headline font-weight-bold mb-3">What's next?</h2>
 
         <v-row justify="center">
           <router-link
@@ -55,15 +53,15 @@ export default {
     whatsNext: [
       {
         text: "My Sessions",
-        to: "sessions"
-      }
-    ]
+        to: "sessions",
+      },
+    ],
   }),
 
   computed: {
     loggedInUser() {
       return this.$store.state.loggedInUser;
-    }
+    },
   },
 
   beforeMount() {
@@ -72,14 +70,14 @@ export default {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `JWT ${window.localStorage.getItem("JWT")}`
-        }
+          Authorization: `JWT ${window.localStorage.getItem("JWT")}`,
+        },
       };
 
       fetch("https://dev.cloudloop.io/publicSessionHeaders", fetchOptions).then(
-        response => {
+        (response) => {
           if (response.ok) {
-            response.json().then(jsonData => {
+            response.json().then((jsonData) => {
               console.log(jsonData);
               this.sessionHeaders = jsonData.data.results;
             });
@@ -89,6 +87,6 @@ export default {
         }
       );
     }
-  }
+  },
 };
 </script>
