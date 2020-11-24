@@ -58,15 +58,17 @@
                   top
                 >
                   <template v-slot:activator="{ on, attrs }">
-                    <v-avatar
-                      class="avatar"
-                      :color="user | getColorForString"
-                      size="33"
-                      @click="user | goToProfile"
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                    </v-avatar>
+                    <router-link :to="`/users/${user}`">
+                      <v-avatar
+                        class="avatar"
+                        :color="user | getColorForString"
+                        size="33"
+                        @click="user | goToProfile"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                      </v-avatar>
+                    </router-link>
                   </template>
                   <span>{{ user }}</span>
                 </v-tooltip>
