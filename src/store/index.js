@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import cloudloop from "../mixins/cloudloop";
 
 Vue.use(Vuex);
 
@@ -96,52 +97,27 @@ export default new Vuex.Store({
     },
     logInUser({ dispatch }, userPass) {
       return new Promise((resolve, reject) => {
-        const fetchOptions = {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            username: userPass.username,
-            password: userPass.password
-          })
-        };
-        fetch("https://dev.cloudloop.io/auth/login", fetchOptions)
-          .then(response => {
-            if (response.ok) return response.json();
-            else console.log(response.json().message);
-          })
-          .then(({ data: { results } }) => {
-            window.localStorage.setItem("JWT", results);
+        cloudloop.methods
+          .logInUser(userPass.username, userPass.password)
+          .then(data => {
+            window.localStorage.setItem("JWT", data.data.results);
             dispatch("fetchUser");
+            resolve();
           })
-          .catch(error => {
-            reject(error);
-          });
+          .catch(reject);
       });
     },
 
     logOutUser({ commit }) {
       return new Promise((resolve, reject) => {
-        const fetchOptions = {
-          method: "POST",
-          credentials: "include"
-        };
-
-        fetch("https://dev.cloudloop.io/auth/logout", fetchOptions)
-          .then(response => {
-            if (response.ok) {
-              commit("setLoggedInUser", null);
-              window.localStorage.removeItem("JWT");
-              resolve();
-            } else {
-              reject("Error logging out user");
-            }
+        cloudloop.methods
+          .logOutUser()
+          .then(() => {
+            window.localStorage.removeItem("JWT");
+            commit("setLoggedInUser", null);
+            resolve();
           })
-          .catch(error => {
-            reject(error);
-          });
+          .catch(reject);
       });
     }
   },

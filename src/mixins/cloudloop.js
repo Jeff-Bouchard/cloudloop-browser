@@ -68,6 +68,38 @@ export default {
           .then(resolve)
           .catch(reject);
       });
+    },
+
+    logInUser(username, password) {
+      return new Promise((resolve, reject) => {
+        fetch(`${baseUrl}/auth/login`, {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: JSON.stringify({
+            username,
+            password
+          })
+        })
+          .then(response => {
+            if (response.ok) return response.json();
+            else reject(response.status);
+          })
+          .then(resolve)
+          .catch(reject);
+      });
+    },
+
+    logOutUser() {
+      return new Promise((resolve, reject) => {
+        fetch(`${baseUrl}/auth/logout`, { ...fetchOptions, method: "POST" })
+          .then(response => {
+            if (response.ok) return resolve();
+            else reject("Error logging out user");
+          })
+          .catch(reject);
+      });
     }
   }
 };
