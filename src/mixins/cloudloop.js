@@ -72,6 +72,25 @@ export default {
       });
     },
 
+    deleteSlot(sessionName, slotId) {
+      return new Promise((resolve, reject) => {
+        fetch(`${baseUrl}/delete_slot`, {
+          ...fetchOptions,
+          method: "POST",
+          body: JSON.stringify({
+            session_name: sessionName,
+            slot_number: slotId
+          })
+        })
+          .then(response => {
+            if (response.ok) return response.json();
+            else reject(response.status);
+          })
+          .then(resolve)
+          .catch(reject);
+      });
+    },
+
     logInUser(username, password) {
       return new Promise((resolve, reject) => {
         fetch(`${baseUrl}/auth/login`, {
