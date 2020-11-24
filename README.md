@@ -10,7 +10,7 @@ We now support playlists of non-looping content, allowing creators to publish th
 
 Producers can instantly share project files between ANY audio workstation, enabling new cross platform collaboration not available on existing systems.
 
-check out sessions "house", "video8", "jeffandliam2", "turbo ratchet" for examples of what is possible.
+check out sessions "house", "video8", "jeffandliam2", "turbo ratchet" for examples of what is possible. https://maari.hns.siasky.net/#/session/turbo%20ratchet
 
 
 Skylink - https://maari.hns.siasky.net - send a message to liam@ziptech.io or datamancer on discord for an invite.
