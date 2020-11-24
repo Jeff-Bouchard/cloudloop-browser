@@ -134,6 +134,7 @@
         >
           <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash" />
         </div>
+        <Dropzone />
       </v-col>
     </v-row>
   </v-container>
@@ -159,10 +160,11 @@ import WaveformPlayer from "@/components/WaveformPlayer.vue";
 import SkyIDPublisher from "@/components/SkyIDPublisher.vue";
 import { getGenericSkynetDownloadLink } from "@/filters/utils";
 import { sessionViewFilter } from "@/filters/utils";
+import Dropzone from "@/components/Dropzone.vue";
 import cloudloop from "@/mixins/cloudloop";
 
 export default {
-  components: { WaveformPlayer, SkyIDPublisher },
+  components: { WaveformPlayer, SkyIDPublisher, Dropzone },
   name: "Session",
   mixins: [cloudloop],
   props: ["on"],
