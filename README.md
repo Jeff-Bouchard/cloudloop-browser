@@ -19,6 +19,8 @@ Design case study: https://skygallery.hns.siasky.net/#/a/AABedZRhdMdvTqlq9sHJBDl
 
 Our video demo - https://siasky.net/AAAcnYgAtSnG2eHadTyLyhnprjCnqPK9uiMYYtylpM4pkQ
 
+And finally, a link to the "old" cloudloop browser, so you may see how big of an improvement this redesign is. https://cloudloop.io/browser/session/weite
+
 ## Project setup
 ```
 npm install
