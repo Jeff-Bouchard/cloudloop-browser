@@ -19,7 +19,7 @@ Design case study: https://skygallery.hns.siasky.net/#/a/AABedZRhdMdvTqlq9sHJBDl
 
 Our video demo - https://siasky.net/AAAcnYgAtSnG2eHadTyLyhnprjCnqPK9uiMYYtylpM4pkQ
 
-Advanced video demo for producers - https://skynet.cloudloop.io/AAB8gbjKYJOW_cF2NhL9m4_Wkv6dcP6vF3akkqjvzprOPw
+Advanced video demo for producers - https://siasky.net/AAB8gbjKYJOW_cF2NhL9m4_Wkv6dcP6vF3akkqjvzprOPw
 
 And finally, a link to the "old" cloudloop browser, so you may see how big of an improvement this redesign is. https://cloudloop.io/browser/session/weite
 
