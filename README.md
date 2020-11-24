@@ -2,11 +2,18 @@
 
 CloudLoop is a collaborative audio workstation with a sample library as large as your imagination.
 
+[Message me](mailto:liam@ziptech.io) or ask manasi@sia.tech for test credentials.
+
 ![Deploy to Skynet](https://github.com/themailman05/cloudloop-browser/workflows/Deploy%20to%20Skynet/badge.svg?branch=vue-webui)
+
+Design Book - https://skygallery.hns.siasky.net/#/a/AACe4TvPwpQqcw59ifbKnuclzDh7AWjIs2hgWV-SqnRUMA
 
 Skylink - https://maari.hns.siasky.net
 
 Our video demo - https://siasky.net/AAAcnYgAtSnG2eHadTyLyhnprjCnqPK9uiMYYtylpM4pkQ
+
+
+
 
 ## Project setup
 ```
