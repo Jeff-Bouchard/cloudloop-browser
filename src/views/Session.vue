@@ -1,5 +1,10 @@
 <template>
   <v-container v-if="this.$store.state.selectedSession != null" class="my-10">
+    <v-overlay :value="this.exportInProgress">
+      <SkyIDPublisher v-bind:session="this.$store.state.selectedSession">
+      </SkyIDPublisher>
+    </v-overlay>
+
     <v-row class="mb-10">
       <v-col cols="12">
         <div class="d-inline-flex">
@@ -34,36 +39,45 @@
               </template>
               <span>{{ isPrivateSession ? "Private" : "Public" }}</span>
             </v-tooltip>
-            <v-btn class="ma-2" outlined color="black" @click="downloadAllLoops">Download all loops</v-btn>
+            <v-btn class="ma-2" outlined color="black" @click="downloadAllLoops"
+              >Download all loops</v-btn
+            >
+            <v-btn class="ma-2" outlined color="black" @click="beginSkyDBExport"
+              >Export session to SkyDB</v-btn
+            >
           </span>
         </div>
         <div>
           <v-container>
             <v-layout row wrap>
-                <v-flex lg2 class="ma-1">
-                    <v-avatar color="red" size="40" v-on="on" center></v-avatar>
-                    <div class="text-h5 font-weight-medium text-uppercase">
-                      {{this.$store.state.selectedSession.creator}}
-                    </div>
-                </v-flex>
-                  <v-flex lg8>
-                    <v-tooltip v-for="user in this.$store.state.selectedSession.users" :key="user" top>
-              <template v-slot:activator="{ on, attrs }">
-                <v-avatar
-                  class="avatar"
-                  :color="user | getColorForString"
-                  size="33"
-                  @click="user | goToProfile"
-                  v-bind="attrs"
-                  v-on="on"
+              <v-flex lg2 class="ma-1">
+                <v-avatar color="red" size="40" v-on="on" center></v-avatar>
+                <div class="text-h5 font-weight-medium text-uppercase">
+                  {{ this.$store.state.selectedSession.creator }}
+                </div>
+              </v-flex>
+              <v-flex lg8>
+                <v-tooltip
+                  v-for="user in this.$store.state.selectedSession.users"
+                  :key="user"
+                  top
                 >
-                </v-avatar>
-              </template>
-              <span>{{ user }}</span>
-            </v-tooltip>
-                  </v-flex>
-             </v-layout>
-           </v-container>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-avatar
+                      class="avatar"
+                      :color="user | getColorForString"
+                      size="33"
+                      @click="user | goToProfile"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                    </v-avatar>
+                  </template>
+                  <span>{{ user }}</span>
+                </v-tooltip>
+              </v-flex>
+            </v-layout>
+          </v-container>
         </div>
 
         <!-- This inline flex thing doesn't really work how I wanted -->
@@ -87,23 +101,21 @@
           @click="overlay = !overlay"
         >
         </v-img>
-        <v-overlay
-          :absolute="absolute"
-          :value="overlay"
-        >
-        <div>
-          <v-btn @click="overlay=false">Close</v-btn>
-          <v-img
-        :src="this.$store.state.selectedSession.picture"
-        class="rounded-lg"
-          aspect-ratio="1"
-          min-height="50vw"
-          min-width="50vw"
-          @click="overlay=false"
-        ></v-img></div>
+        <v-overlay :absolute="absolute" :value="overlay">
+          <div>
+            <v-btn @click="overlay = false">Close</v-btn>
+            <v-img
+              :src="this.$store.state.selectedSession.picture"
+              class="rounded-lg"
+              aspect-ratio="1"
+              min-height="50vw"
+              min-width="50vw"
+              @click="overlay = false"
+            ></v-img>
+          </div>
         </v-overlay>
         <p class="text-body-1 my-6 cover-text">
-          {{this.$store.state.selectedSession.blurb}}
+          {{ this.$store.state.selectedSession.blurb }}
         </p>
         <div>
           <v-chip
@@ -125,7 +137,7 @@
           v-for="loop in this.$store.state.selectedSession.slots"
           :key="loop.hash"
         >
-          <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash"/>
+          <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash" />
         </div>
       </v-col>
     </v-row>
@@ -149,29 +161,30 @@
 </style>
 <script>
 import WaveformPlayer from "@/components/WaveformPlayer.vue";
+import SkyIDPublisher from "@/components/SkyIDPublisher.vue";
 import { sessionViewFilter } from "@/filters/utils";
 
 export default {
-  components: { WaveformPlayer},
+  components: { WaveformPlayer, SkyIDPublisher },
   name: "Session",
-  props: ['on'],
+  props: ["on"],
   sockets: {
     message: function(data) {
-      console.log("Message from client" + data)
+      console.log("Message from client" + data);
     },
     state_update: function(data) {
-      console.log("STATE UPDATE RECEIVED: " + data)
+      console.log("STATE UPDATE RECEIVED: " + data);
       var session_raw = JSON.parse(data);
-      var session_decoded = sessionViewFilter(session_raw)
-            
-      this.$store
-        .dispatch("setSelectedSession", { session: session_decoded })
+      var session_decoded = sessionViewFilter(session_raw);
+
+      this.$store.dispatch("setSelectedSession", { session: session_decoded });
     }
   },
   data() {
     return {
       session: this.selectedSession,
       sessionName: this.$route.params.sessionName,
+      exportInProgress: false,
       connected: false,
       showImagePicker: false,
       isPlaying: false,
@@ -205,17 +218,17 @@ export default {
         }
       };
       fetch(
-          "https://dev.cloudloop.io/session?session_name=" + this.sessionName,
-          fetchOptions
+        "https://dev.cloudloop.io/session?session_name=" + this.sessionName,
+        fetchOptions
       ).then(response => {
         if (response.ok) {
           response.json().then(jsonData => {
             var session_raw = jsonData.data.results;
-            var session_decoded = sessionViewFilter(session_raw)
-            
+            var session_decoded = sessionViewFilter(session_raw);
+
             this.$store
               .dispatch("setSelectedSession", { session: session_decoded })
-              .then(resolve(this.session))
+              .then(resolve(this.session));
           });
         } else {
           console.error(response.status);
@@ -225,7 +238,10 @@ export default {
     });
   },
   mounted() {
-    this.$socket.client.emit('joinSession', {"username":this.$store.state.loggedInUser.username,"session_name":this.$route.params.sessionName})
+    this.$socket.client.emit("joinSession", {
+      username: this.$store.state.loggedInUser.username,
+      session_name: this.$route.params.sessionName
+    });
   },
 
   methods: {
@@ -233,27 +249,32 @@ export default {
       return this.colors[Math.floor(Math.random() * this.colors.length)];
     },
     handleClick() {
-      if (this.isPlaying) this.pauseAllLoops()
+      if (this.isPlaying) this.pauseAllLoops();
       else this.playAllLoops();
     },
     playAllLoops() {
-      const playFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
+      const playFuncs = Object.values(
+        this.$store.state.selectedSession.slots
+      ).map(loop => {
         const refHandle = `ref-${loop.hash}`;
-        if (loop.link.substring(0,10) !== "reserve://") {
-          console.log(`Playing ref:${loop.hash}`)
-            return this.$refs[refHandle][0].play;
+        if (loop.link.substring(0, 10) !== "reserve://") {
+          console.log(`Playing ref:${loop.hash}`);
+          return this.$refs[refHandle][0].play;
         }
       });
-      console.log({playFuncs})
+      console.log({ playFuncs });
 
       playFuncs.forEach(func => {
         if (func != undefined) {
-          func()
-        }});
+          func();
+        }
+      });
       this.isPlaying = true;
     },
     pauseAllLoops() {
-      const pauseFuncs = Object.values(this.$store.state.selectedSession.slots).map(loop => {
+      const pauseFuncs = Object.values(
+        this.$store.state.selectedSession.slots
+      ).map(loop => {
         const refHandle = `ref-${loop.hash}`;
         return this.$refs[refHandle][0].pause;
       });
@@ -262,7 +283,12 @@ export default {
       this.isPlaying = false;
     },
     downloadAllLoops() {
-      location.href = "https://dev.cloudloop.io/download/library?session_name=" + this.sessionName;
+      location.href =
+        "https://dev.cloudloop.io/download/library?session_name=" +
+        this.sessionName;
+    },
+    beginSkyDBExport() {
+      this.exportInProgress = true;
     }
   }
 };

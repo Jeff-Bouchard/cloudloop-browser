@@ -4,7 +4,7 @@
       <v-col align-self="center" cols="12" lg="2">
         <div style="text-align: end">
           <v-btn
-          v-if="!this.isReservation"
+            v-if="!this.isReservation"
             fab
             dark
             large
@@ -13,15 +13,13 @@
             class="mr-4"
             color="black"
             @click="playPause"
-          ><v-icon dark>
+            ><v-icon dark>
               {{ isPlaying ? "pause" : "play_arrow" }}
             </v-icon>
           </v-btn>
-
-
         </div>
       </v-col>
-      
+
       <v-col class="waveform-wrapper" cols="12" lg="10" align-self="center">
         <v-icon
           medium
@@ -113,20 +111,21 @@ export default {
       isStarred: false,
       isReservation: false,
       color: "#FFFFFF",
-      percentLoaded: 0,
+      percentLoaded: 0
     };
   },
   mounted() {
     const { loop } = this.$props;
-    console.log(loop.link.substring(0,10))
-    this.isReservation = loop.link.substring(0,10) === "reserve://" ? true : false;
-    this.color = getColorForString(this.loop.creator)
+    console.log(loop.link.substring(0, 10));
+    this.isReservation =
+      loop.link.substring(0, 10) === "reserve://" ? true : false;
+    this.color = getColorForString(this.loop.creator);
 
     if (!this.isReservation) {
       this.waveSurfer = WaveSurfer.create({
         container: `#waveform-${loop.hash}`,
         barWidth: 2,
-        barHeight: 3, 
+        barHeight: 3,
         barMinHeight: 1,
         cursorWidth: 1,
         backend: "WebAudio",
@@ -134,7 +133,7 @@ export default {
         progressColor: "#079688",
         responsive: true,
         waveColor: "#76CCC4",
-        cursorColor: "transparent",
+        cursorColor: "transparent"
       });
 
       const downloadLink = getWavDownloadFromProxy(loop.link);
@@ -144,12 +143,10 @@ export default {
       this.waveSurfer.on("finish", () => {
         this.waveSurfer.play();
       });
-      this.waveSurfer.on("loading", (percent) => {
+      this.waveSurfer.on("loading", percent => {
         this.percentLoaded = percent;
       });
-      }
-
-
+    }
   },
 
   methods: {
@@ -168,23 +165,21 @@ export default {
     },
     pause() {
       if (this.waveSurfer != null) {
-      this.waveSurfer.pause();
-      this.isPlaying = false;
+        this.waveSurfer.pause();
+        this.isPlaying = false;
       }
     },
     play() {
-            if (this.waveSurfer != null) {
-
-      this.waveSurfer.play();
-      this.isPlaying = true;
-            }
+      if (this.waveSurfer != null) {
+        this.waveSurfer.play();
+        this.isPlaying = true;
+      }
     },
     playFromStart() {
-            if (this.waveSurfer != null) {
-
-      this.waveSurfer.play(0);
-            }
-    },
+      if (this.waveSurfer != null) {
+        this.waveSurfer.play(0);
+      }
+    }
   },
   filters: {
     formatDate(dateStr) {
@@ -196,7 +191,7 @@ export default {
         "-" +
         dateObj.getDate()
       );
-    },
-  },
+    }
+  }
 };
 </script>

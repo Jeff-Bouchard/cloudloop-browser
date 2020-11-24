@@ -53,15 +53,15 @@ export default {
     whatsNext: [
       {
         text: "My Sessions",
-        to: "sessions",
-      },
-    ],
+        to: "sessions"
+      }
+    ]
   }),
 
   computed: {
     loggedInUser() {
       return this.$store.state.loggedInUser;
-    },
+    }
   },
 
   beforeMount() {
@@ -70,14 +70,14 @@ export default {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `JWT ${window.localStorage.getItem("JWT")}`,
-        },
+          Authorization: `JWT ${window.localStorage.getItem("JWT")}`
+        }
       };
 
       fetch("https://dev.cloudloop.io/publicSessionHeaders", fetchOptions).then(
-        (response) => {
+        response => {
           if (response.ok) {
-            response.json().then((jsonData) => {
+            response.json().then(jsonData => {
               console.log(jsonData);
               this.sessionHeaders = jsonData.data.results;
             });
@@ -87,6 +87,6 @@ export default {
         }
       );
     }
-  },
+  }
 };
 </script>
