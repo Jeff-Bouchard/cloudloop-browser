@@ -22,13 +22,7 @@
             {{ sessionName }}
             <v-tooltip bottom close-delay="500">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  icon
-                  v-on="on"
-                  color="black"
-                  v-bind="attrs"
-                  @click="isPrivate = !isPrivate"
-                >
+                <v-btn icon v-on="on" color="black" v-bind="attrs">
                   <v-icon>{{ isPrivateSession ? "lock" : "lock_open" }}</v-icon>
                 </v-btn>
               </template>
@@ -135,7 +129,6 @@ export default {
       session: this.selectedSession,
       sessionName: this.$route.params.sessionName ?? null,
       isPlaying: false,
-      isPrivate: this.isPrivateSession,
       sessionTags: ["Drums", "Vocals", "Keys", "Other"],
       colors: ["red", "orange", "amber", "green", "blue", "purple", "blue-grey"]
     };
@@ -161,10 +154,9 @@ export default {
     this.fetchSession(this.sessionName)
       .then(data => {
         console.log(`session ${this.sessionName}:`);
-        console.log(data);
+        console.log(data.data.results.private);
         let session_raw = data.data.results;
         session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
-        session_raw.private = session_raw.private === "true";
         this.$store.dispatch("setSelectedSession", { session: session_raw });
       })
       .catch(error => {
