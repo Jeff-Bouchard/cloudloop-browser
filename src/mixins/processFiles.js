@@ -10,7 +10,7 @@ export default {
       return new Promise((resolve, reject) => {
         files.forEach(file => {
           // test for file type
-          if (!/^audio\/wav$/.test(file.type))
+          if (!/^(audio\/wav|audio\/x-wav|audio\/wave)$/.test(file.type))
             return reject(`Invalid filetype ${file.type}`);
           // test for file size
           if (file.size > bytes("1 GB"))
