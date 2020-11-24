@@ -1,19 +1,22 @@
 # cloudloop-browser
 
-CloudLoop is a collaborative audio workstation with a sample library as large as your imagination.
+CloudLoop Browser is a collaborative web interface for curating and publishing audio loops, sample packs, and whole albums.
 
-[Message me](mailto:liam@ziptech.io) or ask manasi@sia.tech for test credentials.
+For this hackathon we connected our audio metadata backend with a browser interface.
+
+We now support playlists of non-looping content, allowing creators to publish their own curated collections of high quality samples.
+
+Thousands of users can tune in to a live looping session in real time
+
+Producers can instantly share project files between ANY audio workstation, enabling new cross platform collaboration not available on existing systems.
 
 ![Deploy to Skynet](https://github.com/themailman05/cloudloop-browser/workflows/Deploy%20to%20Skynet/badge.svg?branch=vue-webui)
 
-Design Book - https://skygallery.hns.siasky.net/#/a/AACe4TvPwpQqcw59ifbKnuclzDh7AWjIs2hgWV-SqnRUMA
-
 Skylink - https://maari.hns.siasky.net
 
+Design case study: https://skygallery.hns.siasky.net/#/a/AABedZRhdMdvTqlq9sHJBDlMoBolQgBbWWR54OTwv5iOyQ
+
 Our video demo - https://siasky.net/AAAcnYgAtSnG2eHadTyLyhnprjCnqPK9uiMYYtylpM4pkQ
-
-
-
 
 ## Project setup
 ```
