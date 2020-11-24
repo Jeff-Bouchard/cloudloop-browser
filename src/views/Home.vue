@@ -64,7 +64,7 @@ export default {
     }
   },
 
-  beforeMount() {
+  mounted() {
     if (this.loggedInUser) {
       const fetchOptions = {
         credentials: "include",

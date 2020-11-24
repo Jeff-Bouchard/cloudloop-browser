@@ -171,36 +171,6 @@ export default {
         console.error(error);
         this.$router.push("/");
       });
-
-    // const fetchOptions = {
-    //   credentials: "include",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `JWT ${window.localStorage.getItem("JWT")}`
-    //   }
-    // };
-
-    // fetch(
-    //   "https://dev.cloudloop.io/session?session_name=" + this.sessionName,
-    //   fetchOptions
-    // ).then(response => {
-    //   if (response.ok) {
-    //     response.json().then(jsonData => {
-    //       var session_raw = jsonData.data.results;
-    //       session_raw.picture = getGenericSkynetDownloadLink(
-    //         session_raw.picture
-    //       );
-    //       session_raw.private = session_raw.private === "true";
-
-    //       this.$store
-    //         .dispatch("setSelectedSession", { session: session_raw })
-    //         .then(resolve(this.session));
-    //     });
-    //   } else {
-    //     console.error(response.status);
-    //     reject(response.json().message);
-    //   }
-    // });
   },
 
   methods: {

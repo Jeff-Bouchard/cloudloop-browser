@@ -28,8 +28,27 @@ export default {
 
     fetchSession(sessionName) {
       return new Promise((resolve, reject) => {
-        fetch(`${baseUrl}/session?session_name=${sessionName}`, {
-          ...fetchOptions
+        fetch(`${baseUrl}/session?session_name=${sessionName}`, fetchOptions)
+          .then(response => {
+            if (response.ok) return response.json();
+            else reject(response.status);
+          })
+          .then(resolve)
+          .catch(reject);
+      });
+    },
+
+    createSession(sessionName, isPrivate = false, isLooping = false) {
+      void isLooping;
+      return new Promise((resolve, reject) => {
+        fetch(`${baseUrl}/session`, {
+          ...fetchOptions,
+          method: "POST",
+          body: JSON.stringify({
+            session_name: sessionName,
+            private_session: isPrivate,
+            is_looping: isLooping
+          })
         })
           .then(response => {
             if (response.ok) return response.json();
