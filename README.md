@@ -13,7 +13,7 @@ Thousands of users can tune in to a live looping session in real time
 Producers can instantly share project files between ANY audio workstation, enabling new cross platform collaboration not available on existing systems.
 
 
-Skylink - https://maari.hns.siasky.net
+Skylink - https://maari.hns.siasky.net - send a message to liam@ziptech.io or datamancer on discord for an invite.
 
 Design case study: https://skygallery.hns.siasky.net/#/a/AABedZRhdMdvTqlq9sHJBDlMoBolQgBbWWR54OTwv5iOyQ
 
