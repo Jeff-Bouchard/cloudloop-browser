@@ -134,7 +134,7 @@
         >
           <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash" />
         </div>
-        <Dropzone />
+        <Dropzone class="my-10" />
       </v-col>
     </v-row>
   </v-container>
