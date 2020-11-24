@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="12" lg="4">
+    <v-col cols="8" lg="4">
       <v-card @click="showDialog = true" class="session-card add-session-card">
         <v-container fill-height fluid>
           <v-row align="center" justify="center">
@@ -12,7 +12,7 @@
         </v-container>
       </v-card>
     </v-col>
-    <v-col v-if="loading" cols="12" lg="4" align-self="center">
+    <v-col v-if="loading" cols="8" lg="4" align-self="center">
       <v-row justify="center">
         <v-progress-circular
           indeterminate

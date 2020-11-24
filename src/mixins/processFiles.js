@@ -5,6 +5,8 @@ import bytes from "bytes";
 
 export default {
   mixins: [cloudloop],
+  data() {
+  },
   methods: {
     processFiles(files) {
       return new Promise((resolve, reject) => {
@@ -83,10 +85,12 @@ export default {
           console.log("File uploaded");
           console.log(data);
           this.uploadFiles();
+          this.loading = false;
         })
         .catch(error => {
           console.error(error);
           this.uploadFiles();
+          this.loading=false;
         });
     }
   }
