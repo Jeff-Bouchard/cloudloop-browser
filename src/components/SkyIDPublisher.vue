@@ -15,14 +15,14 @@
       </v-btn>
     </div>
 	  <v-row>
-		  <v-col cols="12" lg="8" min-width="80vw" >
+		  <v-col cols="12" lg="8" sm="4" xs="4">
 			<v-card
     color="#707070"
     dark
     v-if="this.session"
-    max-width="80vw"
+    max-width="100vw"
   >
-    <div class="d-flex flex-no-wrap justify-space-between">
+    <div class="d-flex">
 		
       <div>
         <v-card-title
@@ -69,7 +69,7 @@
     
     tile
   >
-    <v-list shaped>
+    <v-list shaped style="max-height: 40vh; overflow:scroll;">
       <v-subheader>Loops</v-subheader>
         <v-list-item
           v-for="(item, i) in this.session.slots"
@@ -191,7 +191,7 @@ export default {
     },
     fetchSession() {
       // fetch file
-      this.skyid.getFile(`cloudloop-session`, function(response, revision) {
+      this.skyid.getFile(this.session.name, function(response, revision) {
         console.log(revision);
         if (response == "") {
           // file not found
@@ -210,7 +210,7 @@ export default {
       var json = JSON.stringify({ data: session });
 
       // upload to registry with SkyID key
-      this.skyid.setFile("cloudloop-session", json, function(response) {
+      this.skyid.setFile(this.session.name, json, function(response) {
         if (response != true) {
           alert("Sorry, but upload failed :(");
         } else {

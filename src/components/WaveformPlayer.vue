@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :style="`color: ${this.color};`">
+  <v-container fluid :style="`color: ${this.color}; overflow-y:scroll;`">
     <v-row justify="center">
       <v-col align-self="center" cols="12" lg="2">
         <div style="text-align: end">

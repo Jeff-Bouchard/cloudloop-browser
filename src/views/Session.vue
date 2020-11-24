@@ -1,6 +1,7 @@
 <template>
   <v-container v-if="this.$store.state.selectedSession != null" class="my-10">
     <v-overlay :value="this.exportInProgress">
+      <v-btn @click="exportInProgress = false">Close</v-btn>
       <SkyIDPublisher v-bind:session="this.$store.state.selectedSession">
       </SkyIDPublisher>
     </v-overlay>
