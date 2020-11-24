@@ -202,8 +202,6 @@ export default {
 
     this.fetchSession(this.sessionName)
       .then(data => {
-        console.log(`session ${this.sessionName}:`);
-        console.log(data.data.results.private);
         let session_raw = data.data.results;
         session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
         this.$store.dispatch("setSelectedSession", { session: session_raw });
