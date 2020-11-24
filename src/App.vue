@@ -27,44 +27,33 @@
       <v-btn v-if="!loggedInUser" outlined @click="goToLoginPage">
         Login
       </v-btn>
-      <v-menu v-if="!!loggedInUser" offset-y>
-        <template v-slot:activator="{ on }" v-if="!$vuetify.breakpoint.mobile">
-          <h6 class="text-h6 text-uppercase mr-4" v-on="on">
-            {{ loggedInUser.username }}
-          </h6>
-        </template>
-        <v-list>
-          <v-list-item>
-            <v-list-item-title v-for="(link, index) in menuLinks" :key="index">
-              <router-link
-                :to="link.to"
-                class="text-decoration-none black--text"
-              >
-                {{ link.text }}
-              </router-link>
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <h6
+        v-if="!!loggedInUser && !$vuetify.breakpoint.mobile"
+        class="text-h6 text-uppercase mr-4"
+      >
+        {{ loggedInUser.username }}
+      </h6>
       <v-menu v-if="!!loggedInUser" offset-y>
         <template v-slot:activator="{ on }">
           <v-avatar color="red" size="40" v-on="on"></v-avatar>
         </template>
         <v-list>
-          <v-list-item>
-            <v-list-item-title>
-              <router-link
-                :to="'/users/' + loggedInUser.username"
-                class="text-decoration-none black--text"
-              >
+          <router-link
+            :to="'/users/' + loggedInUser.username"
+            class="text-decoration-none black--text"
+          >
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>account_circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
                 My Profile
-              </router-link>
-            </v-list-item-title>
-          </v-list-item>
-
+              </v-list-item-title>
+            </v-list-item>
+          </router-link>
           <v-list-item @click="logOutUser">
             <v-list-item-icon>
-              <v-icon>account_circle</v-icon>
+              <v-icon>exit_to_app</v-icon>
             </v-list-item-icon>
             <v-list-item-title v-for="(link, index) in menuLinks" :key="index">
               Logout
@@ -115,7 +104,7 @@ export default {
     menuLinks: [{ text: "My Sessions", to: "sessions" }]
   }),
 
-  beforeMount() {
+  mounted() {
     this.$store.dispatch("fetchUser");
   },
 

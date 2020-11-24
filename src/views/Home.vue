@@ -44,9 +44,11 @@
 
 <script>
 import SessionCard from "@/components/SessionCard.vue";
+import cloudloop from "@/mixins/cloudloop";
 
 export default {
   name: "Home",
+  mixins: [cloudloop],
   components: { SessionCard },
   data: () => ({
     sessionHeaders: [],
@@ -64,28 +66,13 @@ export default {
     }
   },
 
-  beforeMount() {
+  mounted() {
     if (this.loggedInUser) {
-      const fetchOptions = {
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${window.localStorage.getItem("JWT")}`
-        }
-      };
-
-      fetch("https://dev.cloudloop.io/publicSessionHeaders", fetchOptions).then(
-        response => {
-          if (response.ok) {
-            response.json().then(jsonData => {
-              console.log(jsonData);
-              this.sessionHeaders = jsonData.data.results;
-            });
-          } else {
-            console.error(response.status);
-          }
-        }
-      );
+      this.fetchPublicSessionHeaders()
+        .then(data => {
+          this.sessionHeaders = data.data.results.splice(0, 50);
+        })
+        .catch(console.error);
     }
   }
 };

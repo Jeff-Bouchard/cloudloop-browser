@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12" lg="4">
-      <v-card @click="newLoopSession" class="session-card add-session-card">
+      <v-card @click="showDialog = true" class="session-card add-session-card">
         <v-container fill-height fluid>
           <v-row align="center" justify="center">
             <v-icon class="plus-icon" large>mdi-plus</v-icon>
@@ -24,6 +24,7 @@
     <v-col v-for="session in sessions" :key="session.name" cols="12" lg="4">
       <SessionCard :session="session" />
     </v-col>
+    <NewSessionDialog :dialog.sync="showDialog" />
   </v-row>
 </template>
 
@@ -52,54 +53,38 @@
 
 <script>
 import SessionCard from "./SessionCard.vue";
+import NewSessionDialog from "@/components/NewSessionDialog";
+import cloudloop from "@/mixins/cloudloop";
 
 export default {
   name: "Sessions",
-  components: { SessionCard },
+  components: { SessionCard, NewSessionDialog },
+  mixins: [cloudloop],
   data() {
     return {
       sessions: [],
-      loading: false
+      loading: false,
+      showDialog: false
     };
   },
-  beforeMount: function() {
-    this.fetchUserSessions();
+  beforeMount() {
+    this.loading = true;
+    this.fetchUserSessions(this.$route.params.userName)
+      .then(({ data: { results } }) => {
+        this.loading = false;
+        this.sessions = results;
+        console.log("sessions", results);
+      })
+      .catch(error => {
+        this.loading = false;
+        console.error(error);
+      });
   },
   computed: {
     isOnOwnProfile() {
       const { loggedInUser } = this.$store.state;
       const { userName } = this.$route.params;
       return loggedInUser ? loggedInUser.username === userName : false;
-    }
-  },
-  methods: {
-    newLoopSession() {
-      alert("Go to new session page");
-    },
-    fetchUserSessions() {
-      this.loading = true;
-      const { userName } = this.$route.params;
-      const fetchOptions = {
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${window.localStorage.getItem("JWT")}`
-        }
-      };
-
-      fetch(
-        `https://dev.cloudloop.io/sessions?username=${userName}`,
-        fetchOptions
-      )
-        .then(response => {
-          if (response.ok) return response.json();
-          else console.error(response.status);
-        })
-        .then(({ data: { results } }) => {
-          this.sessions = results;
-          this.loading = false;
-          console.log("sessions", results);
-        });
     }
   }
 };
