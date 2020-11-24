@@ -21,6 +21,7 @@
                 v-model="password"
                 label="Password"
                 type="password"
+                :error-messages="loginError"
               ></v-text-field>
               <input type="submit" class="d-none" />
             </v-form>
@@ -51,6 +52,7 @@ export default {
     return {
       username: "",
       password: "",
+      loginError: "",
       loading: false,
       rules: {
         required: value => !!value || "Required"
@@ -63,6 +65,7 @@ export default {
       if (event) event.preventDefault();
       if (!this.$refs.loginForm.validate()) return;
       this.loading = true;
+      this.loginError = "";
       this.$store
         .dispatch("logInUser", {
           username: this.username,
@@ -74,6 +77,7 @@ export default {
         })
         .catch(error => {
           this.loading = false;
+          this.loginError = "Error logging in";
           console.log("error logging in");
           console.error(error);
         });
