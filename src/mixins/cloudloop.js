@@ -38,8 +38,19 @@ export default {
       });
     },
 
+    fetchPublicSessionHeaders() {
+      return new Promise((resolve, reject) => {
+        fetch(`${baseUrl}/publicSessionHeaders`, fetchOptions)
+          .then(response => {
+            if (response.ok) return response.json();
+            else reject(response.status);
+          })
+          .then(resolve)
+          .catch(reject);
+      });
+    },
+
     createSession(sessionName, isPrivate = false, isLooping = false) {
-      void isLooping;
       return new Promise((resolve, reject) => {
         fetch(`${baseUrl}/session`, {
           ...fetchOptions,

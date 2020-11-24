@@ -40,21 +40,17 @@
             class="text-decoration-none black--text"
           >
             <v-list-item>
+              <v-list-item-icon>
+                <v-icon>account_circle</v-icon>
+              </v-list-item-icon>
               <v-list-item-title>
                 My Profile
               </v-list-item-title>
             </v-list-item>
           </router-link>
-          <router-link to="link.to" class="text-decoration-none black--text">
-            <v-list-item>
-              <v-list-item-title>
-                My Sessions
-              </v-list-item-title>
-            </v-list-item>
-          </router-link>
           <v-list-item @click="logOutUser">
             <v-list-item-icon>
-              <v-icon>account_circle</v-icon>
+              <v-icon>exit_to_app</v-icon>
             </v-list-item-icon>
             <v-list-item-title v-for="(link, index) in menuLinks" :key="index">
               Logout
