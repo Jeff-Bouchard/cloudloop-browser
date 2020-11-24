@@ -89,13 +89,13 @@ export default {
           id: 0,
           stars: 100,
           coverUrl:
-            "https://skyportal.xyz/HAClCALSAo5HaaELUam8iSp6fAHMik5Oy6sXtAUNIUE8_Q"
+            "https://siasky.net/HAClCALSAo5HaaELUam8iSp6fAHMik5Oy6sXtAUNIUE8_Q"
         },
         {
           id: 1,
           stars: 69,
           coverUrl:
-            "https://skyportal.xyz/3AEym3jDLSjzBHj7TS_wfFJm7PNpKYfqia50TF4oxQYnQg"
+            "https://siasky.net/3AEym3jDLSjzBHj7TS_wfFJm7PNpKYfqia50TF4oxQYnQg"
         }
       ]
     };
