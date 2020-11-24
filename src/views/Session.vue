@@ -195,7 +195,6 @@ export default {
       isPlaying: false,
       isPrivate: this.isPrivateSession,
       absolute: false,
-      loading: false,
       overlay: false,
       sessionTags: ["Drums", "Vocals", "Keys", "Other"],
       colors: ["red", "orange", "amber", "green", "blue", "purple", "blue-grey"]
