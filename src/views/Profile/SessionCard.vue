@@ -76,7 +76,7 @@
 <script>
 import {
   getGenericSkynetDownloadLink,
-  getColorForString,
+  getColorForString
 } from "@/filters/utils";
 
 export default {
@@ -88,7 +88,7 @@ export default {
     },
     numFavorites() {
       return this.$props.session.favorited_by.length;
-    },
+    }
   },
   filters: {
     getColor(userName) {
@@ -96,12 +96,12 @@ export default {
     },
     goToProfile(userName) {
       this.$router.push(`/users/${userName}`);
-    },
+    }
   },
   methods: {
     goToSessionDetail() {
       this.$router.push(`/session/${this.$props.session.name}`);
-    },
-  },
+    }
+  }
 };
 </script>

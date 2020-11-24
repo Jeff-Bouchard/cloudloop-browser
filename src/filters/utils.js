@@ -15,17 +15,19 @@ export const getGenericSkynetDownloadLink = siaLink => {
 };
 
 export const sessionViewFilter = session_raw => {
-    session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
-    session_raw.private = session_raw.private === "true";
-    return session_raw;
-}
+  session_raw.picture = getGenericSkynetDownloadLink(session_raw.picture);
+  session_raw.private = session_raw.private === "true";
+  return session_raw;
+};
 
-Object.defineProperty(String.prototype, 'hashCode', {
+Object.defineProperty(String.prototype, "hashCode", {
   value: function() {
-    var hash = 0, i, chr;
+    var hash = 0,
+      i,
+      chr;
     for (i = 0; i < this.length; i++) {
-      chr   = this.charCodeAt(i);
-      hash  = ((hash << 5) - hash) + chr;
+      chr = this.charCodeAt(i);
+      hash = (hash << 5) - hash + chr;
       hash |= 0; // Convert to 32bit integer
     }
     return hash;
@@ -56,7 +58,7 @@ function hslToHex(h, s, l) {
   }
   const toHex = x => {
     const hex = Math.round(x * 255).toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
+    return hex.length === 1 ? "0" + hex : hex;
   };
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
@@ -66,8 +68,11 @@ export const getColorForString = stringToHash => {
   var lightnessArray = [35, 50, 65];
   const hashResult = stringToHash.hashCode();
   let hue = Math.abs(hashResult % 359.0);
-  let saturationIndex = (hue*180) % (saturationArray.length-1) + 1
-  let lightnessIndex = (hue*180) % (saturationArray.length-1) + 1
-  return hslToHex(hue, saturationArray[saturationIndex], lightnessArray[lightnessIndex]);
-}
-
+  let saturationIndex = ((hue * 180) % (saturationArray.length - 1)) + 1;
+  let lightnessIndex = ((hue * 180) % (saturationArray.length - 1)) + 1;
+  return hslToHex(
+    hue,
+    saturationArray[saturationIndex],
+    lightnessArray[lightnessIndex]
+  );
+};

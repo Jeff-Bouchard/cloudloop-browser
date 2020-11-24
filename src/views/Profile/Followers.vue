@@ -24,6 +24,6 @@ import FollowerCard from "./FollowerCard.vue";
 export default {
   name: "Followers",
   props: ["followers"],
-  components: { FollowerCard },
+  components: { FollowerCard }
 };
 </script>

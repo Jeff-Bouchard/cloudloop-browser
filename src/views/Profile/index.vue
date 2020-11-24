@@ -40,8 +40,8 @@
             <Sessions />
           </v-tab-item>
           <v-tab-item>Favorites</v-tab-item>
-          <v-tab-item><Followers :followers="user.friends" /></v-tab-item>
-          <v-tab-item><Followers :followers="user.friends" /></v-tab-item>
+          <v-tab-item><Followers :followers="user.friends"/></v-tab-item>
+          <v-tab-item><Followers :followers="user.friends"/></v-tab-item>
         </v-tabs-items>
       </v-col>
     </v-row>
@@ -70,22 +70,14 @@ export default {
       isPlaying: false,
       isPrivate: this.isPrivateSession,
       sessionTags: ["Drums", "Vocals", "Keys", "Other"],
-      colors: [
-        "red",
-        "orange",
-        "amber",
-        "green",
-        "blue",
-        "purple",
-        "blue-grey",
-      ],
+      colors: ["red", "orange", "amber", "green", "blue", "purple", "blue-grey"]
     };
   },
 
   watch: {
     $route() {
       this.$store.dispatch("fetchUserProfile", this.userName);
-    },
+    }
   },
   computed: {
     profilePicture() {
@@ -98,11 +90,11 @@ export default {
     },
     user() {
       return this.$store.state.selectedProfile;
-    },
+    }
   },
 
-  beforeMount: function () {
+  beforeMount: function() {
     this.$store.dispatch("fetchUserProfile", this.userName);
-  },
+  }
 };
 </script>

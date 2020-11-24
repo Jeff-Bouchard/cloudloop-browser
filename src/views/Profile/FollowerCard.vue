@@ -60,12 +60,12 @@ export default {
     },
     pluralize(count) {
       return count > 1 ? "Followers" : "Follower";
-    },
+    }
   },
   methods: {
     goToFollowerProfile() {
       this.$router.push(`/users/${this.$props.follower.username}`);
-    },
-  },
+    }
+  }
 };
 </script>
