@@ -5,6 +5,8 @@ CloudLoop is a collaborative audio workstation with a sample library as large as
 ![Deploy to Skynet](https://github.com/themailman05/cloudloop-browser/workflows/Deploy%20to%20Skynet/badge.svg?branch=vue-webui)
 ![Live skylink
 
+Skylink - https://maari.hns.siasky.net
+
 Our video demo - https://siasky.net/AAAcnYgAtSnG2eHadTyLyhnprjCnqPK9uiMYYtylpM4pkQ
 
 ## Project setup
