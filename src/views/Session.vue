@@ -246,7 +246,10 @@ export default {
       });
       console.log({playFuncs})
 
-      playFuncs.forEach(func => func());
+      playFuncs.forEach(func => {
+        if (func != undefined) {
+          func()
+        }});
       this.isPlaying = true;
     },
     pauseAllLoops() {

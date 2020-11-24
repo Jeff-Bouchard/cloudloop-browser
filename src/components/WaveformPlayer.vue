@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid :style="`color: ${this.color};`">
     <v-row justify="center">
       <v-col align-self="center" cols="12" lg="2">
         <div style="text-align: end">
@@ -18,8 +18,10 @@
             </v-icon>
           </v-btn>
 
+
         </div>
       </v-col>
+      
       <v-col class="waveform-wrapper" cols="12" lg="10" align-self="center">
         <v-icon
           medium
@@ -34,7 +36,7 @@
         </v-icon>
         <v-progress-linear
           class="percent-loaded"
-          v-if="percentLoaded < 100"
+          v-if="percentLoaded < 100 && !this.isReservation"
           :value="percentLoaded"
           color="#3b2898"
           background-color="#7cecdc"
@@ -100,7 +102,7 @@
 
 <script>
 import WaveSurfer from "wavesurfer.js";
-import { getWavDownloadFromProxy } from "@/filters/utils";
+import { getWavDownloadFromProxy, getColorForString } from "@/filters/utils";
 
 export default {
   name: "WaveformPlayer",
@@ -110,6 +112,7 @@ export default {
       isPlaying: false,
       isStarred: false,
       isReservation: false,
+      color: "#FFFFFF",
       percentLoaded: 0,
     };
   },
@@ -117,6 +120,7 @@ export default {
     const { loop } = this.$props;
     console.log(loop.link.substring(0,10))
     this.isReservation = loop.link.substring(0,10) === "reserve://" ? true : false;
+    this.color = getColorForString(this.loop.creator)
 
     if (!this.isReservation) {
       this.waveSurfer = WaveSurfer.create({
@@ -157,19 +161,29 @@ export default {
       this.isStarred = !this.isStarred;
     },
     playPause() {
-      this.waveSurfer.playPause();
-      this.isPlaying = !this.isPlaying;
+      if (this.waveSurfer != null) {
+        this.waveSurfer.playPause();
+        this.isPlaying = !this.isPlaying;
+      }
     },
     pause() {
+      if (this.waveSurfer != null) {
       this.waveSurfer.pause();
       this.isPlaying = false;
+      }
     },
     play() {
+            if (this.waveSurfer != null) {
+
       this.waveSurfer.play();
       this.isPlaying = true;
+            }
     },
     playFromStart() {
+            if (this.waveSurfer != null) {
+
       this.waveSurfer.play(0);
+            }
     },
   },
   filters: {
