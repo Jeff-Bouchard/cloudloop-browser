@@ -4,11 +4,9 @@
 
 CloudLoop Browser is a collaborative web interface for curating and publishing audio loops, sample packs, and whole albums.
 
-For this hackathon we connected our audio metadata backend with a browser interface.
+For this hackathon we connected our audio metadata backend with a browser interface. Changes to playlists are broadcast via websockets to all connected clients, enabling a remote-collaborative curation and listening process.
 
 We now support playlists of non-looping content, allowing creators to publish their own curated collections of high quality samples.
-
-Thousands of users can tune in to a live looping session in real time
 
 Producers can instantly share project files between ANY audio workstation, enabling new cross platform collaboration not available on existing systems.
 
