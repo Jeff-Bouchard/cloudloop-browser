@@ -214,10 +214,10 @@ export default {
       });
   },
   mounted() {
-    this.$socket.client.emit("joinSession", {
-      username: this.$store.state.loggedInUser.username,
-      session_name: this.$route.params.sessionName
-    });
+    // this.$socket.client.emit("joinSession", {
+    //   username: this.$store.state.loggedInUser.username,
+    //   session_name: this.$route.params.sessionName
+    // });
   },
 
   methods: {

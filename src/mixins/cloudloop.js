@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 const baseUrl = "https://dev.cloudloop.io";
 // const baseUrl =
 //   location.hostname === "localhost"
@@ -94,6 +96,26 @@ export default {
     logOutUser() {
       return new Promise((resolve, reject) => {
         fetch(`${baseUrl}/auth/logout`, { ...fetchOptions, method: "POST" })
+          .then(response => {
+            if (response.ok) return resolve();
+            else reject("Error logging out user");
+          })
+          .catch(reject);
+      });
+    },
+
+    uploadAudio(file, username, sessionName) {
+      return new Promise((resolve, reject) => {
+        fetch(`${baseUrl}/upload`, {
+          method: "POST",
+          headers: {
+            ...fetchOptions.headers,
+            "CloudLoop-Loop-Creator": username,
+            "CloudLoop-Loop-Session": sessionName,
+            "CloudLoop-Loop-Hash": uuidv4()
+          },
+          body: file
+        })
           .then(response => {
             if (response.ok) return resolve();
             else reject("Error logging out user");
