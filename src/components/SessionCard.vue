@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :color="sessionHeader.name | getColorForString"
+    color="#707070"
     dark
     v-if="sessionHeader"
     max-width="600"
