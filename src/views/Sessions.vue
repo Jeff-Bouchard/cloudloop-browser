@@ -24,7 +24,7 @@
     <v-row>
       <v-col cols="12" sm="6" lg="4" xl="2">
         <v-responsive aspect-ratio="1">
-          <Dropzone class="dropzone" @drop="onFile" />
+          <Dropzone class="dropzone" />
         </v-responsive>
       </v-col>
       <v-col
@@ -99,15 +99,6 @@ export default {
         }
       ]
     };
-  },
-
-  methods: {
-    onFile(event) {
-      console.log(event);
-      if (event.dataTransfer && event.dataTransfer.files)
-        console.log(event.dataTransfer.files);
-      this.$router.push("session");
-    }
   }
 };
 </script>

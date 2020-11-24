@@ -7,19 +7,39 @@ export default new Vuex.Store({
   state: {
     loggedInUser: null,
     selectedSession: null,
-    selectedProfile: null
+    selectedProfile: null,
+    files: []
   },
+
+  getters: {
+    filteredFiles: state => status => {
+      return state.files.filter(file => file.status === status);
+    }
+  },
+
   mutations: {
     setLoggedInUser(state, user) {
       state.loggedInUser = user;
     },
-    setSelectedSession(state, session) {
-      state.selectedSession = session;
+
+    setSelectedSession(state, value) {
+      state.selectedSession = value;
     },
+
+    addFile(state, file) {
+      state.files.push(file);
+    },
+
     setSelectedProfile(state, profile) {
       state.selectedProfile = profile;
+    },
+
+    updateFile(state, payload) {
+      const index = state.files.findIndex(file => file.uuid === payload.uuid);
+      state.files[index] = payload.newFile;
     }
   },
+
   actions: {
     setSelectedSession({ commit }, payload) {
       console.log("Selecting session: " + payload.session.name);
@@ -87,7 +107,6 @@ export default new Vuex.Store({
             password: userPass.password
           })
         };
-
         fetch("https://dev.cloudloop.io/auth/login", fetchOptions)
           .then(response => {
             if (response.ok) return response.json();

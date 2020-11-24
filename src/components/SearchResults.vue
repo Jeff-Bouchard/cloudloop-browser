@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" min-width="800" tile>
+  <v-card class="mx-auto" max-width="800" tile>
     <v-list-item v-for="(item, i) in this.sessions" :key="i"
       >Hello
     </v-list-item>

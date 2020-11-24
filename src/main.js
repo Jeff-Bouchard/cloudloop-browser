@@ -16,6 +16,7 @@ import VueWaveSurfer from "vue-wave-surfer";
 import VueSocketIOExt from "vue-socket.io-extended";
 import io from "socket.io-client";
 import SearchResults from "@/components/SearchResults.vue";
+import WaveformPlayer from "@/components/WaveformPlayer.vue";
 
 const socket = io("https://dev.cloudloop.io");
 
@@ -36,6 +37,7 @@ new Vue({
 }).$mount("#app");
 
 Vue.component("SearchResults", SearchResults);
+Vue.component("WaveformPlayer", WaveformPlayer);
 
 Vue.filter("getGenericSkynetDownloadLink", getGenericSkynetDownloadLink);
 Vue.filter("getWavDownloadFromProxy", getWavDownloadFromProxy);

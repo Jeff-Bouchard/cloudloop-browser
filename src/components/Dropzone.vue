@@ -15,7 +15,7 @@
       ref="file"
       type="file"
       name="files[]"
-      accept="audio/*"
+      accept=".wav"
       @change="onFile"
     />
     <v-img :src="require('../assets/Waves.svg')" contain height="64"></v-img>
@@ -59,8 +59,12 @@ input[type="file"] {
 </style>
 
 <script>
+import processFiles from "../mixins/processFiles";
+
 export default {
   name: "Dropzone",
+
+  mixins: [processFiles],
 
   data() {
     return {
@@ -71,7 +75,11 @@ export default {
   methods: {
     onDrop(event) {
       event.preventDefault();
-      this.$emit("drop", event);
+      if (event.dataTransfer && event.dataTransfer.files) {
+        this.processFiles(event.dataTransfer.files).catch(error => {
+          console.error(error);
+        });
+      }
     },
 
     onDrag(event) {
@@ -81,7 +89,11 @@ export default {
 
     onFile(event) {
       event.preventDefault();
-      this.$emit("drop", event);
+      if (event.target.files) {
+        this.processFiles(event.target.files).catch(error => {
+          console.error(error);
+        });
+      }
     }
   }
 };
