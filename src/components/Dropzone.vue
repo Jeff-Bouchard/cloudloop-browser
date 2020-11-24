@@ -10,6 +10,8 @@
     @dragleave="isDragOver = false"
     @mouseleave="isDragOver = false"
   >
+
+	  
     <input
       multiple
       ref="file"
@@ -66,6 +68,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       isDragOver: false
     };
   },

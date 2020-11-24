@@ -75,6 +75,16 @@
           </v-container>
         </div>
 
+        <v-col v-if="loading" cols="12" lg="4" align-self="center">
+          <v-row justify="center">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              size="90"
+            ></v-progress-circular>
+          </v-row>
+        </v-col>
+
         <!-- This inline flex thing doesn't really work how I wanted -->
         <!-- need to find a way to bring that avatar(s) below the title -->
 
@@ -190,6 +200,7 @@ export default {
       isPlaying: false,
       isPrivate: this.isPrivateSession,
       absolute: false,
+      loading: true,
       overlay: false,
       sessionTags: ["Drums", "Vocals", "Keys", "Other"],
       colors: ["red", "orange", "amber", "green", "blue", "purple", "blue-grey"]
