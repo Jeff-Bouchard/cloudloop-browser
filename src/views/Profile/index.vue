@@ -2,30 +2,7 @@
   <v-container v-if="user != null" class="my-10">
     <v-row class="mb-10">
       <v-col cols="12" lg="3">
-        <v-row justify="center">
-          <v-avatar size="200">
-            <img :src="profilePicture" :alt="user.username" />
-          </v-avatar>
-        </v-row>
-        <p class="text-body-1 my-6 cover-text">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum ea
-          corporis voluptate iure, quaerat excepturi fugiat sit, alias fugit
-          optio blanditiis, laborum autem magnam iste delectus modi at obcaecati
-          a.
-        </p>
-        <div>
-          <!-- <v-chip
-              dark
-              close
-              class="ma-2"
-              v-for="(tag, index) in sessionTags"
-              :key="index"
-              @click:close="removeTag()"
-              :color="randomColor()"
-            >
-              {{ tag }}
-            </v-chip> -->
-        </div>
+        <ProfileInfo />
       </v-col>
       <v-spacer> </v-spacer>
       <v-col cols="12" lg="8">
@@ -56,12 +33,13 @@
 
 <script>
 import { getGenericSkynetDownloadLink } from "@/filters/utils";
+import ProfileInfo from "./ProfileInfo.vue";
 import Sessions from "./Sessions.vue";
 import Followers from "./Followers.vue";
 
 export default {
   name: "Profile",
-  components: { Sessions, Followers },
+  components: { ProfileInfo, Sessions, Followers },
   data() {
     return {
       tab: null,
@@ -89,7 +67,9 @@ export default {
       return this.$store.state.loggedInUser;
     },
     user() {
-      return this.$store.state.selectedProfile;
+      const user = this.$store.state.selectedProfile;
+      console.log({user});
+      return user;
     }
   },
 
