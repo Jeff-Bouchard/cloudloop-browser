@@ -23,6 +23,12 @@ Advanced video demo for producers - https://siasky.net/AAB8gbjKYJOW_cF2NhL9m4_Wk
 
 And finally, a link to the "old" cloudloop browser, so you may see how big of an improvement this redesign is. https://cloudloop.io/browser/session/weite
 
+## Next Steps
+
+We were not able to complete the "thin client" player, which will allow playback of created albums using just a SkyID in time for the hackathon. 
+
+This cloudloop thin client will be a pure SKAPP that can play CloudLoop albums without CloudLoop credentials - a fully decentralized music library/streaming client with no reliance on our centralized real-time collaboration infrastructure, on display for this app.
+
 ## Project setup
 ```
 npm install
