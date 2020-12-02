@@ -73,7 +73,7 @@ export default {
         })
         .then(() => {
           this.loading = false;
-          this.$router.push("/");
+          this.$router.push(`/users/${this.username}`);
         })
         .catch(error => {
           this.loading = false;
