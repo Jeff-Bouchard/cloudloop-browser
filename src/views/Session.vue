@@ -72,6 +72,8 @@
                   </template>
                   <span>{{ user }}</span>
                 </v-tooltip>
+                <!--<v-btn v-if="!this.userInSession" class="ma-2" outlined color="black" @click="joinSession" -->
+              <!-- >Join this session</v-btn> -->
               </v-flex>
             </v-layout>
           </v-container>
@@ -138,8 +140,7 @@
         >
           <WaveformPlayer :loop="loop" :ref="'ref-' + loop.hash" />
         </div>
-
-        <Dropzone />
+      <Dropzone />
       </v-col>
     </v-row>
   </v-container>
@@ -149,7 +150,6 @@
 .cover-text {
   max-width: 400px;
 }
-
 .avatar {
   z-index: 1;
 }
@@ -181,7 +181,6 @@ export default {
       console.log("STATE UPDATE RECEIVED: " + data);
       var session_raw = JSON.parse(data);
       var session_decoded = sessionViewFilter(session_raw);
-
       this.$store.dispatch("setSelectedSession", { session: session_decoded });
     }
   },
@@ -196,6 +195,7 @@ export default {
       isPrivate: this.isPrivateSession,
       absolute: false,
       overlay: false,
+      uploadInProgress: false,
       sessionTags: ["Drums", "Vocals", "Keys", "Other"],
       colors: ["red", "orange", "amber", "green", "blue", "purple", "blue-grey"]
     };
@@ -210,6 +210,11 @@ export default {
     },
     isPrivateSession() {
       return this.$store.state.selectedSession.private;
+    },
+    userInSession() {
+      var insession = this.$store.state.selectedSession.users.includes(this.loggedInUser.username)
+      console.log(`User ${this.loggedInUser.username} in session ${this.$store.state.selectedSession.name}: ${insession}`)
+      return insession;
     }
   },
 
@@ -281,7 +286,15 @@ export default {
     },
     beginSkyDBExport() {
       this.exportInProgress = true;
-    }
+    },
+    /*
+    joinSession() {
+      this.joinSession(this.$store.state.loggedInUser.username, this.$store.state.selectedSession.name)
+      .then(console.log("Joined session"))
+      .catch(error => {
+        console.error(error);
+      })
+    }*/
   }
 };
 </script>

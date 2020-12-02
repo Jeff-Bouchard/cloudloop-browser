@@ -7,11 +7,11 @@
             <img :src="profilePicture" :alt="user.username" />
           </v-avatar>
         </v-row>
+        <v-row justify="center">
+          <h3>{{this.$store.state.selectedProfile.username}}</h3>
+        </v-row>
         <p class="text-body-1 my-6 cover-text">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Harum ea
-          corporis voluptate iure, quaerat excepturi fugiat sit, alias fugit
-          optio blanditiis, laborum autem magnam iste delectus modi at obcaecati
-          a.
+          {{this.$store.state.selectedProfile.bio}}
         </p>
         <div>
           <!-- <v-chip

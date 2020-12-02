@@ -122,7 +122,22 @@ export default {
           .catch(reject);
       });
     },
-
+    joinSession(username, session_name) {
+      return new Promise((resolve, reject) => {
+        fetch(`${baseUrl}/join`, { 
+          method: "POST",
+          body: JSON.stringify({
+            username: username,
+            session_name: session_name
+          })
+         })
+        .then(response => {
+          if (response.ok) return resolve();
+          else reject("Error joining session.")
+        })
+        .catch(reject);
+      });
+    },
     uploadAudio(file, username, sessionName) {
       return new Promise((resolve, reject) => {
         fetch(`${baseUrl}/upload`, {

@@ -76,24 +76,27 @@ export default new Vuex.Store({
       }
     },
     fetchUser({ commit }) {
-      const token = window.localStorage.getItem("JWT");
-      if (token) {
-        const fetchOptions = {
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `JWT ${token}`
-          }
-        };
-        fetch("https://dev.cloudloop.io/user", fetchOptions)
-          .then(response => {
-            if (response.ok) return response.json();
-            else console.log(response.json().message);
-          })
-          .then(({ data: { results } }) => {
-            commit("setLoggedInUser", results);
-          });
-      }
+      return new Promise((resolve, reject) => {
+        const token = window.localStorage.getItem("JWT");
+        if (token) {
+          const fetchOptions = {
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${token}`
+            }
+          };
+          fetch("https://dev.cloudloop.io/user", fetchOptions)
+            .then(response => {
+              if (response.ok) return response.json();
+              else reject(response.json().message);
+            })
+            .then(({ data: { results } }) => {
+              commit("setLoggedInUser", results);
+              resolve()
+            });
+        }
+      })
     },
     logInUser({ dispatch }, userPass) {
       return new Promise((resolve, reject) => {
@@ -101,8 +104,10 @@ export default new Vuex.Store({
           .logInUser(userPass.username, userPass.password)
           .then(data => {
             window.localStorage.setItem("JWT", data.data.results);
-            dispatch("fetchUser");
-            resolve();
+            dispatch("fetchUser")
+            .then(() => {
+              resolve();
+            });
           })
           .catch(reject);
       });

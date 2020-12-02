@@ -1,5 +1,16 @@
 <template>
-  <div
+<v-container>
+<v-col v-if="processing" cols="4" lg="4" align-self="center">
+        <v-row justify="center">
+          <v-progress-circular
+            indeterminate
+            color="primary"
+            size="90"
+          ></v-progress-circular>
+        </v-row>
+      </v-col>
+      <v-col cols="12">
+      <div
     class="dropzone pa-8"
     :class="`dragover-${isDragOver}`"
     @drop="onDrop"
@@ -10,8 +21,6 @@
     @dragleave="isDragOver = false"
     @mouseleave="isDragOver = false"
   >
-
-	  
     <input
       multiple
       ref="file"
@@ -22,9 +31,13 @@
     />
     <v-img :src="require('../assets/Waves.svg')" contain height="64"></v-img>
     <label class="text-h6 font-weight-black text-center" for="file">
-      DROP IT LIKE IT'S HOT
+      DROP A .WAV IT LIKE IT'S HOT
     </label>
   </div>
+  </v-col>
+</v-container>
+
+  
 </template>
 
 <style scoped>
@@ -69,15 +82,18 @@ export default {
   data() {
     return {
       loading: false,
+      processing: false,
       isDragOver: false
     };
   },
 
   methods: {
     onDrop(event) {
+      this.processing = true;
       event.preventDefault();
       if (event.dataTransfer && event.dataTransfer.files) {
         this.processFiles(event.dataTransfer.files).catch(error => {
+          this.processing = false;
           console.error(error);
         });
       }
@@ -90,9 +106,15 @@ export default {
 
     onFile(event) {
       event.preventDefault();
+      this.processing = true;
       if (event.target.files) {
-        this.processFiles(event.target.files).catch(error => {
+        this.processFiles(event.target.files).then(data => {
+          console.log(`File processed:  ${data}`)
+          this.processing = false;
+        })
+        .catch(error => {
           console.error(error);
+          this.processing = false;
         });
       }
     }
